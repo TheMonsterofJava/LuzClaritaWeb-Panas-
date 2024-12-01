@@ -36,19 +36,3 @@ public class ConsultasController {
     }
 }
 
-
-//@Controller
-//@RequestMapping("/consultas")
-//public class ConsultasController {
-//
-//    //Pagina Principal
-//    @GetMapping("/consulta")
-//    public String consulta(Model model) {
-//    
-//        model.addAttribute("titulo", "Consultas");
-//        return "consultas/consulta";
-//    
-//    }
-//            
-// 
-//}
