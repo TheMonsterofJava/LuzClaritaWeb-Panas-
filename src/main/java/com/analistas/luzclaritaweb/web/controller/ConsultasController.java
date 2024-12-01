@@ -4,13 +4,9 @@
  */
 package com.analistas.luzclaritaweb.web.controller;
 import com.analistas.luzclaritaweb.model.domain.Consulta;
+import com.analistas.luzclaritaweb.model.service.IConsultaService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-
-
-/**
- *
- * @author osval
- */
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class ConsultasController {
+    
+    //Consultas
+    @Autowired
+    private IConsultaService consultaService;
 
     @GetMapping("/consulta")
     public String mostrarFormulario(Model model) {
@@ -29,11 +29,12 @@ public class ConsultasController {
 
     @PostMapping("/guardar")
     public String guardarConsulta(@ModelAttribute("consultas") Consulta consulta) {
-        // Lógica para guardar los datos (puedes usar un servicio)
-        return "redirect:/consulta"; // Redirige a una vista o confirma el envío
+        
+        //Guardar Consulta y redirigir a la pagina 
+        consultaService.guardarConsulta(consulta);
+        return "redirect:/consulta?success"; // Redirige a una vista o confirma el envío
     }
 }
-
 
 
 //@Controller

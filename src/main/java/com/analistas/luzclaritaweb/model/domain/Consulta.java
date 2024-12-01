@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -41,7 +42,8 @@ public class Consulta {
     @Column(name = "celular")
     @Size(max = 15, message = "Su Celular no debe tener máximo 15 caracteres...")
     @NotEmpty(message = "Su Celular es requerido...")
-    private Long celular;
+    @Pattern(regexp = "^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$")
+    private String celular;
 
     @Column(name = "mensaje")
     @Size(max = 500, message = "Su mensaje no debe tener máximo 500 caracteres...")

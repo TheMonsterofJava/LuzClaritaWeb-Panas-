@@ -9,3 +9,4 @@ INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_catego
 INSERT INTO `luzclaritaweb`.`productos` (`activo`) VALUES ('1');
 INSERT INTO `luzclaritaweb`.`productos` (`precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('6840', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '4500', '20', '4', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
+
