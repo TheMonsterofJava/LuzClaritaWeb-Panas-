@@ -1,0 +1,245 @@
+* {  
+    margin: 0; /* Elimina el margen por defecto de todos los elementos */  
+    padding: 0; /* Elimina el relleno por defecto de todos los elementos */  
+    box-sizing: border-box; /* Incluye el relleno y el borde en el cálculo del ancho y alto de los elementos */  
+    font-family: "Poppins", sans-serif; /* Establece la fuente principal de la página */  
+}  
+
+a {  
+    text-decoration: none; /* Elimina el subrayado de los enlaces */  
+}  
+
+.header {  
+    position: fixed; /* Hace que el encabezado permanezca fijo en la parte superior */  
+    height: 80px; /* Establece la altura del encabezado */  
+    width: 100%; /* El encabezado ocupa el ancho completo de la pantalla */  
+    z-index: 100; /* Asegura que el encabezado se superponga a otros elementos */  
+    padding: 0 20px; /* Relleno horizontal de 20px */  
+}  
+
+.nav {  
+    max-width: 1100px; /* Ancho máximo del contenedor de navegación */  
+    width: 100%; /* El contenedor de navegación ocupa el ancho completo */  
+    margin: 0 auto; /* Centra el contenedor de navegación */  
+    display: flex; /* Utiliza flexbox para la disposición de elementos secundarios */  
+    height: 100%; /* Altura completa del contenedor nav */  
+    align-items: center; /* Centra verticalmente los elementos */  
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */  
+}  
+
+.nav_items {  
+    display: flex; /* Flexbox para los elementos de la lista de navegación */  
+    list-style: none; /* Elimina los puntos de la lista */  
+}  
+
+.nav_items li {  
+    margin-right: 25px; /* Espacio a la derecha de cada elemento de la lista */  
+}  
+
+.nav_logo,  
+.nav_link,  
+.button {  
+    color: #fff; /* Establece el color del texto a blanco para el logo, enlaces y botones */  
+}  
+
+.nav_link2 {
+    color: #fff;
+}
+
+.home {  
+    position: relative; /* Posiciona el contenedor relativamente para los elementos posicionados dentro */  
+    height: 100vh; /* Altura completa de la ventana del navegador */  
+    width: 100%; /* Ancho completo */  
+    background-image: url("/img/123.png"); /* Establece una imagen de fondo */  
+    /*background-color: #a86497; /* Comentado: color de fondo en vez de imagen */  
+    background-position: center; /* Centra la imagen de fondo */  
+    background-size: cover; /* La imagen de fondo cubre todo el contenedor */  
+}  
+
+.nav_logo {  
+    font-size: 25px; /* Tamaño de fuente para el logo de la navegación */  
+}  
+
+.nav_link:hover {  
+    color: #d9d9d9; /* Cambia el color del enlace al pasar el mouse */  
+}  
+
+.button {  
+    padding: 6px 24px; /* Relleno interno para botones */  
+    border: 2px solid #fff; /* Borde blanco */  
+    background: transparent; /* Fondo transparente */  
+    border-radius: 6px; /* Esquinas redondeadas */  
+    cursor: pointer; /* Cambia el cursor a puntero al pasar el mouse */  
+}  
+
+.button:active {  
+    transform: scale(0.98); /* Efecto al hacer clic en el botón */  
+}  
+
+.home::before {  
+    content: ""; /* Se requiere contenido para elementos pseudo */  
+    position: absolute; /* Posiciona de manera absoluta dentro del contenedor .home */  
+    height: 100%; /* Altura completa */  
+    width: 100%; /* Ancho completo */  
+    background-color: rgba(0,0,0,0.6); /* Color de fondo negro con opacidad */  
+    z-index: 100; /* Capa superior para el overlay */  
+    opacity: 0; /* Comienza invisible */  
+    pointer-events: none; /* Ignora eventos de mouse */  
+    transition: all 0.5s ease-out; /* Transición suave para cambios de opacidad */  
+}  
+
+.home.show::before {  
+    opacity: 1; /* Hace visible el overlay cuando .show está presente */  
+    pointer-events: auto; /* Habilita eventos de mouse en el overlay */  
+}  
+
+.form_container {  
+    position: fixed; /* Fija el contenedor del formulario */  
+    max-width: 320px; /* Ancho máximo del contenedor */  
+    width: 100%; /* Ancho completo */  
+    top: 50%; /* Centra verticalmente el contenedor */  
+    left: 50%; /* Centra horizontalmente el contenedor */  
+    transform: translate(-50%, -50%) scale(1.2); /* Ajusta la posición del contenedor y permite escalar */  
+    z-index: 101; /* Capa superior sobre otros elementos */  
+    background: #fff; /* Fondo blanco */  
+    padding: 25px; /* Relleno interno */  
+    border-radius: 12px; /* Esquinas redondeadas */  
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del contenedor */  
+    opacity: 0; /* Comienza invisible */  
+    pointer-events: none; /* Ignora eventos de mouse */  
+    transition: all 0.4s ease-out; /* Transición suave para cambios en opacidad y tamaño */  
+}  
+
+.home.show .form_container {  
+    opacity: 1; /* Hace visible el contenedor del formulario cuando .show está presente */  
+    pointer-events: auto; /* Habilita eventos de mouse en el contenedor */  
+    transform: translate(-50%, -50%) scale(1); /* Ajusta la escala para que sea normal */  
+}  
+
+.signup_form {  
+    display: none; /* Oculta el formulario de registro inicialmente */  
+}  
+
+.form_container.active .signup_form {  
+    display: block; /* Muestra el formulario de registro si el contenedor es activo */  
+}  
+
+.form_container.active .login_form {  
+    display: none; /* Oculta el formulario de inicio de sesión si el contenedor es activo */  
+}  
+
+.form_close {  
+    position: absolute; /* Posiciona de forma absoluta el botón de cierre */  
+    top: 10px; /* Distancia desde la parte superior */  
+    right: 20px; /* Distancia desde la derecha */  
+    color: #0b0217; /* Color del texto del botón de cerrar */  
+    opacity: 0.7; /* Opacidad del botón de cerrar */  
+    cursor: pointer; /* Cambia el cursor a puntero al pasar el mouse */  
+}  
+
+.form_container h2 {  
+    font-size: 22px; /* Tamaño del texto del encabezado del formulario */  
+    color: #0b0217; /* Color del texto del encabezado del formulario */  
+    text-align: center; /* Centra el texto del encabezado */  
+}  
+
+.input_box {  
+    position: relative; /* Posiciona cada caja de entrada relativamente */  
+    margin-top: 30px; /* Margen superior entre entradas */  
+    width: 100%; /* Ancho completo de la caja de entrada */  
+    height: 40px; /* Altura de la caja de entrada */  
+}  
+
+.input_box input {  
+    height:100%; /* Altura completa de la entrada */  
+    width: 100%; /* Ancho completo de la entrada */  
+    border: none; /* Sin borde */  
+    outline: none; /* Sin borde de enfoque */  
+    padding: 0 30px; /* Relleno interno de las entradas */  
+    color: #333; /* Color del texto en las entradas */  
+    transition: all 0.2s ease; /* Transición suave para cambios */  
+    border-bottom: 1.5px solid #aaa; /* Borde inferior delgado */  
+}  
+
+.input_box input:focus {  
+    border-color: #f67f2b; /* Color del borde de la entrada al estar en foco */  
+}  
+
+.input_box i {  
+    position: absolute; /* Posiciona iconos dentro de la caja de entrada */  
+    top: 50%; /* Centra verticalmente el icono */  
+    transform: translateY(-50%); /* Ajusta la posición para centrar correctamente */  
+    font-size: 20px; /* Tamaño del icono */  
+    color: #707070; /* Color del icono */  
+}  
+
+.input_box i.email,
+.input_box i.text,
+.input_box i.number,
+.input_box i.password {  
+    left: 0; /* Coloca el icono a la izquierda */  
+}  
+
+.input_box input:focus ~ i.email,  
+.input_box input:focus ~ i.password {  
+    color: #f67f2b; /* Cambia el color del icono al estar en foco */  
+}  
+
+.input_box i.pw_hide {  
+    right: 0; /* Posiciona el icono de ocultar/mostrar password a la derecha */  
+    font-size: 18px; /* Tamaño del icono */  
+    cursor: pointer; /* Cambia el cursor a puntero al pasar el mouse */  
+}  
+.option_field {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.option_field {  
+    margin-top: 14px;  
+    display: flex; /* Utiliza flexbox para la disposición de elementos */  
+    align-items: center; /* Centra verticalmente los elementos */  
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */  
+}  
+
+.form_container a {  
+    color: #f67f2b; /* Establece el color del enlace */  
+    font-size: 12px; /* Tamaño de fuente del enlace */  
+}  
+
+.form_container a:hover {  
+    text-decoration: underline; /* Subraya el enlace al pasar el mouse */  
+}  
+
+.checkbox {  
+    display: flex; /* Utiliza flexbox para la disposición de la caja de verificación */  
+    column-gap: 8px; /* Espacio entre la caja de verificación y la etiqueta */  
+    white-space: nowrap; /* Evita el cambio de línea entre elementos */  
+}  
+
+.checkbox input {  
+    accent-color: #f67f2b; /* Color del checkbox */  
+}  
+
+.checkbox label {  
+    font-size: 12px; /* Tamaño de fuente de la etiqueta */  
+    cursor: pointer; /* Cambia el cursor a puntero al pasar el mouse */  
+    user-select: none; /* Evita la selección de texto para evitar confusiones */  
+    color: #0b0217; /* Color del texto de la etiqueta */  
+}  
+
+.form_container .button {  
+    background-color: #f67f2b; /* Color de fondo del botón */  
+    margin-top: 30px; /* Margen superior para separar del contenido anterior */  
+    width: 100%; /* Ancho completo del botón */  
+    padding: 10px 0; /* Relleno vertical para el botón */  
+    border-radius: 10px; /* Esquinas redondeadas del botón */  
+}  
+
+.login_signup {  
+    font-size: 12px; /* Tamaño de fuente para el enlace de inicio de sesión/registro */  
+    text-align: center; /* Centra el texto */  
+    margin-top: 15px; /* Margen superior para separar de otros elementos */  
+} 
