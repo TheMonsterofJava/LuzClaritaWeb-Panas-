@@ -35,7 +35,10 @@
                                     <div class="col-md-6">
                                         <h2 class="text-center">Envíanos un mensaje</h2>
                                         <form action="/guardar" method="post" th:object="${consultas}">
-                                             <div class="mb-3 mt-3">
+                                            <div class="alert alert-success" th:if="${param.success}">
+                                                ¡Consulta enviada exitosamente!
+                                            </div>
+                                            <div class="mb-3 mt-3">
                                                 <label for="nom_ape" class="form-label">Nombre y Apellido</label>
                                                 <input th:field="*{nom_ape}" type="text" class="form-control" id="nom_ape" name="nom_ape" placeholder="Ingrese su Nombre y Apellido">
                                             </div>
@@ -45,7 +48,7 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="celular" class="form-label">Celular</label>
-                                                <input th:field="*{celular}" type="number" class="form-control" id="celular" name="celular" placeholder="Ingrese su Celular">
+                                                <input th:field="*{celular}" type="tel" class="form-control" id="celular" name="celular" placeholder="Ingrese su Celular">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="mensaje" class="form-label">Mensaje</label>
