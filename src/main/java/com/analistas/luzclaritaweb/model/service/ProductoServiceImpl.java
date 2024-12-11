@@ -29,7 +29,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public List<Producto> buscarPor(String criterio) {
-        // TODO Auto-generated method stub
+        
         throw new UnsupportedOperationException("Unimplemented method 'buscarPor'");
     }
 
