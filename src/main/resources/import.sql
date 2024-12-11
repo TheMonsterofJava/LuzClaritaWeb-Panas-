@@ -1,3 +1,12 @@
+/*Insertar Roles*/
+/*Permisos o Roles*/
+/*Tabla de Permisos*/
+INSERT INTO `permisos` (nombre, descripcion) VALUES ('1 - PROGRAMADOR', 'Permiso mas alto, puede modificar todo'),('2 - ADMIN', 'Dueño de la empresa - Tiene menos permisos que programador'),('3 - OPERADOR', 'Trabajador de la empresa - Tiene algunos permisos'),('4 - CLIENTE', 'Usuario Registrado que realiza una compra'),('5 - UNLOGUED', 'Consultas algunos elementos de la pagina sin estar registrado');
+
+/*Crear Usuarios*/
+INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nombre, clave, email) VALUES (1, '2024-12-01', 1, 'Osvaldo', '$2y$10$ZP7gE3toR10ffABvlsvJXOGQsHaUQPizzXpuBZj5Gkf.7mT3hFmQS', 'Osvaldo@gmail.com.ar') /*user*/
+INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nombre, clave, email) VALUES (1, '2024-12-01', 4, 'Santi', '$2y$10$Y5PE96MBydWiAVCAkf1TQu99d7NKYNPWU/HEAZGQ2l5OQu2XiPiiC', 'Santi@gmail.com.ar') /*cliente*/
+
 /* Crear las categorias */
 INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Chocolate');
 INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Frutilla');

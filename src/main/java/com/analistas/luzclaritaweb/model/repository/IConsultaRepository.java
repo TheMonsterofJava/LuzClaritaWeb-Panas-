@@ -7,12 +7,7 @@ package com.analistas.luzclaritaweb.model.repository;
 import com.analistas.luzclaritaweb.model.domain.Consulta;
 import org.springframework.data.repository.CrudRepository;
 
-/**
- *
- * @author osval
- */
 public interface IConsultaRepository extends CrudRepository<Consulta, Long>{
-    
     
     
 }

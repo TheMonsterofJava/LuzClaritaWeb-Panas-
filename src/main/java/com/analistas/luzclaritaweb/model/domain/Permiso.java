@@ -1,6 +1,7 @@
 package com.analistas.luzclaritaweb.model.domain;
 
 import lombok.Data;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,14 +19,16 @@ public class Permiso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Size(max = 20)
+    @NotEmpty(message = "El nombre del permiso no puede estar vacío.")
+    @Size(max = 20, message = "El nombre del permiso no debe exceder los 20 caracteres.")
+    @Column(nullable = false, unique = true)
     private String nombre;
 
+    @Size(max = 255, message = "La descripción no debe exceder los 255 caracteres.")
     private String descripcion;
 
     @Override
     public String toString() {
-        return id + " - " + nombre;
+        return "Permiso{id=" + id + ", nombre='" + nombre + "', descripcion='" + descripcion + "'}";
     }
 }

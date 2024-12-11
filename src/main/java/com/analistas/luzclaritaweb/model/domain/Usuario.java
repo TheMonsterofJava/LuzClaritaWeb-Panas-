@@ -26,12 +26,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Agregamos un email para poder despues verificarlo con el ... y para posterior
+    // registro con una API de google
+    @Column(name = "email", nullable = false, unique = true, length = 100) // este email es unico es por ello que se
+                                                                           // puede usar junto con el ID para verficar
+                                                                           // si el usuario no esta repetido para mas
+                                                                           // seguridad
+    private String email;
+
     @NotEmpty(message = "El nombre es requerido...")
-    @Size(min = 5, max = 20, message = "El nombre debe tener entre 5 y 30 caracteres...")
+    @Size(min = 5, max = 30, message = "El nombre debe tener entre 5 y 30 caracteres...")
     private String nombre;
 
     @NotEmpty(message = "La clave es requerida...")
-    @Size(min = 6, max = 70, message = "La clave debe tener al menos 6 caracteres...")
+    @Size(min = 5, max = 71/* limitado por el bycrypt */, message = "La clave debe tener al menos 5 caracteres...")
     private String clave;
 
     private Date fecha_creacion;
@@ -44,11 +52,6 @@ public class Usuario {
     @JoinColumn(name = "id_permiso", referencedColumnName = "id")
     private Permiso permiso;
 
-     @NotNull(message = "El Inventario es requerido")
-     @ManyToOne(fetch = FetchType.LAZY)
-     @JoinColumn(name = "id_inventario", referencedColumnName = "id")
-     private Inventario inventario;
-    
     @PrePersist
     public void PrePersist() {
         activo = true;
@@ -59,5 +62,7 @@ public class Usuario {
         return nombre + " - " + id;
     }
 
-    
 }
+
+
+
