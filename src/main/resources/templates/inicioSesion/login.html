@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/login.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <title>Inicio Sesión Luz Clarita</title>
+</head>
+
+<body th:classappend="${error} ? 'show-error' : ''">
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="nav_logo">LogoTipo</a>
+            <ul class="nav_items">
+            </ul>
+            <button class="button" id="form-open">Login</button>
+            <button class="button">
+                <a class="nav-link2" th:href="@{/home}">Pagina Principal</a>
+            </button>
+        </nav>
+    </header>
+
+    <section class="home" th:classappend="${error} ? 'show' : ''">
+        <div class="form_container">
+            <i class="uil uil-times form_close"></i>
+
+            <!-- Formulario de Login -->
+            <div class="form login_form">
+                <form th:action="@{/inicioSesion/login}" method="POST">
+                    <h2>Inicio De Sesión</h2>
+
+                    <div class="input_box">
+                        <input type="text" name="username" placeholder="Ingresa tu Nombre de Usuario"
+                            th:value="${nombreUsuario}" required>
+                        <i class="uil uil-user text"></i>
+                    </div>
+                    <div class="input_box">
+
+                        <input type="password" name="password" placeholder="Ingresa tu Contraseña" required>
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                    </div>
+                    <div class="error-message" th:if="${error}" style="color: red; font-size: 12px; margin: 10px 0;">
+                        <span <i class="uil uil-exclamation-circle"></i> style="color:red;font-weight:bold"><p>Error en el Incio de Sesion</p></span>
+                    </div>
+                    <div class="option_field">
+                        <span class="checkbox">
+                            <input type="checkbox" id="check">
+                            <label for="check">Recordarme</label>
+                        </span>
+                        <a href="#" class="forgot_pw">¿Olvidaste tu Contraseña?</a>
+                    </div>
+
+                    <button class="button">Iniciar Sesión</button>
+                    <div class="login_signup">¿No tienes una cuenta? <a href="#" id="signup">Registrarse</a></div>
+                </form>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <div class="form signup_form">
+                <form action="/registro/registro" method="post">
+                    <h2>Registro</h2>
+                    <div class="input_box">
+                        <input type="text" name="nomb_ape" placeholder="Ingresa tu Nombre y Apellido" min = 5, max = 60 required>
+                        <i class="uil uil-user-plus text"></i>
+                       
+                    </div>
+                    <div class="input_box">
+                        <input type="text" name="celular" placeholder="Ingresa tu número de teléfono" max = 20 required>
+                        <i class="uil uil-phone-alt text"></i>
+                       
+                    </div>
+                    <div class="input_box">
+                        <input type="email" name="correo" placeholder="Ingresa tu Email" max = 120 required>
+                        <i class="uil uil-envelope-alt email"></i>
+                        
+                    </div>
+                    <div class="input_box">
+                        <input type="text" name="direccion" placeholder="Ingresa tu Domicilio" max = 120 required>
+                        <i class="uil uil-user-location text"></i>
+                        
+                    </div>
+                    <div class="input_box">
+                        <input type="password" name="contraseña" placeholder="Ingresa tu Contraseña" minlength="5" maxlength="71" required>
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                        
+                        
+                    </div>
+                    <div class="input_box">
+                        <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" minlength="5" maxlength="71" required>
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                        
+                    </div>
+                    <button class="button">Registrarse</button>
+
+                    <div class="login_signup">Volver al inicio de Sesion <a href="#" id="login">Inicio De Sesion</a></div>
+                </form>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/login.js" type="text/javascript"></script>
+
+</body>
+
+</html>
+
+
