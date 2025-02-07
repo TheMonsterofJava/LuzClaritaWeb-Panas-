@@ -17,6 +17,7 @@
 <body class="bg-image">
     
     <div layout:fragment="contenido">
+<<<<<<< HEAD
 
         <div id="hero">
             <nav aria-label="breadcrumb">
@@ -61,12 +62,82 @@
                         </div>
                     </div>
                 </div>                                     
+=======
+        <main>
+            <aside>
+                <h2>Categorías</h2>
+                <ul>
+                    <li><a href="#chocolate">Tortas de Chocolate</a></li>
+                    <li><a href="#vainilla">Tortas de Vainilla</a></li>
+                    <li><a href="#frutas">Tortas de Frutas</a></li>
+                    <li><a href="#sin-azucar">Sin Azúcar</a></li>
+                    <li><a href="#veganas">Tortas Veganas</a></li>
+                </ul>
+            </aside>
+            <section class="productos">
+                <h2 class="text-center  mb-4" th:text="${titulo}"></h2>
+                <div>
+                    <label for="sort" class="fw-bold">Ordenar por:</label>
+                    <select class="form-control-sm" name="" id="">
+                        <option>Opción 1</option>
+                        <option>Opción 2</option>
+                        <option>Opción 3</option>
+                        <option>Opción 4</option>
+                    </select>
+                </div>
+                <div class="container mt-5">  
+                    <div class="row">  
+                        <div class="col-md-4">  
+                            <div class="card shadow-sm rounded">
+                                <a class="card-style" href="#">  
+                                    <img src="/img/torta.jpeg" class="card-img-top" alt="Torta de Chocolate">  
+                                    <div class="card-body">  
+                                        <h5 class="card-title">Torta de Chocolate</h5>  
+                                        <p class="card-text">Deliciosa torta de chocolate con crema suave.</p>  
+                                        <span class="text-success">$15.00</span>
+                                    </div>
+                                </a>   
+                            </div>  
+                        </div>  
+                        <div class="col-md-4">  
+                            <div class="card shadow-sm rounded">  
+                                <img src="/img/torta2.jpeg" class="card-img-top" alt="Torta de Vainilla">  
+                                <div class="card-body">  
+                                    <h5 class="card-title">Torta de Vainilla</h5>  
+                                    <p class="card-text">Clásica torta de vainilla con glaseado de vainilla.</p>  
+                                    <span class="text-success">$12.00</span>  
+                                </div>  
+                            </div>  
+                        </div>  
+                        <div class="col-md-4">  
+                            <div class="card shadow-sm rounded">  
+                                <img src="/img/torta3.jpeg" class="card-img-top" alt="Torta de Frutas">  
+                                <div class="card-body">  
+                                    <h5 class="card-title">Torta de Frutas</h5>  
+                                    <p class="card-text">Torta fresca con frutas de temporada.</p>  
+                                    <span class="text-success">$18.00</span>   
+                                </div>  
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>
+                <div class="container mt-5 mb-4">
+                    <div class="row">
+                        <div class="col text-center">
+                          <a class="btn btn-primary" href="/productos/listado" role="button">Ver más</a>
+                        </div>
+                    </div>
+                  </div> 
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
             </section>
         </main>
     </div>
 
     <!-- Scripts propios de la pagina -->
     <script th:fragment="js"></script>
+<<<<<<< HEAD
     <script src="/js/carrito.js"></script>
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 </body>
 </html>

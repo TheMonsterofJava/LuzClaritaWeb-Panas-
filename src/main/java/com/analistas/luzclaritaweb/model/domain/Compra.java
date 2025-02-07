@@ -42,7 +42,11 @@ public class Compra {
     @NotNull(message = "El precio es requerido...")
     @NumberFormat(pattern = "#,##0.00", style = NumberFormat.Style.CURRENCY)
     private BigDecimal precio;
+<<<<<<< HEAD
 
+=======
+   
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_caja", referencedColumnName = "id")
     private Caja caja;
@@ -74,4 +78,8 @@ public class Compra {
     public void PrePersist() {
         activo = true;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572

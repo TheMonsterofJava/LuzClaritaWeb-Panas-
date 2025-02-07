@@ -67,8 +67,14 @@ public class Inventario {
     @JoinColumn(name = "id_proveedor", referencedColumnName = "id")
     private Proveedor proveedor;
    
+<<<<<<< HEAD
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
         private Usuario usuario;
+=======
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
+     private Usuario usuario;
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
     
 }

@@ -32,12 +32,15 @@
     <dependencies>
 
         <dependency>
+<<<<<<< HEAD
             <groupId>com.mercadopago</groupId>
             <artifactId>sdk-java</artifactId>
             <version>2.1.29</version>
         </dependency>
 
         <dependency>
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>

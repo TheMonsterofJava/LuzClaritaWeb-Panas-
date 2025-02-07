@@ -113,8 +113,26 @@ aside {
   border-right: 1px solid #ffd1dc;
 }
 
+<<<<<<< HEAD
 
 /* Estilo de lista CATEGORIA*/
+=======
+aside ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Estilo de lista CATEGORIA*/
+aside ul li {
+  margin: 10px 0;
+  font-family: 'fuente', sans-serif;
+}
+
+aside ul li a {
+  text-decoration: none;
+  color: #333;
+}
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 
 aside h2 {
   margin-top: 40px;
@@ -243,6 +261,7 @@ font-weight: bold;
   text-decoration-color: crimson;
   color: rgb(213, 209, 203);
   filter: grayscale(1);
+<<<<<<< HEAD
 }
 
 /* Efecto hover en los botones */
@@ -494,4 +513,6 @@ aside ul li a {
   padding: 10px; /* Espaciado interno */
   border-radius: 5px; /* Bordes redondeados */
   display: inline-block; /* Para ajustar el tamaño al contenido */
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 }

@@ -55,8 +55,11 @@ public class Producto {
     public void PrePersist() {
         activo = true;
     }
+<<<<<<< HEAD
 
     public BigDecimal getPrecio() {
         return precio;
     }
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 }

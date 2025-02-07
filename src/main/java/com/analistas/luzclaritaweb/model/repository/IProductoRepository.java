@@ -15,4 +15,8 @@ public interface IProductoRepository extends CrudRepository<Producto, Long> {
 
     //Con Query Methods
     List<Producto> findByActivoTrue();
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572

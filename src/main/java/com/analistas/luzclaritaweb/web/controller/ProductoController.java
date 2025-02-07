@@ -16,7 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.model.domain.Categoria;
 import com.analistas.luzclaritaweb.model.domain.Producto;
+<<<<<<< HEAD
 import com.analistas.luzclaritaweb.model.repository.ICategoriaRepository;
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 import com.analistas.luzclaritaweb.model.service.IProductoService;
 
 import jakarta.validation.Valid;
@@ -31,7 +34,10 @@ public class ProductoController {
 
     @Autowired
     IProductoService productoService;
+<<<<<<< HEAD
     ICategoriaRepository categoriaRepository;
+=======
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
 
     //Implementar el controlador de producto
     @GetMapping("/listado")
@@ -40,7 +46,11 @@ public class ProductoController {
         model.addAttribute("titulo", "Productos");
         model.addAttribute("productos", productoService.buscarTodo());
 
+<<<<<<< HEAD
         return "productos/list";
+=======
+        return "productos/list2";
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
     }
 
     @GetMapping("/nuevo")
@@ -112,6 +122,10 @@ public class ProductoController {
         return "redirect:/productos/listado";
     }
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> 24fe31e4ab2a1ea9e2b801910c7c31c04c488572
     @ModelAttribute("categorias")
     public List<Categoria> listarCategorias() {
         return productoService.getCategorias();
