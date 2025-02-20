@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+<head>
+    <title th:text="${titulo}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body class="form-body">
+    
+    <div layout:fragment="contenido" class="container-fluid py-4">
+        <div class="card card-text">
+            <div class="card-header">
+                <h4 class="titulo-form" th:text="${titulo}"></h4>
+            </div>
+            <form th:action="@{/productos/guardar}" method="post" th:object="${producto}">
+                <div class="card-body">
+                    <div class="form">
+                        <label for="descri" class="form-label">
+                            Descripción
+                        </label>
+                        <input id="descri" type="text" class="form-control"
+                            th:field="*{descripcion}"
+                            th:errorClass="'form-control alert-danger'" />
+                        <small class="form-label text-danger" th:errors="*{descripcion}"></small>
+                    </div>
+                    <div class="form">
+                        <label for="pre" class="form-label">
+                            Precio
+                        </label>
+                        <input id="pre" type="text" class="form-control money"
+                            th:field="*{precio}"
+                            th:errorClass="'form-control alert-danger'" />
+                        <small class="form-label text-danger" th:errors="*{precio}"></small>
+                    </div>
+                    <div class="form">
+                        <label for="sto" class="form-label">
+                            Stock
+                        </label>
+                        <input id="sto" type="text" class="form-control"
+                            th:field="*{stock}"
+                            th:errorClass="'form-control alert-danger'" />
+                        <small class="form-label text-danger" th:errors="*{stock}"></small>
+                    </div>
+                    <div class="form">
+                        <label for="img" class="form-label">
+                            Link de la imagen
+                        </label>
+                        <input id="img" type="text" class="form-control" th:field="*{linkImagen}"/>
+                    </div>
+                    <div class="form">
+                        <label for="cat" class="form-label">
+                            Categoría
+                        </label>
+                        <select name="cat" id="cat" class="form-select" th:field="*{categoria}">
+                            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="bi bi-floppy btn btn-outline-primary float-end ms-2">
+                        Guardar
+                    </button>
+                    <a th:href="@{/productos/listado}" class="bi bi-x-square btn btn-outline-secondary float-end">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts propios de la pagina -->
+    <script th:fragment="js">
+        $('.money').mask("#.##0,00", {reverse: true});
+    </script>
+</body>
+</html>

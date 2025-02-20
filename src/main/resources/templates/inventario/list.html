@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inventario</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}"> <!-- Estilo general -->
+        <link rel="stylesheet" th:href="@{/css/inventario.css}"> <!-- Estilo específico del inventario -->
+    </head>
+    <body class="form-body">
+        <div layout:fragment="contenido" class="container-fluid py-4">
+            <!-- Botón flotante para mostrar/ocultar el formulario -->
+            <button id="toggle-form-btn" class="btn btn-outline-primary">
+                Mostrar Formulario
+            </button>
+
+            <!-- Formulario para agregar un nuevo artículo -->
+            <form id="add-item-form" class="card card-text">
+                <div class="card-header">
+                    <h4 class="titulo-form">Agregar Artículo</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form">
+                        <label for="ing" class="form-label">Ingrediente:</label>
+                        <input type="text" id="ing" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="uni" class="form-label">Unidad:</label>
+                        <input type="text" id="uni" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="pre" class="form-label">Precio:</label>
+                        <input type="number" id="pre" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="cant" class="form-label">Cantidad:</label>
+                        <input type="number" id="cant" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="fecha-ingreso" class="form-label">Fecha de Ingreso:</label>
+                        <input type="date" id="fecha-ingreso" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="fecha-vencimiento" class="form-label">Fecha de Vencimiento:</label>
+                        <input type="date" id="fecha-vencimiento" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="id-proveedor" class="form-label">ID Proveedor:</label>
+                        <input type="text" id="id-proveedor" class="form-control" required>
+                    </div>
+                    <div class="form">
+                        <label for="id-usuario" class="form-label">ID Usuario:</label>
+                        <input type="text" id="id-usuario" class="form-control" required>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-floppy"></i> Guardar
+                    </button>
+                    <button type="button" id="cancel-form-btn" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-square"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+
+            <!-- Tabla de inventario -->
+            <div class="card card-text mt-4">
+                <div class="card-header">
+                    <h4 class="titulo-form">Lista de Artículos</h4>
+                </div>
+                <div class="card-body extend-card-body">
+                    <table id="bakery-table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Ingrediente</th>
+                                <th>Unidad</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Fecha de Ingreso</th>
+                                <th>Fecha de Vencimiento</th>
+                                <th>ID Proveedor</th>
+                                <th>ID Usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Datos de prueba -->
+                            <tr>
+                                <td>Harina</td>
+                                <td>kg</td>
+                                <td>$1.50</td>
+                                <td>10</td>
+                                <td>2023-10-01</td>
+                                <td>2024-10-01</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>
+                                    <button class="btn btn-outline-warning editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-outline-danger eliminar">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fondo difuminado -->
+            <div id="overlay"></div>
+        </div>
+    </body>
+</html>

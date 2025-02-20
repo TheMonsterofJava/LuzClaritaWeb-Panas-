@@ -1,0 +1,38 @@
+.submenu {
+    position: relative;
+}
+
+.submenu #carrito{
+    display: none;
+}
+.submenu:hover #carrito{
+    display: block;
+    position: absolute;
+    right:0;
+
+    top:100%;
+    z-index: 1;
+    background-color: white;
+    padding: 20px;
+    min-height: 400px;
+    min-width: 300px;
+}
+
+.u-full-width {
+    width: 100%;
+    box-sizing: border-box; }
+.u-pull-right {
+    float: right; }
+.agregar-carrito {
+    margin:10px 0;
+        
+}
+
+ul {
+    list-style-type: none; /* Elimina la viñeta */
+    padding: 0; /* Opcional: Elimina el relleno que puede haber por defecto */
+}
+
+li {
+    list-style-type: none; /* También puedes aplicarlo directamente a los <li> */
+}
