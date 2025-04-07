@@ -1,0 +1,512 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+    background-color: #F8D0C0;
+    font-family: 'nav', sans-serif;
+    font-size: 23px;
+}
+
+/* El contenedor principal de la página (contenido de la página) */
+.main-content {
+  flex: 1; /* Esto hace que el contenido se expanda para llenar el espacio disponible */
+}
+
+footer {
+  background-color: #F8D0C0; /* Establece el color de fondo */
+  width: 100%;
+  padding: 20px 0; /* Añade algo de espacio alrededor del texto */
+  text-align: center; /* Centra el contenido del footer */
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .content {
+    height: 2000px; /* Solo para demostrar el efecto de scroll */
+  }
+
+  .bg-image {
+    background: #F8E1D4     ;
+    height: 100vh; /* Asegúrate de que el fondo cubra toda la altura de la ventana */
+    margin: 0; /* Elimina el margen predeterminado */
+}
+
+/* Estilos personalizados para el carrusel */
+#carouselExampleCaptions {
+    max-width: 70%; /* Ancho máximo del carrusel */
+    margin: auto; /* Centra el carrusel horizontalmente */
+  }
+  #carouselExampleCaptions .carousel-inner img {
+    height: 500px; /* Ajusta la altura de las imágenes */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+  }
+  .carousel-caption {
+    bottom: 20px; /* Ajusta la posición vertical de las leyendas */
+    background: rgba(0, 0, 0, 0.2); /* Fondo semi-transparente para mejor visibilidad del texto */
+    border-radius: 20px; /* Opcional: agrega bordes redondeados al fondo del texto */
+  }
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* Color de fondo para los controles */
+    border-radius: 50%; /* Hace que los controles sean redondos */
+  }
+
+.custom-card {
+    flex: 1; /* Permite que las tarjetas se expandan para ocupar el espacio disponible */
+    min-width: 200px; /* Ancho mínimo */
+    max-width: 300px; /* Ancho máximo */
+    height: 400px; /* Ajusta la altura */
+    margin: 10px; /* Espacio entre tarjetas */
+}
+
+/* Colores pastel para las tarjetas */
+.pastel-card {
+    background-color: #f5f5f5; /* Color pastel claro de fondo */
+    border: 1px solid #e0e0e0; /* Borde sutil */
+  }
+
+  /* Opcional: Estilo de imagen para ajustar tamaño */
+  .card-img-top {
+    object-fit: cover;
+    height: 180px; /* Ajusta la altura según sea necesario */
+  }
+  .card-body {
+    color: #333; /* Color del texto para mejor contraste */
+    padding: 20px; /* Espaciado interno en la tarjeta */
+  }
+
+.card {
+    background-color: transparent; /* Fondo transparente */
+    border: none; /* Opcional: elimina el borde de la tarjeta */
+    border-radius: 10px; /* Opcional: ajusta el radio del borde */
+}
+
+.service-icon svg {
+    width: 50px;
+    height: 50px;
+    fill: #007bff; /* Color de relleno para los íconos */
+}
+
+
+.service-text {
+    font-size: 1rem; /* Tamaño de fuente para el texto */
+    color: #6c757d; /* Color del texto */
+}
+
+main {
+  display: flex;
+  margin: 20px;
+}
+
+aside {
+  width: 25%;
+  padding: 20px;
+  background-color: transparent;
+  border-right: 1px solid #ffd1dc;
+}
+
+
+/* Estilo de lista CATEGORIA*/
+
+aside h2 {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+section h2 {
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: italic; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+/* fuente TITULOS */
+h2 {
+  font-family: 'titulos', sans-serif;
+}
+
+@font-face {
+  font-family: 'titulos'; /* TITULO */
+  src: url('../font/Pacifico.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+@font-face {
+  font-family: 'fuente'; /* Fuente utilizado en toda la web */
+  src: url('../font/Quicksand-VariableFont_wght.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+@font-face {
+  font-family: 'card-titulo'; /* Fuente usada en ** TITULOS CARDS ** */
+  src: url('../font/DancingScript-VariableFont_wght.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+@font-face {
+  font-family: 'nav'; /* Fuente NAVBAR */
+  src: url('../font/AmaticSC-Regular.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+@font-face {
+  font-family: 'Forms-titulo'; /* Fuente titulos en form */
+  src: url('../font/Yakuza\ Lobster.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
+  font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
+}
+
+.productos {
+  flex: 1;
+  padding: 20px;
+}
+
+.producto {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.card {  
+  transition: transform 0.2s;  
+}  
+
+/*.card:hover {  
+  transform: scale(1.05);  
+}  */
+
+.card-img-top {  
+  border-top-left-radius: 0.25rem;  
+  border-top-right-radius: 0.25rem;  
+}  
+
+.btn-primary {  
+  background-color: #007bff;  
+  border-color: #007bff;  
+}  
+
+.btn-primary:hover {  
+  background-color: #0056b3;  
+  border-color: #0056b3;  
+}  
+
+.card-style {
+  text-decoration: none;
+}
+.card-text {
+  font-family: 'fuente', sans-serif;
+}
+.card-text, select {
+  font-family: 'fuente', sans-serif;
+}
+
+.card-title {
+font-family: 'card-titulo', sans-serif; /* Fuente titulo card */
+font-weight: bold;
+}
+
+/* Títulos de footer */
+.t-fo {
+  font-family: 'titulos', sans-serif;
+  font-size: 20px;
+}
+
+/* Descripción de footer */
+.ds-fo {
+  font-family: 'nav', sans-serif;
+  font-weight: bold;
+}
+
+/* seccion FORM */
+.titulo-form {
+  font-family: 'Forms-titulo', sans-serif;
+  font-size: 50px;
+}
+
+.form-body {
+  background-color: #F8E1D4;
+}
+
+.tachado {
+  text-decoration: line-through;
+  text-decoration-color: crimson;
+  color: rgb(213, 209, 203);
+  filter: grayscale(1);
+}
+
+/* Efecto hover en los botones */
+.category-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.category-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Colores de los bordes y el hover */
+.btn-outline-pink {
+  border-color: #f8a5c2;
+}
+
+.btn-outline-pink:hover {
+  background-color: #f8a5c2;
+  color: white;
+}
+
+.btn-outline-lavender {
+  border-color: #cda4e3;
+}
+
+.btn-outline-lavender:hover {
+  background-color: #cda4e3;
+  color: white;
+}
+
+.btn-outline-peach {
+  background-color: #FFCC99       ;
+}
+
+.btn-outline-peach:hover {
+  background-color: #FF7F50     ;
+  color: white;
+}
+
+.btn-outline-mint {
+  border-color: #b6f4d4;
+}
+
+.btn-outline-mint:hover {
+  background-color: #b6f4d4;
+  color: white;
+}
+
+/* PRODUCTOS  */
+
+.titulo {
+  margin: 10px 0 30px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.title:before {
+  margin-right: 10px;
+}
+
+.titulo:after, .titulo:before {
+  flex-grow: 1;
+  height: 1px;
+  content: " ";
+  background-color: #ffd1dc;
+  position: relative;
+  top: .5em;
+}
+
+.titulo:after {
+  margin-left: 10px;
+}
+
+.breadcrumb {
+  width: auto; /* Ajusta el ancho de la lista */
+  margin: 20px auto; /* Centra el breadcrumb */
+  background: none;
+  text-align: center; /* Centra el texto dentro de los items */
+  padding: 8px 15px;
+  list-style: none;
+  border-radius: 4px;
+  color: #00E5FF; /* Color pastel para las letras */
+}
+
+.breadcrumb-item a {
+  color: #FFEA00; /* Color pastel para los enlaces */
+}
+
+.breadcrumb-item.active {
+  color: #FFEA00; /* Color pastel para el item activo */
+}
+
+/* Eliminar el separador predeterminado (slash) */
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">"; /* Usamos el símbolo ">" como separador */
+  color: #FFEA00; /* Color pastel para el separador */
+}
+
+nav {
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  width: 100%; /* Asegura que el nav ocupe todo el ancho disponible */
+  padding: 10px 0; /* Espaciado adicional si lo deseas */
+}
+
+
+/* Estilo para las tarjetas */
+.custom-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Efecto al pasar el ratón sobre la tarjeta */
+.custom-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste de imagen dentro de la tarjeta */
+.custom-card img {
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Cambio en la imagen al pasar el ratón */
+.custom-card:hover img {
+  transform: scale(1.1);
+}
+
+/* Estilos de la card-body */
+.custom-card .card-body {
+  background-color: #fff8f0;
+  padding: 20px;
+}
+
+.custom-card .card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #5d4037;
+}
+
+.custom-card .card-text {
+  font-size: 1.1rem;
+  color: #d32f2f;
+}
+
+.custom-card .btn-danger {
+  background-color: #e57373;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.custom-card .btn-danger:hover {
+  background-color: #f44336;
+}
+
+/* Ajuste de categorías dentro de productos */  
+aside ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+aside ul li a {
+  text-decoration: none;
+  color: #5d4037;
+  padding: 10px;
+  display: block;
+  background-color: #f8e1d4; /* Fondo claro para los enlaces */
+  border-radius: 5px; /* Bordes redondeados */
+  transition: background-color 0.3s ease;
+}
+
+aside ul li a:hover {
+  background-color: #f7a78b; /* Fondo al pasar el ratón */
+  padding-left: 15px; /* Un poco más de espacio a la izquierda en el hover */
+  color: white; /* Color blanco del texto en hover */
+}
+
+.list-group-item {
+  background-color: transparent;
+  border-color: #ffd1dc;
+}
+
+/* Añadir una sombra ligera para los enlaces */
+aside ul li a {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Estilo para el selector de ordenar productos */
+#sort {
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Botón de "Ver más" */
+.btn-primary {
+  background-color: #f39c12;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  background-color: #e67e22;
+}
+
+/* Responsive para tarjetas */
+@media (max-width: 768px) {
+  .custom-card {
+      width: 100%;
+  }
+}
+
+#hero {
+  background-image: url(../img/producto-fondo.jpg);
+  height: 250px;
+  background-size: cover;
+  position: relative;
+}
+
+#hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Oscurece la imagen de fondo */
+}
+
+#hero h2 {
+  color: #ffcccb;
+  position: relative;
+  z-index: 1;
+}
+
+.titulo-resaltado {
+  background-color: rgba(0, 0, 0, 0.2); /* Fondo oscuro semi-transparente */
+  color: white; /* Texto blanco */
+  padding: 10px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  display: inline-block; /* Para ajustar el tamaño al contenido */
+}
+
+/* COdigo para extender el blanco de la tabla */
+/* Extender la tarjeta hasta el footer */
+.extend-card-body {
+  min-height: calc(100vh - 200px); /* Ajustar el valor según sea necesario */
+  background-color: white;
+}
+
+/* Media query para adaptar el botón en pantallas pequeñas */
+@media (max-width: 768px) {
+  #toggle-form-btn {
+      bottom: 60px; /* Ajustar este valor según sea necesario para pantallas pequeñas */
+      right: 10px;
+  }
+}

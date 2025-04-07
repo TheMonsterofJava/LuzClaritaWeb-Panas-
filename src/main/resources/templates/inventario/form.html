@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${titulo}"></title>
+</head>
+
+<body>
+
+    <div layout:fragment="contenido" class="container-fluid py-4 ">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
+            <div class="card-header">
+                <h4 class="text-primary" th:text="${titulo}"></h4>
+            </div>
+            <form th:action="@{/inventario/guardar}" method="post" th:object="${inventario}">
+            <div class="card-body">
+                <div class="form mb-3">
+                    <label for="ingre" class="form-label">
+                        Ingrediente
+                    </label>
+                    <input id="ingre" type="text" class="form-control" placeholder="Ingresa el ingrediente"
+                    th:field="*{nombreIngrediente}"
+                    th:errorClass="'form-control alert-danger'"/>
+                    <small class="form-label text-danger" th:errors="*{nombreIngrediente}"></small>
+                </div> 
+
+                <div class="form mb-3">
+                    <label for="unidad" class="form-label">Unidad</label>
+                    <input type="text" class="form-control" id="unidad" placeholder="Ingresar la unidad (kg, gr, lts, ml, doc...)"
+                    th:field="*{unidadMedida}"/>
+                </div>
+
+                <div class="form mb-3">
+                    <label for="pre" class="form-label">Precio</label>
+                    <input type="number" class="form-control" id="pre" placeholder="Ingresa el precio"
+                    th:field="*{precio}"
+                    th:errorClass="'form-control alert-danger'"/>
+                    <small class="form-label text-danger" th:errors="*{precio}"></small>
+                </div>
+
+                <div class="form mb-3">
+                    <label for="cant" class="form-label">Cantidad</label>
+                    <input type="number" class="form-control" id="cant" placeholder="Ingresa la cantidad"
+                    th:field="*{cantidad}"
+                    th:errorClass="'form-control alert-danger'"/>
+                    <small class="form-label text-danger" th:errors="*{cantidad}"></small>
+                </div>
+
+                <div class="form mb-3">
+                    <label for="fechaIngreso" class="form-label">Fecha de ingreso</label>
+                    <input type="date" class="form-control" id="fechaIngreso"
+                    th:field="*{fechaIngreso}"
+                    th:errorClass="'form-control alert-danger'"/>
+                    <small class="form-label text-danger" th:errors="*{fechaIngreso}"></small>
+                </div>
+
+                <div class="form mb-3">
+                    <label for="fechaVencimiento" class="form-label">Fecha de vencimiento</label>
+                    <input type="date" class="form-control" id="fechaVencimiento"
+                    th:field="*{fechaVencimiento}"
+                    th:errorClass="'form-control alert-danger'"/>
+                    <small class="form-label text-danger" th:errors="*{fechaVencimiento}"></small>
+                </div>
+
+                <div class="form mb-3">
+                    <label for="pro" class="form-label">
+                        ID Proveedor
+                    </label>
+                    <select name="pro" id="pro"  class="form-select" th:field="*{proveedor}">
+                        <option th:each="p : ${proveedor}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                    </select>    
+                </div>
+
+                <div class="form mb-3">
+                    <label for="usu" class="form-label">
+                        ID Usuario
+                    </label>
+                    <select name="usu" id="usu" class="form-select" th:field="*{usuario}">
+                        <option th:each="u : ${usuario}" th:value="${u.id}" th:text="${u.nomb_usu}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary float-end" >
+                        Guardar
+                    </button>
+                    <a th:href="@{/inventario/listado}" class="btn btn-outline-secondary float-end">
+                        Cancelar
+                    </a>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>        
+
+    <!-- Mis js -->
+    <script th:fragment="js"></script>
+</body>
+</html> 

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luz Clarita</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/carrito.css}">
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+
+    <!-- Datatables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+
+    <!-- Box Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- SDK Mercado Pago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Contenedor de acciones del navbar */
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+            position: relative;
+            z-index: 1001;
+            /* Mayor que el carrito */
+        }
+
+        /* Estilos del botón del carrito */
+        .btn-carrito {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .btn-carrito:hover {
+            background-color: #ff4a3d;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #carrito-cantidad {
+            background-color: red;
+            font-size: 0.7rem;
+            padding: 3px 6px;
+        }
+
+        /* Estilos del dropdown de usuario */
+        .user-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown .nav-link:hover {
+            background-color: #F8D0C0;
+        }
+
+        .dropdown-menu {
+            min-width: 220px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 5px 0;
+            z-index: 1002;
+            /* Mayor que navbar-actions */
+        }
+
+        /* Estilos del carrito */
+        .carrito-contenedor {
+            position: fixed;
+            right: 20px;
+            top: 70px;
+            /* Ajustar según altura del navbar */
+            background-color: white;
+            padding: 20px;
+            width: 90%;
+            max-width: 530px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            /* Menor que navbar-actions y dropdown */
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .navbar-actions {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .user-dropdown {
+                margin-top: 10px;
+            }
+
+            .carrito-contenedor {
+                top: 120px;
+                /* Más espacio en móvil */
+                right: 10px;
+                left: 10px;
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/home">
+                <img src="/img/logo.png" alt="Logo" width="45" height="45" class="d-inline-block align-text-top">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainContent"
+                aria-controls="navbarMainContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMainContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/home">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/productos/listado">Productos</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/inventario/listado">Inventario</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/consultas/consulta">Consulta</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/caja/movimientos">Caja</a>
+                    </li> -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Recetas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/recetas/clasicas">Clásicas</a></li>
+                            <li><a class="dropdown-item" href="/recetas/especiales">Especiales</a></li>
+                            <li><a class="dropdown-item" href="/recetas/consejos">Consejos de cocina</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_PROGRAMADOR')">
+                        <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
+                    </li>
+                </ul>
+
+                <!-- Contenedor para carrito y usuario -->
+                <div class="navbar-actions">
+                    <!-- Botón del carrito -->
+                    <div class="position-relative">
+                        <button id="mostrar-carrito" class="btn btn-carrito">
+                            <i class="bi bi-cart4"></i>
+                            <span class="d-none d-md-inline">Carrito</span>
+                            <span id="carrito-cantidad"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+                                0
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Dropdown de usuario -->
+                    <div class="dropdown user-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <span th:if="${#authentication.principal != 'anonymousUser'}">
+                                <i class="bi bi-person-circle"></i>
+                                <span class="d-none d-md-inline" th:text="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.oidc.user.OidcUser) ? 
+                                              #authentication.principal.attributes['name'] : 
+                                              (#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User) ? 
+                                                  #authentication.principal.attributes['name'] : 
+                                                  #authentication.principal.username)}">
+                                </span>
+                            </span>
+                            <span th:if="${#authentication.principal == 'anonymousUser'}">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span class="d-none d-md-inline">Acceder</span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li th:if="${#authentication.principal != 'anonymousUser'}">
+                                <a class="dropdown-item" href="/perfil">
+                                    <i class="bi bi-person"></i> Mi Perfil
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item" type="submit">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                            <li th:if="${#authentication.principal == 'anonymousUser'}">
+                                <a class="dropdown-item" href="/inicioSesion/login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                                </a>
+                                <a class="dropdown-item" href="/inicioSesion/registro">
+                                    <i class="bi bi-person-plus"></i> Registrarse
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/oauth2/authorization/google">
+                                    <i class="bi bi-google"></i> Continuar con Google
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal del Carrito -->
+    <div id="carrito" class="carrito-contenedor" style="display: none;">
+        <h4><i class="bi bi-cart4"></i> Carrito</h4>
+        <table id="lista-carrito">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p id="totalCarrito">Total: $0.00</p>
+        <div class="carrito-botones">
+            <a href="#" id="vaciar-carrito" class="btn btn-danger">Vaciar Carrito</a>
+            <form id="form-pagar" th:action="@{/createAndRedirect}" method="get" style="display: none;">
+                <input type="hidden" name="productos" id="productos">
+            </form>
+            <a href="#" id="pagar" class="btn btn-success" onclick="submitForm()">Pagar</a>
+        </div>
+    </div>
+
+    <!-- Mensajes de alerta -->
+    <div th:class="'alert alert-dismissible fade show ' + ${alertClass}" role="alert" th:if="${info != null}">
+        <i class="bx bx-info-circle bx-tada"></i>
+        &nbsp;
+        <span th:text="${info}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div layout:fragment="contenido" class="container-fluid py-4">
+        <!-- El contenido de cada página se insertará aquí -->
+    </div>
+
+    <!-- Footer -->
+    <footer class=" py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold">Luz Clarita</h5>
+                    <p>¡Hace más de 10 años llenando de dulzura cada momento!</p>
+                </div>
+                <!-- <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="fw-bold">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/home" class="text-decoration-none">Inicio</a></li>
+                        <li><a href="/productos/listado" class="text-decoration-none">Productos</a></li>
+                        <li><a href="/consultas/consulta" class="text-decoration-none">Consulta</a></li>
+                    </ul>
+                </div> -->
+                <div class="col-md-4">
+                    <h5 class="fw-bold">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-whatsapp"></i> 3624883171</li>
+                        <li><i class="bi bi-geo-alt-fill"></i> Calle 123, Resistencia</li>
+                    </ul>
+                    <h5 class="fw-bold mt-3">Nuestras redes</h5>
+                    <a href="https://www.facebook.com/profile.php?id=100046601442632" class="text-dark me-2"><i
+                            class="bi bi-facebook fs-4"></i></a>
+                    <a href="https://www.instagram.com/luzclarita.singluten/" class="text-dark"><i
+                            class="bi bi-instagram fs-4"></i></a>
+                </div>
+            </div>
+            <div class="text-center pt-3">
+                <p class="mb-0">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"
+        integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+
+    <!-- Script del carrito -->
+    <script th:src="@{/js/carrito.js}"></script>
+
+    <!-- Scripts generales -->
+    <script>
+        // Cerrar alertas automáticamente
+        setInterval("cerrarAlertas()", 3000);
+
+        function cerrarAlertas() {
+            $(".alert").delay(500).slideUp(500, function () {
+                $(this).hide();
+            });
+        };
+
+        // Procesar pago del carrito
+        function submitForm() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const itemIds = [];
+            const cantidades = [];
+
+            carrito.forEach(producto => {
+                itemIds.push(producto.id);
+                cantidades.push(producto.cantidad);
+            });
+
+            const form = document.getElementById('form-pagar');
+            form.innerHTML = '';
+
+            itemIds.forEach((id, index) => {
+                const inputId = document.createElement('input');
+                inputId.type = 'hidden';
+                inputId.name = 'item_ids[]';
+                inputId.value = id;
+                form.appendChild(inputId);
+
+                const inputCantidad = document.createElement('input');
+                inputCantidad.type = 'hidden';
+                inputCantidad.name = 'cantidad_[]';
+                inputCantidad.value = cantidades[index];
+                form.appendChild(inputCantidad);
+            });
+
+            form.submit();
+        }
+
+        // Actualizar cantidad en el badge del carrito
+        function actualizarCantidadCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const cantidadTotal = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+            document.getElementById('carrito-cantidad').textContent = cantidadTotal;
+        }
+
+        // Inicializar carrito al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            actualizarCantidadCarrito();
+
+            // Mostrar/ocultar carrito
+            $('#mostrar-carrito').click(function () {
+                $('#carrito').toggle();
+            });
+        });
+    </script>
+
+    <!-- <script th:replace="::js"></script> -->
+    <script th:replace="~{::js}"></script>
+</body>
+
+</html>

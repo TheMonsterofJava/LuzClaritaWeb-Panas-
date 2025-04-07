@@ -1,0 +1,94 @@
+/* Estilos generales del cuerpo */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #F8E1D4;
+    font-family: 'fuente', sans-serif;
+}
+
+/* Estilos para el formulario */
+#add-item-form {
+    display: none; /* Ocultar por defecto */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Fondo difuminado */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+
+/* Contenedor principal (para empujar el footer hacia abajo) */
+.container-fluid.py-4 {
+    flex: 1; /* Ocupa el espacio restante */
+    padding-bottom: 80px; /* Espacio para el botón y footer */
+}
+
+/* Botón flotante */
+#toggle-form-btn {
+    position: fixed;
+    bottom: 80px; /* Posición sobre el footer */
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Estilos para la tabla */
+#bakery-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#bakery-table th, #bakery-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#bakery-table th {
+    background-color: #F8D0C0; /* Color pastel para el encabezado */
+    font-family: 'nav', sans-serif; /* Fuente personalizada */
+}
+
+/* Estilos para los botones de acción */
+.btn-outline-warning, .btn-outline-danger {
+    margin: 2px;
+}
+
+/* Títulos */
+.titulo-form {
+    font-family: 'Forms-titulo', sans-serif; /* Fuente personalizada */
+    font-size: 2rem;
+    color: #5d4037; /* Color pastel oscuro */
+}
+
+/* Footer */
+footer {
+    background-color: #F8D0C0;
+    padding: 20px 0;
+    margin-top: auto; /* Fuerza al footer a quedarse abajo */
+    position: relative;
+    z-index: 1; /* Asegura que el footer esté detrás del botón */
+}

@@ -1,0 +1,9 @@
+Agregue un dashboard que consegui en internet para poder gestionar todos las configuraciones del administrador.
+Ahora estoy trabajando en la modificacion de los datos del usuario.
+Me quedan algunas cosas por hacer y sacar para que el dashboard funcione de la manera correcta.
+El mismo muestra todos los usuarios de la base de datos, esta enlazado con Thymeleaft.
+En en el inicio de sesion, unifique dos campos entre el Usuario y el Cliente, ya que cada vez que se crea un nuevo cliente en el login se Crea un nuevo usuario cliente.
+Abria que ver la forma de poder crear usuarios con privilegios mas altos, por el momento eso se hace por el archivo import sql que tiene el programa. 
+Faltan cosas por agregar y unificar.
+Ahora estoy con el inicio de sesion, manejando las diferentes alertas en la creacion e inicio de sesion de los usuarios. 
+A grandes razgos es eso. 
