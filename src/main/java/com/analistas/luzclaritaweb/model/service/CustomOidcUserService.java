@@ -40,8 +40,8 @@ public class CustomOidcUserService extends OidcUserService {
             nuevoUsuario.setActivo(true);
 
             // Asignar el permiso de "Cliente"
-            Permiso permisoCliente = permisoRepository.findByNombre("4 - CLIENTE")
-                    .orElseThrow(() -> new RuntimeException("Permiso '4 - CLIENTE' no encontrado"));
+            Permiso permisoCliente = permisoRepository.findByNombre("CLIENTE")
+                    .orElseThrow(() -> new RuntimeException("Permiso 'CLIENTE' no encontrado"));
             nuevoUsuario.setPermiso(permisoCliente);
 
             return usuariosService.guardarUsuario(nuevoUsuario);

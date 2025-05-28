@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.analistas.luzclaritaweb.model.domain.Categoria;
 import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.service.IProductoService;
+
+
     
 @RequestMapping(path = {"/", "/home"}, method = RequestMethod.GET)
 @Controller
@@ -33,9 +35,22 @@ public class HomeController {
         model.addAttribute("urlcontacto", "/contacto"); 
         return "index"; 
     }
+
+    @GetMapping("/")
+    public String mostrarProductosDespuesDeSalir(Model model) {  
+        // Obtiene la lista de productos desde la base de datos
+        Iterable<Producto> productos = productoService.buscarTodo(); 
+        
+        // Agrega los productos al modelo
+        model.addAttribute("productos", productos);
+        
+        model.addAttribute("urlcontacto", "/contacto"); 
+        return "index"; 
+    }
     
     @ModelAttribute("categorias")
     public List<Categoria> listarCategorias() {
         return productoService.getCategorias();
     }
+    
 }

@@ -32,7 +32,7 @@ import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/admin")
-@Secured({"ROLE_ADMIN", "ROLE_PROGRAMADOR"})
+@Secured({"ROLE_ADMIN"}) // Aseguramos que solo los usuarios con rol de administrador puedan acceder a estas rutas
 public class DashboardController {
 
     @Autowired
@@ -119,12 +119,12 @@ public class DashboardController {
             Usuario usuarioGuardado = usuarioService.guardarUsuario(usuario);
 
             // 5. Si es cliente, crear registro correspondiente
-            if (crearCliente && "4 - CLIENTE".equals(usuario.getPermiso().getNombre())) {
+            if (crearCliente && "ROLE_CLIENTE".equals(usuario.getPermiso().getNombre())) {
                 Cliente cliente = new Cliente();
                 cliente.setNomb_ape(usuario.getNomb_usu());
                 cliente.setNomb_usu(usuario.getNomb_usu());
                 cliente.setCorreo(usuario.getEmail());
-                cliente.setContraseña(contraseñaEncriptada); // Misma contraseña encriptada
+                cliente.setContrasena(contraseñaEncriptada); // Misma contraseña encriptada
                 cliente.setUsuario(usuarioGuardado);
 
                 // Establecer relación bidireccional
@@ -236,7 +236,7 @@ public class DashboardController {
             Usuario usuarioActual = usuarioActualOpt.get();
             String permisoActual = usuarioActual.getPermiso().getNombre();
             
-            if (!permisoActual.equals("2 - ADMIN") && !permisoActual.equals("1 - PROGRAMADOR")) {
+            if (!permisoActual.equals("ROLE_ADMIN")) { //&& !permisoActual.equals("ROlE_PROGRAMADOR")) por si queremos poner otro rol
                 response.put("success", false);
                 response.put("message", "No tienes permisos para eliminar usuarios.");
                 return response;

@@ -47,10 +47,10 @@ public class Cliente {
     @Size(max = 120, message = "Su direccion no debe pasar los 120 caracteres...")
     private String direccion;
 
-    @Column(name = "contraseña")
+    @Column(name = "contrasena")
     @NotEmpty(message = "Su Contraseña es requerida...")
     @Size(max = 71, min = 5, message = "Su contraseña debe contener entre 5 y 71 caracteres, debe contener al menos un caracter especial, un caracter numerico y un caracter mayuscula...")
-    private String contraseña;
+    private String contrasena;
 
     // @OneToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "usuario_id", referencedColumnName = "id")

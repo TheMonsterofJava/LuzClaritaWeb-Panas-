@@ -23,20 +23,34 @@ public class LoginController {
 
     // Mostrar el formulario de inicio de sesión
     @GetMapping("/login")
-    public String mostrarFormularioLogin(Model model, HttpServletRequest request) {
-        String errorMessage = (String) request.getSession().getAttribute("error");
+    public String mostrarFormularioLogin(Model model, HttpServletRequest request,
+            @RequestParam(value = "login", required = false) String login,
+            @RequestParam(value = "registro", required = false) String registro) {
+        String errorMessage = (String) request.getSession().getAttribute("error2"); // No lo toma de aca al erro
 
         // Si existe un error previo en la sesión, se pasa al modelo y se limpia
         if (errorMessage != null) {
-            model.addAttribute("error", errorMessage);
-            request.getSession().removeAttribute("error");
+            model.addAttribute("error2", errorMessage);
+            request.getSession().removeAttribute("error2"); // No toma de aca
+        }
+
+        // 
+        String successMessage = (String) request.getSession().getAttribute("success");
+        if (successMessage != null) {
+            model.addAttribute("success", successMessage);
+            request.getSession().removeAttribute("success");
         }
 
         // Inicializar el atributo "emailOrUser" vacío
         model.addAttribute("emailOrUser", "");
 
-        // Mostrar el formulario tradicional solo si no se está autenticando con OAuth2
-        model.addAttribute("showTraditionalLogin", true);
+        // Determinar qué formulario mostrar con base en los parámetros "registro" o
+        // "login"
+        boolean mostrarRegistro = (registro != null);
+        boolean mostrarLogin = (login != null);
+
+        model.addAttribute("mostrarRegistro", mostrarRegistro);
+        model.addAttribute("showTraditionalLogin", mostrarLogin || !mostrarRegistro);
 
         return "inicioSesion/login";
     }
@@ -54,7 +68,7 @@ public class LoginController {
         // Validación básica de los parámetros
         if (emailOrUser == null || emailOrUser.isEmpty() || password == null || password.isEmpty()) {
             System.out.println("Campos vacíos. Redirigiendo a /inicioSesion/login con error...");
-            redirectAttributes.addFlashAttribute("error", "Todos los campos son obligatorios");
+            redirectAttributes.addFlashAttribute("errorcamposvacios", "Todos los campos son obligatorios");
             return "redirect:/inicioSesion/login";
         }
 
@@ -64,42 +78,23 @@ public class LoginController {
         if (usuario != null) {
             // Inicio de sesión exitoso: guardar en sesión
             request.getSession().setAttribute("usuarioActual", usuario);
-            redirectAttributes.addFlashAttribute("success", "Inicio de sesión exitoso");
-            return "redirect:/inicioSesion/login?success=Inicio+de+sesión+exitoso";
+            redirectAttributes.addFlashAttribute("success", "Inicio de sesion exitoso");
+            return "redirect:/home"; // Redirige al home directamente
         } else {
             System.out.println("Inicio de sesión fallido. Redirigiendo a /inicioSesion/login con error...");
-            redirectAttributes.addFlashAttribute("error", "Usuario o contraseña incorrectos");
+            redirectAttributes.addFlashAttribute("errorusuarioycontraseña", "Usuario o contraseña incorrectos");
             redirectAttributes.addFlashAttribute("emailOrUser", emailOrUser);
             return "redirect:/inicioSesion/login";
         }
     }
+
+
+    // //
+    // String successMessage = (String)
+    // request.getSession().getAttribute("success");
+    // if (successMessage != null) {
+    // model.addAttribute("success", successMessage);
+    // request.getSession().removeAttribute("success");
+    // }
+
 }
-
-// @PostMapping("/login")
-// //implementar el UserOrEmail
-// public String login(@RequestParam("email") String email,
-// @RequestParam("nomb_usu") String nomb_usu,
-// @RequestParam("clave") String clave,
-// HttpServletRequest request,
-// Model model, Locale locale) {
-
-// Usuario usuario = usuarioService.findByUsernameEmailandPassword(email,
-// nomb_usu, clave);
-
-// if (usuario != null) {
-// request.getSession().setAttribute("usuarioActual", usuario);
-// return "redirect:/home";
-// } else {
-// String errorMessage;
-// if (locale != null) {
-// errorMessage = messageSource.getMessage("error.auth", null, locale);
-// } else {
-// errorMessage = messageSource.getMessage("error.auth", null,
-// Locale.getDefault()); // Usa el Locale por
-// // defecto
-// }
-// request.getSession().setAttribute("error", errorMessage);
-// return "redirect:/inicioSesion/login";
-// }
-
-// }

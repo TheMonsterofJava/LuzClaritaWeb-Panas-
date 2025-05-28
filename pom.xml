@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.4.5</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.analistas</groupId>
@@ -87,7 +87,6 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect -->
@@ -100,7 +99,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-
             <scope>provided</scope>
         </dependency>
 
@@ -113,6 +111,13 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/me.paulschwarz/spring-dotenv -->
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>3.0.0</version>
         </dependency>
 
         <!--Añadimos
@@ -129,10 +134,15 @@
             <version>1.5.2</version>
         </dependency>
 
-        
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -145,3 +155,123 @@
 
 
 </project>
+
+<!-- 
+//Estructura del proyecto
+
+LuzClaritaWeb-Panas-/
+├── .mvn/
+│   └── wrapper/
+│       ├── maven-wrapper.jar
+│       └── maven-wrapper.properties
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/analistas/luzclaritaweb/
+│   │   │       ├── LuzClaritaWebApplication.java
+│   │   │       ├── model/
+│   │   │       │   ├── domain/
+│   │   │       │   │   ├── Caja.java
+│   │   │       │   │   ├── Categoria.java
+│   │   │       │   │   ├── Cliente.java
+│   │   │       │   │   ├── Compra.java
+│   │   │       │   │   ├── Consulta.java
+│   │   │       │   │   ├── Curso.java
+│   │   │       │   │   ├── DetalleCompra.java
+│   │   │       │   │   ├── Detalle_factura.java
+│   │   │       │   │   ├── Factura.java
+│   │   │       │   │   ├── Inscripcion.java
+│   │   │       │   │   ├── Inventario.java
+│   │   │       │   │   ├── Movimiento_Caja.java
+│   │   │       │   │   ├── Permiso.java
+│   │   │       │   │   ├── Producto.java
+│   │   │       │   │   ├── Proveedor.java
+│   │   │       │   │   ├── Receta.java
+│   │   │       │   │   └── Usuario.java
+│   │   │       │   ├── repository/
+│   │   │       │   │   ├── ICategoriaRepository.java
+│   │   │       │   │   ├── IClienteRepository.java
+│   │   │       │   │   ├── IConsultaRepository.java
+│   │   │       │   │   ├── IPermisoRepository.java
+│   │   │       │   │   ├── IProductoRepository.java
+│   │   │       │   │   └── IUsuarioRepository.java
+│   │   │       │   └── service/
+│   │   │       │       ├── ConsultaServiceImpl.java
+│   │   │       │       ├── IClienteService.java
+│   │   │       │       ├── IConsultaService.java
+│   │   │       │       ├── IProductoService.java
+│   │   │       │       ├── IUsuariosService.java
+│   │   │       │       └── ProductoServiceImpl.java
+│   │   │       └── web/
+│   │   │           ├── config/
+│   │   │           │   └── WebSecurityConfig.java    # Reglas OAuth2
+│   │   │           └── controller/
+│   │   │               ├── ConsultasController.java
+│   │   │               ├── HomeController.java
+│   │   │               ├── LoginController.java
+│   │   │               ├── ProductoController.java
+│   │   │               ├── RecetaController.java
+│   │   │               ├── RegistroClienteController.java
+│   │   │               └── RegistroUsuarioController.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── import.sql
+│   │       ├── static/
+│   │       │   ├── css/
+│   │       │   │   ├── bootstrap.min.css
+│   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap-icons@1.11.3_font_bootstrap-icons.min.css
+│   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap@5.3.3_dist_css_bootstrap.min.css
+│   │       │   │   ├── login.css
+│   │       │   │   └── style.css
+│   │       │   ├── font/
+│   │       │   │   ├── AmaticSC-Regular.ttf
+│   │       │   │   ├── DancingScript-VariableFont_wght.ttf
+│   │       │   │   ├── Pacifico.ttf
+│   │       │   │   ├── Quicksand-VariableFont_wght.ttf
+│   │       │   │   └── Yakuza Lobster.ttf
+│   │       │   ├── img/
+│   │       │   │   ├── 123.png
+│   │       │   │   ├── car.jpg
+│   │       │   │   ├── car2.jpg
+│   │       │   │   ├── carr1.jpg
+│   │       │   │   ├── logo.png
+│   │       │   │   ├── torta.jpeg
+│   │       │   │   ├── torta2.jpeg
+│   │       │   │   └── torta3.jpeg
+│   │       │   └── js/
+│   │       │       ├── login.js
+│   │       │       └── productos-list.js   # DataTables Init
+│   │       └── templates/
+│   │           ├── consejos/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── consultas/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── inicioSesion/
+│   │           │   └── login.html
+│   │           ├── layout/
+│   │           │   ├── footer.html
+│   │           │   ├── header.html
+│   │           │   └── menu.html
+│   │           ├── productos/
+│   │           │   ├── detail.html
+│   │           │   └── list.html
+│   │           ├── receta-clasica/
+│   │           │   └── view.html
+│   │           ├── receta-especial/
+│   │           │   └── view.html
+│   │           └── index.html
+│   └── test/
+│       └── java/
+│           └── com/analistas/luzclaritaweb/
+│               └── (tests…)
+├── .gitignore
+├── mvnw
+├── mvnw.cmd
+├── nb-configuration.xml
+├── nbactions.xml
+└── pom.xml
+
+
+-->

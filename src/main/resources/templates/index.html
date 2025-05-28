@@ -253,23 +253,7 @@
   <!-- SweetAlert2 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Verificar si hay un mensaje de éxito en el atributo flash
-      const successMessage = /*[[${success}]]*/ null;
-
-      if (successMessage) {
-        Swal.fire({
-          icon: 'success',
-          title: successMessage,
-          text: 'Bienvenido/a a Luz Clarita'
-        }).then(() => {
-          // Limpiar la URL después de mostrar el mensaje
-          history.replaceState(null, null, window.location.pathname);
-        });
-      }
-    });
-  </script>
+ 
 </body>
 
 </html>

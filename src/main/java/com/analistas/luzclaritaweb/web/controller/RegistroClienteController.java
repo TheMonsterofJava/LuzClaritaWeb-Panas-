@@ -45,8 +45,8 @@ public class RegistroClienteController {
             Model model) {
 
         // Validación de contraseñas
-        if (!cliente.getContraseña().equals(confirmPassword)) {
-            result.rejectValue("contraseña", "error.cliente", "Las contraseñas no coinciden");
+        if (!cliente.getContrasena().equals(confirmPassword)) {
+            result.rejectValue("contrasena", "error.cliente", "Las contraseñas no coinciden");
             model.addAttribute("error", "Las contraseñas no coinciden");
             return "inicioSesion/login";
         }
@@ -67,27 +67,30 @@ public class RegistroClienteController {
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setEmail(cliente.getCorreo());
             nuevoUsuario.setNomb_usu(cliente.getNomb_usu());
-            nuevoUsuario.setClave(passwordEncoder.encode(cliente.getContraseña()));
+            nuevoUsuario.setClave(passwordEncoder.encode(cliente.getContrasena()));
             nuevoUsuario.setFecha_creacion(new Date());
             nuevoUsuario.setActivo(true);
-            nuevoUsuario.setPermiso(usuariosService.obtenerPermisoPorNombre("4 - CLIENTE"));
+            nuevoUsuario.setPermiso(usuariosService.obtenerPermisoPorNombre("ROLE_CLIENTE"));
 
             // 2. Configurar Cliente y relación bidireccional
-            cliente.setContraseña(passwordEncoder.encode(cliente.getContraseña()));
+            cliente.setContrasena(passwordEncoder.encode(cliente.getContrasena()));
             nuevoUsuario.setCliente(cliente); // Método que maneja la relación bidireccional
             cliente.setUsuario(nuevoUsuario);
 
             // 3. Guardar SOLO el usuario (la cascada persiste el cliente)
             usuariosService.guardarUsuario(nuevoUsuario);
 
-            redirectAttributes.addFlashAttribute("success", "¡Registro exitoso! Por favor inicia sesión.");
-            return "redirect:/inicioSesion/login";
+            // Mostrar un mensaje de exito cuando se registre un nuevo usuario
+            redirectAttributes.addFlashAttribute("registroexitoso", "Registro exitoso. Por favor, inicie sesión.");
+            return "redirect:/inicioSesion/login?login&registroexitoso=true";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al registrar: " + e.getMessage());
             return "redirect:/registro";
         }
+
     }
+
 }
 
 // @Controller

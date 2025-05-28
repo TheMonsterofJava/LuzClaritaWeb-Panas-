@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es-ar" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Inicio Sesión Luz Clarita</title>
+
 </head>
 
 <body th:classappend="${error} ? 'show-error' : ''">
@@ -35,7 +37,8 @@
     </header>
 
     <section class="home" th:classappend="${error} ? 'show' : ''">
-        <div class="form_container">
+        <div class="form_container" th:classappend="${mostrarRegistro} ? 'active' : ''">
+            <!-- Contenedor del formulario (mostrar el registro) -->
             <i class="uil uil-times form_close"></i>
 
             <!-- Mensajes de error y éxito ocultos -->
@@ -46,43 +49,44 @@
                 <span th:text="${success}"></span>
             </div>
 
-            <!-- Formulario de Login -->
-            <div class="form login_form" th:if="${showTraditionalLogin}">
+            <!-- Formulario de Inicio de Sesión -->
+            <div class="form login_form">
                 <form th:action="@{/inicioSesion/login}" method="POST" id="loginForm">
                     <h2>Inicio De Sesión</h2>
 
                     <div class="input_box">
                         <input type="text" name="emailOrUser" placeholder="Ingresa tu Usuario o Email:"
-                            th:value="${emailOrUser}" required>
+                            th:value="${emailOrUser}">
+
                         <i class="uil uil-user text"></i>
                     </div>
                     <div class="input_box">
-                        <input type="password" name="password" placeholder="Ingresa tu Contraseña" required>
+                        <input type="password" name="password" placeholder="Ingresa tu Contraseña">
                         <i class="uil uil-lock password"></i>
                         <i class="uil uil-eye-slash pw_hide"></i>
                     </div>
+                    <button class="button">Iniciar Sesión</button>
                     <div class="option_field">
-                        <span class="checkbox">
-                            <input type="checkbox" id="check">
+                        <span class="checkbox"> <!-- Checkbox para recordar contraseña -->
+                            <input type="checkbox" id="check" name="remember-me">
                             <label for="check">Recordarme</label>
                         </span>
                         <a href="#" class="forgot_pw">¿Olvidaste tu Contraseña?</a>
                     </div>
-                    <button class="button">Iniciar Sesión</button>
-                    
-                    <!-- Botones de OAuth2 -->
-                    <div class="social-login">
-                        <button class="button google-btn" onclick="window.location.href='/oauth2/authorization/google'">
-                            <i class="uil uil-google"></i> Iniciar con Google
-                        </button>
-                        <button class="button facebook-btn"
-                            onclick="window.location.href='/oauth2/authorization/facebook'">
-                            <i class="uil uil-facebook"></i> Iniciar con Facebook
-                        </button>
+                    <div class="login_signup">¿No tienes una cuenta? <a href="#" id="signup">¡Registrate!</a></div>
+                    <div class="separator-line">
+                        <span>O Inicia Sesion Con</span>
                     </div>
-                    
-                    <div class="login_signup">¿No tienes una cuenta? <a href="#" id="signup">Registrarse</a></div>
                 </form>
+                <!-- Botones de OAuth2 -->
+                <div class="social-login">
+                    <button class="button google-btn" onclick="window.location.href='/oauth2/authorization/google'">
+                        <i class="uil uil-google"></i> Iniciar con Google
+                    </button>
+                    <button class="button facebook-btn" onclick="window.location.href='/oauth2/authorization/facebook'">
+                        <i class="uil uil-facebook"></i> Iniciar con Facebook
+                    </button>
+                </div>
             </div>
 
             <!-- Formulario de Registro -->
@@ -91,36 +95,46 @@
                     <h2>Registro de Clientes</h2>
                     <div class="input_box">
                         <input type="text" name="nomb_ape" placeholder="Ingresa tu Nombre y Apellido" minlength="5"
-                            maxlength="60" required>
+                            maxlength="60" required data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Pon tu Nombre y Apellido completos:</em><br>- Minimo de 5 y Máximo 60 caracteres<br>">
                         <i class="uil uil-user-plus text"></i>
                     </div>
                     <div class="input_box">
                         <input type="text" name="nomb_usu" placeholder="Ingresa tu Nombre de Usuario" minlength="5"
-                            maxlength="60" required>
+                            maxlength="60" required data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Puedes usar el nombre de usuario que quieras</em><br>- Mínimo 5 caracteres<br>- Máximo 60 caracteres<br>">
                         <i class="uil uil-user-plus text"></i>
                     </div>
                     <div class="input_box">
                         <input type="text" name="celular" placeholder="Ingresa tu número de teléfono" maxlength="20"
-                            required>
+                            required data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Completa el numero sin 0 ni 15:</em><br>- Ingresa tu caracteristica: (3624/3625)<br>- Máximo 20 caracteres<br>">
                         <i class="uil uil-phone-alt text"></i>
                     </div>
                     <div class="input_box">
-                        <input type="email" name="correo" placeholder="Ingresa tu Email" maxlength="120" required>
+                        <input type="email" name="correo" placeholder="Ingresa tu Email" maxlength="120" required 
+                         data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Ingresa un correo que utilizeces seguido:</em><br>- Gmail<br>- O hotmail<br>">
                         <i class="uil uil-envelope-alt email"></i>
                     </div>
                     <div class="input_box">
-                        <input type="text" name="direccion" placeholder="Ingresa tu Domicilio" maxlength="120" required>
+                        <input type="text" name="direccion" placeholder="Ingresa tu Domicilio" maxlength="120" required
+                         data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Ingresa la direccion:</em><br>- Ingresa tambien la altura<br>- Máximo 60 caracteres<br>">
                         <i class="uil uil-user-location text"></i>
                     </div>
                     <div class="input_box">
-                        <input type="password" name="contraseña" placeholder="Ingresa tu Contraseña" minlength="5"
-                            maxlength="71" required>
+                        <input type="password" name="contrasena" placeholder="Ingresa tu Contraseña" minlength="5"
+                            maxlength="71" required data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Para una contraseña segura:</em><br>* Ingresa letras mayusculas y minusculas (A,a,Z,z)<br>* Ingresa numeros del: (0-9)<br>* La contraseña debe tener entre 5 y 71 caracteres<br>¡Con todos estos requisitos, tu contraseña será segura!<br>">
                         <i class="uil uil-lock password"></i>
                         <i class="uil uil-eye-slash pw_hide"></i>
                     </div>
                     <div class="input_box">
                         <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" minlength="5"
-                            maxlength="71" required>
+                            maxlength="71"
+                            required data-bs-toggle="tooltip" data-bs-html="true"
+                            title="<em>Vuelve a ingresar tu contraseña:</em>">
                         <i class="uil uil-lock password"></i>
                         <i class="uil uil-eye-slash pw_hide"></i>
                     </div>
@@ -138,6 +152,30 @@
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script de tooltips mejorado -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar todos los tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    placement: 'top',
+                    trigger: 'hover focus',
+                    delay: { "show": 300, "hide": 100 }
+                });
+            });
+
+            // Asegurar que los tooltips se cierren al hacer scroll
+            window.addEventListener('scroll', function () {
+                tooltipList.forEach(tooltip => tooltip.hide());
+            });
+        });
+    </script>
+
 </body>
 
 </html>
