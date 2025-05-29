@@ -33,6 +33,12 @@ public class MovimientoCaja {
     @Column(name = "monto", nullable = false)
     @NumberFormat(pattern = "#,##0.00")
     private BigDecimal monto;
+
+    @Column(name = "monto_double", nullable = false)
+    private double montoDouble;
+
+    @Column(name = "tipo", nullable = false, length = 10)
+    private String tipo; // "INGRESO" o "EGRESO"
     
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_operacion", nullable = false)

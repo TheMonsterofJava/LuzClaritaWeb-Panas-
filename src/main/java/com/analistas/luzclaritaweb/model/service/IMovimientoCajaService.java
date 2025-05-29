@@ -3,6 +3,7 @@ package com.analistas.luzclaritaweb.model.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.analistas.luzclaritaweb.model.domain.Factura;
@@ -24,5 +25,5 @@ public interface IMovimientoCajaService {
     // Registrar movimiento de caja (ingreso)
     MovimientoCaja registrarIngreso(MovimientoCaja movimiento, Usuario operador, Long cajaId, Factura factura);
    
-    
+    Map<String, Double> getResumenMovimientos(LocalDateTime desde, LocalDateTime hasta);
 }

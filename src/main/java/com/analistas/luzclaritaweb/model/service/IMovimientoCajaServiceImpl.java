@@ -1,7 +1,9 @@
 package com.analistas.luzclaritaweb.model.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -65,6 +67,29 @@ public class IMovimientoCajaServiceImpl implements IMovimientoCajaService {
     public MovimientoCaja registrarIngreso(MovimientoCaja movimiento, Usuario operador, Long cajaId, Factura factura) {
         
         throw new UnsupportedOperationException("Unimplemented method 'registrarIngreso'");
+    }
+
+    @Override
+    public Map<String, Double> getResumenMovimientos(LocalDateTime desde, LocalDateTime hasta) {
+        List<MovimientoCaja> movimientos = movimientoCajaRepository.findByFechaBetween(desde, hasta);
+        
+        double totalIngresos = 500000.0;
+        double totalEgresos = 0.0;
+
+        for (MovimientoCaja m : movimientos) {
+            if (m.getTipo().equalsIgnoreCase("INGRESO")) {
+                totalIngresos += m.getMontoDouble();
+            } else if (m.getTipo().equalsIgnoreCase("EGRESO")) {
+                totalEgresos += m.getMontoDouble();
+            }
+        }
+
+        Map<String, Double> resumen = new HashMap<>();
+        resumen.put("totalIngresos", totalIngresos);
+        resumen.put("totalEgresos", totalEgresos);
+        resumen.put("saldo", totalIngresos - totalEgresos);
+
+        return resumen;
     }
 
 
