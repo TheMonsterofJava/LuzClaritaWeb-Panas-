@@ -301,7 +301,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="card-title text-muted">Ingresos</h5>
-                                <h3 class="mb-0" th:text="${'$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')}">$0.00</h3>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
                             </div>
                             <div class="bg-success bg-opacity-10 p-3 rounded">
                                 <i class="bi bi-arrow-down-circle text-success fa-2x"></i>
@@ -316,7 +316,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="card-title text-muted">Egresos</h5>
-                                <h3 class="mb-0" th:text="${'$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')}">$0.00</h3>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
                             </div>
                             <div class="bg-danger bg-opacity-10 p-3 rounded">
                                 <i class="bi bi-arrow-up-circle text-danger fa-2x"></i>
@@ -331,7 +331,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="card-title text-muted">Saldo Actual</h5>
-                                <h3 class="mb-0" th:text="${'$' + #numbers.formatDecimal(saldoActual, 1, 2, 'COMMA')}">$0.00</h3>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
                             </div>
                             <div class="bg-info bg-opacity-10 p-3 rounded">
                                 <i class="bi bi-wallet2 text-info fa-2x"></i>
@@ -467,6 +467,9 @@
             // Tooltips para los badges de relación
             $('[data-bs-toggle="tooltip"]').tooltip();
         });
+    </script>
+    <script th:fragment="js">
+        
     </script>
 </body>
 </html>

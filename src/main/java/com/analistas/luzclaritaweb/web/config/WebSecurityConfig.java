@@ -110,7 +110,7 @@ public class WebSecurityConfig {
                                 "/receta-clasica/**", "/receta-especial/**", "/productos/**")
                         .permitAll()
 
-                        .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**")
+                        .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/inventario/ajax/crear")
                         .hasAnyAuthority("ROLE_ADMIN") //
 
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**", "/index",

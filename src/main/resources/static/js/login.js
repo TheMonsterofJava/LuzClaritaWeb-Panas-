@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (success) {
         Swal.fire({
             icon: 'success',
-            title: "¡¡Incio de sesión exitoso!!",
+            title: "¡¡Sesión Iniciada Correctamente!!",
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'Aceptar'
         }).then((result) => {

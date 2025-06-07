@@ -38,7 +38,7 @@ INSERT INTO `luzclaritaweb`.`proveedores` (`activo`, `telefono`, `contacto`, `no
 -- COMPRAS
 INSERT INTO `luzclaritaweb`.`compras` (`activo`, `fecha_hora`, `id_caja`, `id_proveedor`, `id_usuario`, `descripcion`) VALUES ('1', '2025-05-14 00:00:00', 1, 1, 1, 'levadura');
 
-INSERT INTO `luzclaritaweb`.`inventario` (`activo`, `cantidad`, `precio`, `fecha_ingreso`, `fecha_vencimiento`, `id_proveedor`, `id_usuario`, `nombre_Ingrediente`, `unidad_Medida`) VALUES ('1', '145', '2000.00', '2024-09-14', '2026-08-21', 1, 1, 'azucar', 'kg');
+
 INSERT INTO `luzclaritaweb`.`inventario` (`activo`, `cantidad`, `precio`, `fecha_ingreso`, `fecha_vencimiento`, `id_proveedor`, `id_usuario`, `nombre_Ingrediente`, `unidad_Medida`) VALUES ('1', '145', '2000', '2024-09-14', '2026-08-21', 1, 1, 'azucar', 'kg');
 INSERT INTO `luzclaritaweb`.`inventario` (`activo`, `cantidad`, `precio`, `fecha_ingreso`, `fecha_vencimiento`, `id_proveedor`, `id_usuario`, `nombre_Ingrediente`, `unidad_Medida`) VALUES ('1', '15', '1500', '2025-09-20', '2024-01-16', 2, 2, 'harina', 'kg');
 INSERT INTO `luzclaritaweb`.`inventario` (`activo`, `cantidad`, `precio`, `fecha_ingreso`, `fecha_vencimiento`, `id_proveedor`, `id_usuario`, `nombre_Ingrediente`, `unidad_Medida`) VALUES ('1', '10', '1200', '2025-04-10', '2026-03-15', 1, 1, 'sal', 'kg');

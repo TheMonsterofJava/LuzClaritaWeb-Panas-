@@ -35,12 +35,17 @@ public class DetalleCompra {
     @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
     private BigDecimal precioUnitario;
 
+    //Saque el nullable porque no es necesario que un detalle de compra tenga un producto asociado
+    // Si un detalle de compra no tiene un producto, significa que es un ingrediente directo del inventario
+    // Si es un producto, entonces se asocia a un producto específico
+    // Si es un ingrediente, se asocia a un ingrediente del inventario
+    
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "producto_id")
     private Producto producto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "compra_id", nullable = false)
+    @JoinColumn(name = "compra_id",nullable= false)
     private Compra compra;
 
     @ManyToOne

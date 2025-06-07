@@ -1,8 +1,13 @@
 package com.analistas.luzclaritaweb.web.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,6 +26,8 @@ import com.analistas.luzclaritaweb.model.domain.Inventario;
 import com.analistas.luzclaritaweb.model.domain.Proveedor;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.IInventarioService;
+import com.analistas.luzclaritaweb.model.service.IProveedorService;
+import com.analistas.luzclaritaweb.model.service.IUsuariosService;
 
 import jakarta.validation.Valid;
 
@@ -30,11 +39,11 @@ public class InventarioController {
     @Autowired
     IInventarioService inventarioService;
 
-    // @Autowired
-    // IProveedorRepository proveedorRepository;
+    @Autowired
+    IProveedorService IProveedorService;
 
-    // @Autowired
-    // IUsuarioRepository usuarioRepository;
+    @Autowired
+    IUsuariosService usuariosService;
 
     // Método para listar los productos
     @GetMapping("/listado")
@@ -66,6 +75,37 @@ public class InventarioController {
         model.addAttribute("inventario", inventario);
 
         return "inventario/form";
+    }
+
+    @PostMapping("/ajax/crear")
+    @ResponseBody
+    public Inventario crearIngredienteAjax(
+            @RequestParam String nombre,
+            @RequestParam String unidad,
+            @RequestParam BigDecimal precio,
+            @RequestParam int cantidad,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaIngreso,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaVencimiento,
+            @RequestParam Long proveedorId,
+            Authentication auth) {
+        Inventario nuevo = new Inventario();
+        nuevo.setNombreIngrediente(nombre);
+        nuevo.setUnidadMedida(unidad);
+        nuevo.setCantidad(cantidad);
+        nuevo.setPrecio(precio);
+        nuevo.setFechaIngreso(fechaIngreso);
+        nuevo.setFechaVencimiento(fechaVencimiento);
+        Proveedor proveedor = IProveedorService.buscarPorId(proveedorId);
+        nuevo.setProveedor(proveedor);
+
+        // Asignar el usuario autenticado al inventario
+        if (auth != null && auth.getPrincipal() instanceof UserDetails userDetails) {
+        Usuario usuario = usuariosService.buscarPorNombreUsuario(userDetails.getUsername())
+                .orElse(null);
+        nuevo.setUsuario(usuario);
+    }
+        inventarioService.guardar(nuevo);
+        return nuevo;
     }
 
     @PostMapping("/guardar")

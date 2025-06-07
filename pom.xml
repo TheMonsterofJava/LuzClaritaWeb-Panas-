@@ -134,6 +134,13 @@
             <version>1.5.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -156,14 +163,23 @@
 
 </project>
 
-<!-- 
-//Estructura del proyecto
 
-LuzClaritaWeb-Panas-/
+<!--Arbol
+general del proyecto-->
+<!-- LuzClaritaWeb-Panas-/
+├── .gitignore
 ├── .mvn/
 │   └── wrapper/
 │       ├── maven-wrapper.jar
 │       └── maven-wrapper.properties
+├── Cambios
+├── lombok.jar
+├── mvnw
+├── mvnw.cmd
+├── nb-configuration.xml
+├── nbactions.xml
+├── ngrok.exe
+├── pom.xml
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -204,7 +220,7 @@ LuzClaritaWeb-Panas-/
 │   │   │       │       └── ProductoServiceImpl.java
 │   │   │       └── web/
 │   │   │           ├── config/
-│   │   │           │   └── WebSecurityConfig.java    # Reglas OAuth2
+│   │   │           │   └── WebSecurityConfig.java
 │   │   │           └── controller/
 │   │   │               ├── ConsultasController.java
 │   │   │               ├── HomeController.java
@@ -216,13 +232,25 @@ LuzClaritaWeb-Panas-/
 │   │   └── resources/
 │   │       ├── application.properties
 │   │       ├── import.sql
+│   │       ├── messages.properties
+│   │       ├── plantilla.html
 │   │       ├── static/
+│   │       │   ├── assets/
+│   │       │   │   ├── demo/
+│   │       │   │   ├── fonts/
+│   │       │   │   └── img/
+│   │       │   ├── cdn-cgi/
+│   │       │   │   ├── l/
+│   │       │   │   └── scripts/
 │   │       │   ├── css/
 │   │       │   │   ├── bootstrap.min.css
+│   │       │   │   ├── carrito.css
 │   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap-icons@1.11.3_font_bootstrap-icons.min.css
 │   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap@5.3.3_dist_css_bootstrap.min.css
+│   │       │   │   ├── inventario.css
 │   │       │   │   ├── login.css
-│   │       │   │   └── style.css
+│   │       │   │   ├── style.css
+│   │       │   │   └── styles.css
 │   │       │   ├── font/
 │   │       │   │   ├── AmaticSC-Regular.ttf
 │   │       │   │   ├── DancingScript-VariableFont_wght.ttf
@@ -234,44 +262,68 @@ LuzClaritaWeb-Panas-/
 │   │       │   │   ├── car.jpg
 │   │       │   │   ├── car2.jpg
 │   │       │   │   ├── carr1.jpg
+│   │       │   │   ├── cart.png
+│   │       │   │   ├── login-background/
 │   │       │   │   ├── logo.png
+│   │       │   │   ├── producto-fondo.jpg
 │   │       │   │   ├── torta.jpeg
 │   │       │   │   ├── torta2.jpeg
 │   │       │   │   └── torta3.jpeg
 │   │       │   └── js/
+│   │       │       ├── carrito.js
+│   │       │       ├── datatables/
+│   │       │       ├── inventario-list.js
+│   │       │       ├── litepicker.js
 │   │       │       ├── login.js
-│   │       │       └── productos-list.js   # DataTables Init
+│   │       │       ├── markdown.js
+│   │       │       ├── productos-list.js
+│   │       │       ├── proveedor-list.js
+│   │       │       ├── scripts.js
+│   │       │       └── toasts.js
 │   │       └── templates/
+│   │           ├── Compras/
+│   │           │   ├── form.html
+│   │           │   └── listado.html
+│   │           ├── accessDenied.html
+│   │           ├── admin/
+│   │           │   ├── account-profile.html
+│   │           │   ├── dashboard-1.html
+│   │           │   ├── user-management-add-user.html
+│   │           │   ├── user-management-edit-user.html
+│   │           │   ├── user-management-groups-list.html
+│   │           │   └── user-management-list.html
 │   │           ├── consejos/
 │   │           │   ├── form.html
 │   │           │   └── list.html
 │   │           ├── consultas/
+│   │           │   ├── consulta.html
+│   │           │   └── list.html
+│   │           ├── index.html
+│   │           ├── inicioSesion/
+│   │           │   ├── login.html
+│   │           │   └── login3.html
+│   │           ├── inventario/
 │   │           │   ├── form.html
 │   │           │   └── list.html
-│   │           ├── inicioSesion/
-│   │           │   └── login.html
 │   │           ├── layout/
-│   │           │   ├── footer.html
-│   │           │   ├── header.html
-│   │           │   └── menu.html
+│   │           │   └── layout.html
+│   │           ├── movimientos/
+│   │           │   └── movimientos_caja.html
 │   │           ├── productos/
-│   │           │   ├── detail.html
+│   │           │   ├── form.html
+│   │           │   ├── list.html
+│   │           │   └── list2.html
+│   │           ├── proveedor/
+│   │           │   ├── form.html
 │   │           │   └── list.html
 │   │           ├── receta-clasica/
-│   │           │   └── view.html
+│   │           │   ├── form.html
+│   │           │   └── list.html
 │   │           ├── receta-especial/
-│   │           │   └── view.html
-│   │           └── index.html
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           └── success.html
 │   └── test/
 │       └── java/
 │           └── com/analistas/luzclaritaweb/
-│               └── (tests…)
-├── .gitignore
-├── mvnw
-├── mvnw.cmd
-├── nb-configuration.xml
-├── nbactions.xml
-└── pom.xml
-
-
--->
+│               └── LuzClaritaWebApplicationTests.java -->
