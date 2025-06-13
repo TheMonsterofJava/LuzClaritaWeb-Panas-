@@ -45,21 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // SweetAlert2 para mostrar el cierre de sesión 
-    // if (urlParams.has('cerrarSesion')) {
-    //     Limpia la URL INMEDIATAMENTE
-    //     const url = new URL(window.location);
-    //     url.searchParams.delete('cerrarSesion');
-    //     window.history.replaceState(null, '', url.pathname + url.search);
-
-    //     Swal.fire({
-    //         icon: 'info',
-    //         title: "¡Sesión cerrada con Éxito!",
-    //         text: "¡Hasta luego!",
-    //         confirmButtonColor: '#3085d6',
-    //         confirmButtonText: 'Aceptar'
-    //     });
-    // }
 
     // Manejar cierre de sesión
     if (urlParams.has('cerrarSesion')) {

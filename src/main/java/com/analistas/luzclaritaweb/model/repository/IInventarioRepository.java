@@ -13,5 +13,7 @@ public interface IInventarioRepository extends CrudRepository<Inventario, Long> 
     @Query("select i from Inventario i where i.activo = true")
     List<Inventario> buscarSoloActivos();
 
+    List<Inventario> findByNombreIngredienteContainingIgnoreCase(String q);
+
 
 }

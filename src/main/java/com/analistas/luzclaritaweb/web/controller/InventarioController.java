@@ -2,10 +2,12 @@ package com.analistas.luzclaritaweb.web.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -77,35 +79,65 @@ public class InventarioController {
         return "inventario/form";
     }
 
-    @PostMapping("/ajax/crear")
+    @GetMapping("/buscar")
     @ResponseBody
-    public Inventario crearIngredienteAjax(
+    public List<Map<String, Object>> buscarIngredientes(@RequestParam("q") String query) {
+        List<Inventario> lista = inventarioService.buscarPorNombreParcial(query); // implementa este método como "LIKE"
+        List<Map<String, Object>> resultados = new ArrayList<>();
+        for (Inventario ing : lista) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", ing.getId());
+            map.put("text", ing.getNombreIngrediente() + " (" + ing.getUnidadMedida() + ")");
+            resultados.add(map);
+        }
+        return resultados;
+    }
+
+    @GetMapping("/debug/roles")
+    @ResponseBody
+    public String debugRoles(Authentication auth) {
+        return auth.getAuthorities().toString();
+    }
+
+    @PostMapping("/ajax/crear-rapido")
+    @ResponseBody
+    public Map<String, Object> crearIngredienteAjaxRapido(
             @RequestParam String nombre,
             @RequestParam String unidad,
-            @RequestParam BigDecimal precio,
-            @RequestParam int cantidad,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaIngreso,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaVencimiento,
+            // @RequestParam BigDecimal precio,
+            // @RequestParam int cantidad,
+            // @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaIngreso,
+            // @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate
+            // fechaVencimiento,
             @RequestParam Long proveedorId,
             Authentication auth) {
+        System.out.println(">>> LLAMADA AJAX");
         Inventario nuevo = new Inventario();
         nuevo.setNombreIngrediente(nombre);
         nuevo.setUnidadMedida(unidad);
-        nuevo.setCantidad(cantidad);
-        nuevo.setPrecio(precio);
-        nuevo.setFechaIngreso(fechaIngreso);
-        nuevo.setFechaVencimiento(fechaVencimiento);
+        nuevo.setCantidad(1); // Asignar una cantidad por defecto //Dummy value, puede ser modificado
+        nuevo.setPrecio(BigDecimal.ONE); // Asignar un precio por defecto //Dummy value, puede ser modificado
+        nuevo.setFechaIngreso(LocalDate.now()); // Fecha de ingreso actual
+        nuevo.setFechaVencimiento(LocalDate.now().plusYears(2)); // Fecha de vencimiento en 30 días
         Proveedor proveedor = IProveedorService.buscarPorId(proveedorId);
         nuevo.setProveedor(proveedor);
 
         // Asignar el usuario autenticado al inventario
         if (auth != null && auth.getPrincipal() instanceof UserDetails userDetails) {
-        Usuario usuario = usuariosService.buscarPorNombreUsuario(userDetails.getUsername())
-                .orElse(null);
-        nuevo.setUsuario(usuario);
-    }
+            Usuario usuario = usuariosService.buscarPorNombreUsuario(userDetails.getUsername())
+                    .orElse(null);
+            nuevo.setUsuario(usuario);
+        }
         inventarioService.guardar(nuevo);
-        return nuevo;
+
+        // Crear un mapa para la respuesta JSON
+        // y devolverlo como respuesta
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", nuevo.getId());
+        map.put("text", nuevo.getNombreIngrediente() + " (" + nuevo.getUnidadMedida() + ")");
+        return map;
+
+        // return nuevo;
     }
 
     @PostMapping("/guardar")

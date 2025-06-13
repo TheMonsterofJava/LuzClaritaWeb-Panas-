@@ -67,6 +67,11 @@ public class InventarioServiceImpl implements IInventarioService {
         inventarioRepository.deleteById(id);
     }
 
+    @Override
+    public List<Inventario> buscarPorNombreParcial(String q) {
+    return inventarioRepository.findByNombreIngredienteContainingIgnoreCase(q);
+}
+
 }
 
         

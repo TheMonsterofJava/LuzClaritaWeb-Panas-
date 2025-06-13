@@ -103,21 +103,20 @@ public class WebSecurityConfig {
                         // "/inventario/editar", "/inventario/guardar", "/inventario/borrar",
                         // "/productos/**", "/success/**")
                         // .permitAll()
-
-                        // Rutas públicas (acceso para todos)
+                        .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
+                        // 2. Luego la general
+                        .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/caja/**")
+                        .hasAnyAuthority("ROLE_ADMIN")
+                        // 3. Rutas públicas
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
                                 "/receta-clasica/**", "/receta-especial/**", "/productos/**")
                         .permitAll()
-
-                        .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/inventario/ajax/crear")
-                        .hasAnyAuthority("ROLE_ADMIN") //
-
+                        // 4. Rutas cliente
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**", "/index",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
                                 "/receta-clasica/**", "/receta-especial/**", "/productos/**")
                         .hasAnyAuthority("ROLE_CLIENTE")
-
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/inicioSesion/login")

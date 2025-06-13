@@ -24,8 +24,8 @@ public interface IInventarioService {
 
     public void agregar(); 
 
-    public void borrarPorId(Long id); 
+    public void borrarPorId(Long id);
 
-   
-
+    public List<Inventario> buscarPorNombreParcial(String query); 
+    
 }

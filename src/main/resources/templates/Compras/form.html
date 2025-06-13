@@ -111,10 +111,10 @@
                         <button type="button" id="agregarDetalleBtn" class="btn btn-success">
                             <i class="bi bi-plus-circle"></i> Agregar Detalle
                         </button>
-                        <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
+                        <!-- <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
                             data-bs-target="#modalNuevoIngrediente">
                             <i class="bi bi-plus-circle"></i> Nuevo Ingrediente
-                        </button>
+                        </button> -->
 
 
                         <!-- Botones finales -->
@@ -128,7 +128,7 @@
                         </div>
                     </div>
             </form>
-            <!-- Modal para nuevo ingrediente -->
+            <!-- Modal para nuevo ingrediente
             <div class="modal fade" id="modalNuevoIngrediente" tabindex="-1"
                 aria-labelledby="modalNuevoIngredienteLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -185,41 +185,95 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     </div>
 
     <script th:fragment="js">
-        $(document).ready(function () {
-            // Capturar opciones de ingredientes del template oculto
-            const ingredientesOptions = $('#ingredientes-options').html();
+        // Inicializa select2 para un select de ingrediente
+        function initSelect2Ingrediente($select, proveedorId) {
+            $select.select2({
+                placeholder: "Buscar o agregar ingrediente...",
+                allowClear: true,
+                tags: true, // Permite escribir uno nuevo
+                ajax: {
+                    url: '/inventario/buscar',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term || '' };
+                    },
+                    processResults: function (data) {
+                        return { results: data };
+                    },
+                    cache: true
+                },
+                createTag: function (params) {
+                    var term = $.trim(params.term);
+                    if (term === '') return null;
+                    return { id: term, text: term, newTag: true };
+                }
+            }).on('select2:select', function (e) {
+                var data = e.params.data;
+                if (data.newTag) {
+                    Swal.fire({
+                        title: 'Nuevo Ingrediente',
+                        html:
+                            '<input id="swal-unidad" class="swal2-input" placeholder="Unidad de medida (kg, gr, etc)">',
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            return document.getElementById('swal-unidad').value;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            $.post('/inventario/ajax/crear-rapido', {
+                                nombre: data.text,
+                                unidad: result.value,
+                                proveedorId: proveedorId
 
+                            }, function (resp) {
+                                //Reemplazar el select con el nuevo ingrediente
+                                var option = new Option(resp.text, resp.id, true, true);
+                                $select.append(option).trigger('change');
+                            });
+                        } else {
+                            $select.val(null).trigger('change');
+                        }
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function () {
             // Función para agregar nueva fila
             function agregarFila(index) {
                 const newRow = `
-                <tr>
-                    <td>
-                        <select class="form-select" name="detalles[${index}].ingrediente.id" required>
-                            <option value="">Seleccionar ingrediente</option>
-                            ${ingredientesOptions}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control cantidad" name="detalles[${index}].cantidad" min="1" required>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control precio" name="detalles[${index}].precioUnitario" min="0.01" step="0.01" required>
-                    </td>
-                    <td class="subtotal">0.00</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm btn-eliminar">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>`;
+        <tr>
+            <td>
+                <select class="form-select select2-ingrediente" name="detalles[${index}].ingrediente.id" required style="width:100%"></select>
+            </td>
+            <td>
+                <input type="number" class="form-control cantidad" name="detalles[${index}].cantidad" min="1" required>
+            </td>
+            <td>
+                <input type="number" class="form-control precio" name="detalles[${index}].precioUnitario" min="0.01" step="0.01" required>
+            </td>
+            <td class="subtotal">0.00</td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm btn-eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>`;
                 return newRow;
             }
+
+            // Inicializa Select2 en todos los selects de ingrediente existentes
+            $('#tablaDetalles tbody .select2-ingrediente').each(function () {
+                var proveedorId = $('#proveedor').val();
+                initSelect2Ingrediente($(this), proveedorId);
+            });
 
             // Evento para agregar detalle
             $('#agregarDetalleBtn').click(function () {
@@ -227,10 +281,25 @@
                 const newRow = agregarFila(index);
                 $('#tablaDetalles tbody').append(newRow);
 
+                // Inicializar Select2 en la nueva fila
+                setTimeout(function () {
+                    var $newSelect = $('#tablaDetalles tbody tr:last .select2-ingrediente');
+                    var proveedorId = $('#proveedor').val();
+                    initSelect2Ingrediente($newSelect, proveedorId);
+                }, 100);
+
                 // Inicializar eventos en la nueva fila
                 const $newRow = $('#tablaDetalles tbody tr').last();
                 $newRow.find('.cantidad, .precio').on('input', calcularSubtotal);
                 $newRow.find('.btn-eliminar').click(eliminarDetalle);
+            });
+
+            // Si cambia proveedor, actualiza el proveedorId en los selects nuevos
+            $('#proveedor').on('change', function () {
+                var proveedorId = $(this).val();
+                $('.select2-ingrediente').each(function () {
+                    $(this).data('proveedorId', proveedorId);
+                });
             });
 
             // Cálculo de subtotal
@@ -286,73 +355,26 @@
 
             // Validación: No permitir guardar compra sin detalles
             $('#formCompra').on('submit', function (e) {
+                var error = false;
+                $('.select2-ingrediente').each(function () {
+                    var val = $(this).val();
+                    if (!val || isNaN(Number(val))) {
+                        error = true;
+                    }
+                });
+                if (error) {
+                    e.preventDefault();
+                    Swal.fire("Hay ingredientes no válidos", "Corrige los ingredientes antes de guardar", "error");
+                    return false;
+                }
                 if ($('#tablaDetalles tbody tr').length === 0) {
                     e.preventDefault();
                     Swal.fire("Debes agregar al menos un detalle", "", "warning");
                 }
             });
         });
-
-        // Modal y AJAX para nuevo ingrediente
-        $('#formNuevoIngrediente').on('submit', function (e) {
-            e.preventDefault();
-            var nombre = $('#nuevoIngredienteNombre').val();
-            var unidad = $('#nuevoIngredienteUnidad').val();
-            var precio = $('#nuevoIngredientePrecio').val();
-            var cantidad = $('#nuevoIngredienteCantidad').val();
-            var fechaIngreso = $('#nuevoIngredienteFechaIngreso').val();
-            var fechaVencimiento = $('#nuevoIngredienteFechaVencimiento').val();
-            var proveedorId = $('#nuevoIngredienteProveedor').val();
-
-            if (nombre.trim() === "" || unidad.trim() === "") {
-                Swal.fire("Completa todos los campos", "", "warning");
-                return;
-            }
-
-            // Obtén el token CSRF de un meta tag o input hidden generado por Thymeleaf
-            var csrfToken = $("meta[name='_csrf']").attr("content");
-            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-
-            $.ajax({
-                url: '/inventario/ajax/crear', // Debe coincidir con el controller
-                method: 'POST',
-                data: {
-                    nombre: nombre,
-                    unidad: unidad,
-                    precio: precio,
-                    cantidad: cantidad,
-                    fechaIngreso: fechaIngreso,
-                    fechaVencimiento: fechaVencimiento,
-                    proveedorId: proveedorId
-                },
-                beforeSend: function (xhr) {
-                    if (csrfToken && csrfHeader) {
-                        xhr.setRequestHeader(csrfHeader, csrfToken);
-                    }
-                },
-                success: function (data) {
-                    $('#modalNuevoIngrediente').modal('hide');
-                    $('#nuevoIngredienteNombre').val('');
-                    $('#nuevoIngredienteUnidad').val('');
-                    $('#nuevoIngredientePrecio').val('');
-                    $('#nuevoIngredienteCantidad').val('');
-                    $('#nuevoIngredienteFechaIngreso').val('');
-                    $('#nuevoIngredienteFechaVencimiento').val('');
-                    $('#nuevoIngredienteProveedor').val('');
-                    // Agregar el nuevo ingrediente a las opciones de los selects
-                    let option = $('<option>').val(data.id).text(data.nombreIngrediente + ' (' + data.unidadMedida + ')');
-                    $('select[name$=".ingrediente.id"]').each(function () {
-                        $(this).append(option.clone());
-                    });
-                    $('#ingredientes-options').append(option.clone());
-                    Swal.fire("Ingrediente agregado", "Ya puedes usarlo en el detalle", "success");
-                },
-                error: function () {
-                    Swal.fire("No se pudo agregar", "Intenta nuevamente", "error");
-                }
-            });
-        });
     </script>
+
     </div>
 </body>
 
