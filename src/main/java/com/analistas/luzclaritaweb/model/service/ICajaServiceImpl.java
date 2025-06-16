@@ -17,13 +17,14 @@ public class ICajaServiceImpl implements ICajaService {
         this.cajaRepository = cajaRepository;
     }
 
-    // public List<Caja> listarCajas() {
-    //     return cajaRepository.findAll();
-    // }
+    @Override
+    public List<Caja> listarCajas() {
+        return cajaRepository.findByActivaTrue();
+    }
 
     @Override
     public Optional<Caja> obtenerCajaPorId(Long id) {
-        return cajaRepository.findById(id);
+        return cajaRepository.findByIdAndActivaTrue(id);
     }
 
     @Override
@@ -32,28 +33,38 @@ public class ICajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public void eliminarCaja(Long id) {
-        cajaRepository.deleteById(id);
+    public void desactivarCaja(Long id) {
+        Optional<Caja> cajaOpt = cajaRepository.findById(id); // Find regardless of active status
+        if (cajaOpt.isPresent()) {
+            Caja caja = cajaOpt.get();
+            caja.setActiva(false);
+            cajaRepository.save(caja);
+        }
+        // Consider logging if caja is not found, or throwing an exception
     }
 
     // Métodos personalizados
     @Override
-    public Optional<Caja> buscarUltimaCajaAbierta(Caja.EstadoCaja estado) {
-        return cajaRepository.findTopByEstadoOrderByFechaDesc(estado);
+    public Optional<Caja> buscarUltimaCajaAbiertaYActiva(Caja.EstadoCaja estado) {
+        // Ensure 'estado' is typically Caja.EstadoCaja.ABIERTA when calling this
+        return cajaRepository.findTopByEstadoAndActivaTrueOrderByFechaDesc(estado);
     }
 
+    // Métodos de búsqueda personalizados
     @Override
     public List<Caja> buscarCajasPorUsuario(Long usuarioId) {
         return cajaRepository.findByUsuarioId(usuarioId);
     }
 
+    // Método para buscar cajas por rango de fechas
     @Override
     public List<Caja> buscarCajasPorRangoDeFechas(LocalDateTime inicio, LocalDateTime fin) {
         return cajaRepository.findByFechaBetween(inicio, fin);
     }
 
+    // Método para listar cajas abiertas
     @Override
     public List<Caja> listarCajasAbiertas() {
-        return cajaRepository.findAll();
+        return cajaRepository.findByEstadoAndActivaTrue(Caja.EstadoCaja.ABIERTA);
     }
 }

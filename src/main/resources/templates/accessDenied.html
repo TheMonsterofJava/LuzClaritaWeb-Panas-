@@ -1,11 +1,358 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Acceso Denegado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Denegado - Luz Clarita</title>
+    <link rel="icon" href="/img/logo.png" type="image/png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Box Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff6f61;
+            --secondary: #f8d0c0;
+            --accent: #ff9e80;
+            --dark: #6d4c41;
+            --light: #fff8f0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: #5a3929;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="%23ffd8c8" opacity="0.6"/><circle cx="50" cy="50" r="2" fill="%23ffd8c8" opacity="0.6"/><circle cx="80" cy="70" r="4" fill="%23ffd8c8" opacity="0.6"/></svg>');
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .denied-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .denied-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            border: 2px solid var(--primary);
+        }
+        
+        .denied-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 2.5rem 2rem;
+            color: white;
+            position: relative;
+        }
+        
+        .denied-header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .denied-icon {
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        }
+        
+        .cake-decoration {
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            bottom: -15px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0,0 Q25,18 50,0 T100,0 L100,20 L0,20 Z" fill="white"/></svg>');
+            background-size: 100% 100%;
+        }
+        
+        .denied-content {
+            padding: 3rem 2rem;
+            position: relative;
+        }
+        
+        .denied-content h2 {
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .denied-content p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-back {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-back:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.6);
+        }
+        
+        .btn-back:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-back::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        .btn-back:hover::after {
+            left: 120%;
+        }
+        
+        .cake-decoration-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0,20 Q25,2 50,20 T100,20 L100,0 L0,0 Z" fill="%23ff6f61" opacity="0.2"/></svg>');
+        }
+        
+        .sprinkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .sprinkle {
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background-color: var(--accent);
+            border-radius: 4px;
+            transform: rotate(45deg);
+            animation: sprinkle-fall 8s linear infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes sprinkle-fall {
+            0% {
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+        
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .denied-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .denied-icon {
+                font-size: 4.5rem;
+            }
+            
+            .denied-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .denied-content h2 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>403 - Acceso Denegado</h1>
-    <p>No tienes permiso para ver esta página.</p>
-    <a th:href="@{/home}">Volver al inicio</a>
+    <!-- Encabezado simplificado -->
+    <header class="header py-3">
+        <div class="container">
+            <a class="navbar-brand" href="/home">
+                <img src="/img/logo.png" alt="Logo Luz Clarita" width="45" height="45" class="d-inline-block align-text-top">
+                <span class="ms-2 fw-bold" style="color: var(--primary);">Luz Clarita</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="denied-container">
+        <div class="denied-card">
+            <div class="denied-header">
+                <i class='bx bxs-lock-alt denied-icon'></i>
+                <h1>¡Pastel Protegido!</h1>
+                <p>Esta sección es exclusiva para nuestro equipo de repostería</p>
+                <div class="cake-decoration"></div>
+            </div>
+            
+            <div class="denied-content">
+                <h2>Acceso Denegado</h2>
+                <p>Lo sentimos, pero no tienes permiso para acceder a esta página. Parece que intentaste entrar a la cocina secreta donde preparamos nuestras recetas más exclusivas.</p>
+                <p>Si crees que esto es un error o necesitas acceso, por favor contacta al administrador de la pastelería.</p>
+                
+                <button class="btn-back" onclick="goHome()">
+                    <i class="bi bi-house-door me-2"></i>Volver al Inicio
+                </button>
+                
+                <div class="sprinkles" id="sprinkles-container"></div>
+                <div class="cake-decoration-bottom"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="fw-bold">Luz Clarita</h5>
+                    <p>¡Hace más de 10 años llenando de dulzura cada momento!</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-whatsapp"></i> 3624883171</li>
+                        <li><i class="bi bi-geo-alt-fill"></i> Calle 123, Resistencia</li>
+                    </ul>
+                    <h5 class="fw-bold mt-3">Nuestras redes</h5>
+                    <a href="https://www.facebook.com/profile.php?id=100046601442632" class="text-white me-2"><i
+                            class="bi bi-facebook fs-4"></i></a>
+                    <a href="https://www.instagram.com/luzclarita.singluten/" class="text-white"><i
+                            class="bi bi-instagram fs-4"></i></a>
+                </div>
+            </div>
+            <div class="text-center pt-3">
+                <p class="mb-0">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle con Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Crear sprinkles animados
+        function createSprinkles() {
+            const container = document.getElementById('sprinkles-container');
+            const colors = ['#ff6f61', '#ff9e80', '#f8d0c0', '#ffd54f', '#a1887f'];
+            
+            for (let i = 0; i < 15; i++) {
+                const sprinkle = document.createElement('div');
+                sprinkle.classList.add('sprinkle');
+                
+                // Posición aleatoria
+                const left = Math.random() * 100;
+                sprinkle.style.left = `${left}%`;
+                
+                // Color aleatorio
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                sprinkle.style.backgroundColor = colors[colorIndex];
+                
+                // Retraso de animación aleatorio
+                const delay = Math.random() * 5;
+                sprinkle.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(sprinkle);
+            }
+        }
+        
+        // Mostrar mensaje con SweetAlert
+        function showAccessDeniedAlert() {
+            Swal.fire({
+                title: 'Acceso Denegado',
+                html: '<div style="font-size:1.1rem;">No tienes permiso para acceder a esta sección. Si necesitas acceso, por favor contacta al administrador.</div>',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#ff6f61',
+                background: '#fff8f0',
+                customClass: {
+                    popup: 'sweet-popup',
+                    title: 'sweet-title',
+                    content: 'sweet-content'
+                },
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        }
+        
+        // Redirigir a la página de inicio
+        function goHome() {
+            window.location.href = '/home';
+        }
+        
+        // Inicializar cuando el documento esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            createSprinkles();
+            showAccessDeniedAlert();
+        });
+    </script>
 </body>
 </html>

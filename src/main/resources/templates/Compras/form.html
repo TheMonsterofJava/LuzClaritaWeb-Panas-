@@ -191,6 +191,24 @@
     </div>
 
     <script th:fragment="js">
+        //Agregar CSRF token a las peticiones AJAX
+        //para que Spring pueda validar las peticiones POST
+        // Y tambien para que no falle la creación de ingredientes
+        $(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            if (token && header) {
+                $(document).ajaxSend(function (e, xhr, options) {
+                    // Solo agregar el token para métodos que no sean GET, HEAD, OPTIONS
+                    if (!/^(GET|HEAD|OPTIONS)$/i.test(options.type) && options.url && !options.url.startsWith('http')) {
+                        // Asegurarse que la URL sea relativa (para no enviar CSRF token a dominios externos)
+                        xhr.setRequestHeader(header, token);
+                    }
+                });
+            } else {
+                console.error("CSRF token or header not found. AJAX POST requests might fail.");
+            }
+        });
         // Inicializa select2 para un select de ingrediente
         function initSelect2Ingrediente($select, proveedorId) {
             $select.select2({
@@ -216,28 +234,66 @@
                 }
             }).on('select2:select', function (e) {
                 var data = e.params.data;
+                var $select = $(this); // Get current select2 instance
+
                 if (data.newTag) {
+                    var currentProveedorId = $('#proveedor').val(); // Get current proveedorId
+
+                    if (!currentProveedorId) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Debe seleccionar un proveedor antes de agregar un nuevo ingrediente.'
+                        });
+                        $select.val(null).trigger('change'); // Clear the new tag
+                        return; // Stop processing
+                    }
+
                     Swal.fire({
-                        title: 'Nuevo Ingrediente',
-                        html:
-                            '<input id="swal-unidad" class="swal2-input" placeholder="Unidad de medida (kg, gr, etc)">',
+                        title: 'Nuevo Ingrediente: ' + data.text,
+                        html: '<input id="swal-unidad" class="swal2-input" placeholder="Unidad de medida (kg, gr, etc)">',
                         focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Crear',
+                        cancelButtonText: 'Cancelar',
                         preConfirm: () => {
-                            return document.getElementById('swal-unidad').value;
+                            const unidad = document.getElementById('swal-unidad').value;
+                            if (!unidad) {
+                                Swal.showValidationMessage('Por favor, ingrese la unidad de medida');
+                                return false;
+                            }
+                            return unidad;
                         }
                     }).then((result) => {
                         if (result.isConfirmed && result.value) {
+                            const unidadMedida = result.value;
                             $.post('/inventario/ajax/crear-rapido', {
                                 nombre: data.text,
-                                unidad: result.value,
-                                proveedorId: proveedorId
-
+                                unidad: unidadMedida,
+                                proveedorId: currentProveedorId // Use the currentProveedorId
                             }, function (resp) {
-                                //Reemplazar el select con el nuevo ingrediente
-                                var option = new Option(resp.text, resp.id, true, true);
-                                $select.append(option).trigger('change');
+                                if (resp && resp.id && resp.text) {
+                                    var option = new Option(resp.text, resp.id, true, true);
+                                    $select.empty().append(option).trigger('change');
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'La respuesta del servidor no fue la esperada al crear el ingrediente.'
+                                    });
+                                    $select.val(null).trigger('change');
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                console.error("Error AJAX en crear-rapido:", jqXHR.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error al crear ingrediente',
+                                    text: 'Hubo un problema al intentar guardar el nuevo ingrediente. ' + (jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : errorThrown)
+                                });
+                                $select.val(null).trigger('change'); // Clear the new tag
                             });
                         } else {
+                            // User cancelled or didn't confirm
                             $select.val(null).trigger('change');
                         }
                     });

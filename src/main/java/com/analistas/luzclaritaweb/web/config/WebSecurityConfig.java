@@ -110,7 +110,7 @@ public class WebSecurityConfig {
                         // 3. Rutas públicas
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**")
+                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/accessDenied")
                         .permitAll()
                         // 4. Rutas cliente
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**", "/index",

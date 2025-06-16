@@ -44,6 +44,12 @@ public class Caja {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private EstadoCaja estado;
+
+    //Agregamos la columna activa con valor por defecto 
+    //Para indicar si la caja está activa o no
+    //Para su posterior borrado lógico
+    @Column(name = "activa", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE") 
+    private boolean activa = true; 
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario")

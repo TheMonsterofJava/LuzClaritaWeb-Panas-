@@ -53,4 +53,10 @@ public class HomeController {
         return productoService.getCategorias();
     }
     
+    //Controlar la vista de error 403
+    @GetMapping("/accessDenied")
+    public String accessDenied() {
+        return "accessDenied"; // Nombre de la vista HTML que creamos
+    }
+
 }

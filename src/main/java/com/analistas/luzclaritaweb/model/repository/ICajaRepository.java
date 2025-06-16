@@ -20,6 +20,19 @@ public interface ICajaRepository extends JpaRepository<Caja, Long> {
 
     // Buscar cajas dentro de un rango de fechas
     List<Caja> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin);
+
+    List<Caja> findByEstado(Caja.EstadoCaja estado);
+
+    // Filtrar por estado y activa
+    // Borrados lógicos:
+    // findByActivaTrue(): Obtiene todas las cajas activas.
+    // findByEstadoAndActivaTrue(EstadoCaja estado): Obtiene las cajas activas por estado.
+    // findByIdAndActivaTrue(Long id): Obtiene una caja por ID si está activa.
+    // findTopByEstadoAndActivaTrueOrderByFechaDesc(EstadoCaja estado): Obtiene la última caja abierta activa.
+    List<Caja> findByActivaTrue();
+    List<Caja> findByEstadoAndActivaTrue(Caja.EstadoCaja estado);
+    Optional<Caja> findByIdAndActivaTrue(Long id);
+    Optional<Caja> findTopByEstadoAndActivaTrueOrderByFechaDesc(Caja.EstadoCaja estado);
 }
 
 // 📝 Explicación:

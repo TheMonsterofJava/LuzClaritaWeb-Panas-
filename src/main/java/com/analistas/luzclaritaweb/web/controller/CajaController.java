@@ -3,12 +3,19 @@ package com.analistas.luzclaritaweb.web.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.model.domain.Caja;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
+import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.ICajaService;
 import com.analistas.luzclaritaweb.model.service.IMovimientoCajaService;
 import com.analistas.luzclaritaweb.model.service.IUsuariosService;
@@ -29,6 +38,8 @@ import com.analistas.luzclaritaweb.model.service.IUsuariosService;
 @RequestMapping("/caja")
 public class CajaController {
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private ICajaService cajaService;
 
@@ -36,13 +47,17 @@ public class CajaController {
     private IMovimientoCajaService movimientoCajaService;
 
     @Autowired
-    @SuppressWarnings("unused")
     private IUsuariosService usuarioService;
+
+    //Constructor para inyectar PasswordEncoder
+    public CajaController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Listar todas las cajas
     @GetMapping("/listado")
     public String listadoCajas(Model model) {
-        List<Caja> cajas = cajaService.listarCajasAbiertas(); // Puedes cambiarlo por todas las cajas si lo prefieres
+        List<Caja> cajas = cajaService.listarCajas();   
         model.addAttribute("titulo", "Administración de Cajas");
         model.addAttribute("cajas", cajas);
         return "movimientos/caja";
@@ -163,4 +178,116 @@ public class CajaController {
             writer.flush();
         }
     }
+
+    // Verificar si una caja tiene movimientos
+    @GetMapping("/tiene-movimientos/{id}")
+    @ResponseBody 
+    public Map<String, Boolean> tieneMovimientos(@PathVariable("id") Long id) {
+        Map<String, Boolean> response = new HashMap<>();
+        Optional<Caja> cajaOpt = cajaService.obtenerCajaPorId(id); // Obtener la caja por ID
+        if (cajaOpt.isPresent()) {
+            List<MovimientoCaja> movimientos = movimientoCajaService.buscarPorCaja(id);
+            response.put("tieneMovimientos", !movimientos.isEmpty());
+        } else {
+            response.put("tieneMovimientos", false); // Caja no encontrada o inactiva 
+        }
+        return response;
+    }
+
+    // Desactivar una caja (borrado lógico)
+    @GetMapping("/eliminar/{id}") 
+    public String desactivarCaja(@PathVariable("id") Long id, RedirectAttributes flash, Authentication authentication) {
+        
+
+        Optional<Caja> cajaOpt = cajaService.obtenerCajaPorId(id); 
+        if (cajaOpt.isEmpty()) {
+             flash.addFlashAttribute("error", "Caja no encontrada o ya está inactiva.");
+             return "redirect:/caja/listado";
+        }
+
+        
+        List<MovimientoCaja> movimientos = movimientoCajaService.buscarPorCaja(id);
+        if (!movimientos.isEmpty()) {
+            flash.addFlashAttribute("error", "Esta caja tiene movimientos. Use la opción de desactivación administrativa.");
+            return "redirect:/caja/listado";
+        }
+
+        try {
+            cajaService.desactivarCaja(id); 
+            flash.addFlashAttribute("success", "Caja desactivada correctamente.");
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al desactivar la caja.");
+            
+        }
+        return "redirect:/caja/listado";
+    }
+
+    @PostMapping("/desactivar-admin/{id}")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Map<String, Object>> desactivarCajaAdmin(@PathVariable("id") Long id, @RequestParam("password") String password, Authentication authentication) {
+        Map<String, Object> response = new HashMap<>();
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Usuario adminUsuario = usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
+                                    .orElse(null);
+
+        if (adminUsuario == null) {
+            response.put("success", false);
+            response.put("message", "Error: Administrador no encontrado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        if (!passwordEncoder.matches(password, adminUsuario.getClave())) {
+            response.put("success", false);
+            response.put("message", "Contraseña de administrador incorrecta.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        Optional<Caja> cajaOpt = cajaService.obtenerCajaPorId(id); 
+        if (cajaOpt.isEmpty()) {
+             response.put("success", false);
+             response.put("message", "Caja no encontrada o ya está inactiva.");
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        try {
+            cajaService.desactivarCaja(id);
+            response.put("success", true);
+            response.put("message", "Caja desactivada correctamente por administrador.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error al desactivar la caja: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    //@GetMapping("/eliminar/{id}")
+    // public String eliminarCaja(@PathVariable("id") Long id, RedirectAttributes flash) {
+    //     try {
+    //         // Primero verificar si la caja tiene movimientos asociados
+    //         // Esta es una simplificación. Una lógica más robusta podría ser necesaria
+    //         // dependiendo de las reglas de negocio (ej. no permitir eliminar si hay
+    //         // movimientos).
+    //         // Por ahora, simplemente intentamos eliminar.
+    //         cajaService.eliminarCaja(id);
+    //         flash.addFlashAttribute("success", "Caja eliminada correctamente.");
+    //     } catch (DataIntegrityViolationException e) {
+    //         flash.addFlashAttribute("error",
+    //                 "No se puede eliminar la caja porque tiene movimientos asociados o está referenciada en otras transacciones.");
+    //         // Log the exception for server-side analysis
+    //         // import org.slf4j.Logger;
+    //         // import org.slf4j.LoggerFactory;
+    //         // private static final Logger logger =
+    //         // LoggerFactory.getLogger(CajaController.class);
+    //         // logger.error("Error al intentar eliminar caja ID {}: {}", id,
+    //         // e.getMessage());
+    //     } catch (Exception e) {
+    //         flash.addFlashAttribute("error", "Error al eliminar la caja.");
+    //         // logger.error("Error general al intentar eliminar caja ID {}: {}", id,
+    //         // e.getMessage());
+    //     }
+    //     return "redirect:/caja/listado";
+    // }
 }
