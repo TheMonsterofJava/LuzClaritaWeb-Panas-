@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery DEBE ir primero -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Luego DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <title th:text="${titulo}"></title>
+</head>
+
+<body class="form-body">
+    <div layout:fragment="contenido" class="container-fluid py-4">
+        <div class="card card-text">
+            <div class="card-header">
+                <h4 class="card-title" th:text="${titulo}">Listado de Compras</h4>
+            </div>
+
+            <div class="card-body shadow p-3 mb-5 bg-body rounded">
+                <!-- Mensajes de éxito/error -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="tabla-compras"
+                        class="table table-striped table-hover table-bordered shadow p-3 mb-5 bg-body rounded">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Proveedor</th>
+                                <th>Descripción</th>
+                                <th>Total</th>
+                                <th>Caja</th>
+                                <th>Usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="compra : ${compras}" th:class="${not compra.activo} ? 'tachado' : ''">
+                                <td th:text="${compra.id}"></td>
+                                <td th:text="${#temporals.format(compra.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${compra.proveedor.nombre}"></td>
+                                <td th:text="${compra.descripcion}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(compra.getTotal(), 1, 2)}"></td>
+                                <td th:text="'Caja ' + ${compra.caja.id}"></td>
+                                <td th:text="${compra.usuario.nomb_usu}"></td>
+                                <td style="max-width: 35px;">
+                                    <a th:href="@{/compras/editar/} + ${compra.id}"
+                                        class="btn btn-sm btn-warning">Editar</a>
+                                    <a th:href="@{/compras/eliminar/} + ${compra.id}" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('¿Eliminar esta compra?');">Eliminar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="btn-group float-end" role="group" aria-label="Basic outlined example">
+                        <a th:href="@{/compras/nueva}" class="btn btn-outline-primary float-end">
+                            <i class="bi bi-plus-circle"></i> Nueva Compra
+                        </a>
+                        <a th:href="@{/proveedor/listado}" class="btn btn-outline-primary">
+                            <i class="bi bi-people"></i> Proveedores
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:fragment="js" th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            $('#tabla-compras').DataTable({
+                "language": {
+                    // "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
+                    "url": "/js/datatables/i18n/es-ES.json"
+                },
+                "order": [ [ 0, 'desc' ] ]
+            });
+        });
+        /*]]>*/
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+</body>
+
+</html>

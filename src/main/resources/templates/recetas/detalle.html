@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+
+<head>
+    <title th:text="${receta.nombre_receta}">Detalle Receta</title>
+    <style>
+        :root {
+            --primary: #ff6f61;
+            --secondary: #f8d0c0;
+            --accent: #ff9e80;
+            --dark: #6d4c41;
+            --light: #fff8f0;
+        }
+
+        .recipe-detail {
+            background-color: #fff9f5;
+            padding: 3rem 0;
+        }
+
+        .recipe-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .recipe-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .recipe-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        .recipe-description {
+            font-size: 1.3rem;
+            color: #8c7b75;
+            max-width: 800px;
+            margin: 0 auto;
+            font-style: italic;
+        }
+
+        .recipe-image-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 3rem;
+            max-width: 800px;
+            height: 450px;
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .recipe-image-container:hover .recipe-image {
+            transform: scale(1.03);
+        }
+
+        .recipe-time {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .recipe-time i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .recipe-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary);
+            display: inline-block;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ingredient-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            background-color: var(--light);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .ingredient-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .ingredient-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .steps-container {
+            counter-reset: step-counter;
+        }
+
+        .step-item {
+            display: flex;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px dashed #f0e6e0;
+            position: relative;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            margin-right: 1.5rem;
+        }
+
+        .step-number::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-text {
+            color: #5a3929;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-top: 0.5rem;
+        }
+
+        .step-image {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: white;
+            color: var(--dark);
+            border: 2px solid #f0e6e0;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+        }
+
+        .back-button:hover {
+            background-color: var(--light);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-button:hover i {
+            transform: translateX(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .recipe-title {
+                font-size: 2.5rem;
+            }
+
+            .recipe-image-container {
+                height: 300px;
+            }
+
+            .step-item {
+                flex-direction: column;
+            }
+
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="contenido" class="recipe-detail">
+        <div class="container">
+            <!-- Botón para volver atrás -->
+            <div class="text-center">
+                <a th:href="@{/recetas/cards}" class="back-button">
+                    <i class="bi bi-arrow-left"></i> Volver a Recetas
+                </a>
+            </div>
+
+            <!-- Encabezado de la receta -->
+            <div class="recipe-header">
+                <h1 class="recipe-title" th:text="${receta.nombre_receta}">Nombre de la receta</h1>
+                <p class="recipe-description" th:text="${receta.descripcion}">Descripción breve de la receta</p>
+            </div>
+
+            <!-- Imagen principal -->
+            <div class="recipe-image-container">
+                <img th:src="${receta.imagen_link}" class="recipe-image" th:alt="${receta.nombre_receta}">
+                <div class="recipe-time">
+                    <i class="bi bi-clock"></i>
+                    <span th:text="${receta.tiempo}"></span>
+                </div>
+            </div>
+
+            <!-- Ingredientes -->
+            <div class="recipe-section">
+                <h2 class="section-title">Ingredientes</h2>
+                <ul class="ingredients-list">
+                    <li th:each="ingrediente : ${#strings.arraySplit(receta.ingredientes, '&#10;')}"
+                        class="ingredient-item">
+                        <div class="ingredient-icon">
+                            <i class="bi bi-check2"></i>
+                        </div>
+                        <span class="ingredient-text" th:text="${ingrediente}">Ingrediente</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pasos de preparación -->
+            <div class="recipe-section">
+                <h2 class="section-title">Preparación</h2>
+                <div class="steps-container">
+                    <div th:each="paso, iterStat : ${#strings.arraySplit(receta.pasos, '&#10;')}" class="step-item">
+                        <div class="step-number"></div>
+                        <div class="step-content">
+                            <p class="step-text" th:text="${paso}">Descripción detallada del paso de preparación.</p>
+                            <!-- Imagen opcional para cada paso -->
+                            <img th:if="${false}" th:src="@{/images/pasos/paso__${iterStat.index + 1}.jpg}"
+                                class="step-image" alt="Paso [[${iterStat.index + 1}]]" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón para imprimir la receta -->
+            <div class="text-center mt-5">
+                <button id="printRecipe" class="btn btn-lg"
+                    style="background-color: var(--primary); color: white; padding: 0.8rem 2.5rem;">
+                    <i class="bi bi-printer me-2"></i> Imprimir Receta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script th:fragment="js">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animación para elementos al cargar
+            const animateElements = () => {
+                const elements = document.querySelectorAll('.recipe-section, .recipe-image-container');
+                elements.forEach((el, index) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    el.style.transitionDelay = `${index * 0.2}s`;
+
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, 100);
+                });
+            };
+
+            // Inicializar animaciones
+            animateElements();
+
+            // Función para imprimir la receta
+            document.getElementById('printRecipe').addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Imprimir Receta',
+                    text: '¿Deseas imprimir esta receta?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff6f61',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Imprimir',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Obtener datos de la receta desde el DOM
+                        const nombreReceta = document.querySelector('.recipe-title').innerText;
+                        const descripcionReceta = document.querySelector('.recipe-description').innerText;
+                        const tiempoReceta = document.querySelector('.recipe-time span').innerText;
+                        const ingredientes = Array.from(document.querySelectorAll('.ingredient-text')).map(e => e.innerText);
+                        const pasos = Array.from(document.querySelectorAll('.step-text')).map(e => e.innerText);
+
+                        // Crear contenido para imprimir usando los datos obtenidos
+                        let ingredientesHtml = '';
+                        ingredientes.forEach(ingrediente => {
+                            ingredientesHtml += `<li class="print-ingredient">${ingrediente}</li>`;
+                        });
+
+                        let pasosHtml = '';
+                        pasos.forEach(paso => {
+                            pasosHtml += `<li class="print-step">${paso}</li>`;
+                        });
+
+                        const printContent = `
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .print-title { text-align: center; font-size: 24px; margin-bottom: 10px; }
+                            .print-subtitle { text-align: center; font-size: 18px; color: #666; margin-bottom: 30px; }
+                            .print-section { margin-bottom: 20px; }
+                            .print-section-title { font-size: 20px; border-bottom: 2px solid #ff6f61; padding-bottom: 5px; margin-bottom: 15px; }
+                            .print-ingredient { margin-bottom: 5px; }
+                            .print-step { margin-bottom: 15px; }
+                            .print-time { text-align: right; margin-top: 30px; font-style: italic; }
+                            .logo { text-align: center; margin-bottom: 20px; }
+                            .logo img { max-width: 100px; }
+                        </style>
+                        <div class="logo">
+                            <img src="/img/logo.png" alt="Luz Clarita">
+                        </div>
+                        <h1 class="print-title">${nombreReceta}</h1>
+                        <h2 class="print-subtitle">${descripcionReceta}</h2>
+                        
+                        <div class="print-section">
+                            <h3 class="print-section-title">Ingredientes</h3>
+                            <ul>
+                                ${ingredientesHtml}
+                            </ul>
+                        </div>
+                        
+                        <div class="print-section">
+                            <h3 class="print-section-title">Preparación</h3>
+                            <ol>
+                                ${pasosHtml}
+                            </ol>
+                        </div>
+                        
+                        <div class="print-time">
+                            <strong>Tiempo de preparación:</strong> <span>${tiempoReceta}</span>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px; font-size: 14px; color: #888;">
+                            Receta de Luz Clarita - www.luzclarita.com
+                        </div>
+                    `;
+
+                        // Abrir ventana de impresión
+                        const printWindow = window.open('', '_blank');
+                        printWindow.document.write(printContent);
+                        printWindow.document.close();
+                        printWindow.focus();
+                        printWindow.print();
+                        printWindow.close();
+                    }
+                });
+            });
+
+            // Mostrar mensaje de éxito si existe
+            const successMessage = /*[[${success}]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    title: '¡Receta guardada!',
+                    text: successMessage,
+                    icon: 'success',
+                    confirmButtonColor: '#ff6f61',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Administración de Cajas'"></title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+    <div layout:fragment="contenido" class="container-fluid py-4">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Administración de Cajas</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+                <div class="table-responsive">
+                    <table id="tabla-cajas"
+                        class="table table-striped table-hover table-bordered shadow p-3 mb-5 bg-body rounded">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha Apertura</th>
+                                <th>Usuario</th>
+                                <th>Saldo Inicial</th>
+                                <th>Saldo Final</th>
+                                <th>Estado</th>
+                                <th style="min-width: 450px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="caja : ${cajas}">
+                                <td th:text="${caja.id}"></td>
+                                <td th:text="${#temporals.format(caja.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${caja.usuario != null ? caja.usuario.nomb_usu : '-'}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(caja.saldoInicial, 1, 2)}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(caja.saldoFinal, 1, 2)}"></td>
+                                <td>
+                                    <span
+                                        th:classappend="${caja.estado.name() == 'ABIERTA'} ? 'badge bg-success' : 'badge bg-secondary'"
+                                        th:text="${caja.estado.name()}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/caja/detalle/{id}(id=${caja.id})}"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> Detalle
+                                    </a>
+                                    <a th:if="${caja.estado.name() == 'ABIERTA'}"
+                                        th:href="@{/caja/cerrar/{id}(id=${caja.id})}"
+                                        class="btn btn-outline-danger btn-sm"
+                                        onclick="return confirm('¿Seguro que quieres cerrar esta caja?');">
+                                        <i class="bi bi-lock"></i> Cerrar
+                                    </a>
+                                    <a th:if="${caja.estado.name() == 'CERRADA'}"
+                                        th:href="@{/caja/abrir/{id}(id=${caja.id})}"
+                                        class="btn btn-outline-success btn-sm"
+                                        onclick="return confirm('¿Seguro que quieres abrir esta caja?');">
+                                        <i class="bi bi-unlock"></i> Abrir
+                                    </a>
+                                    <a th:href="@{/caja/movimientos?cajaId={id}(id=${caja.id})}"
+                                        class="btn btn-outline-info btn-sm">
+                                        <i class="bi bi-list-ul"></i> Movimientos
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        th:onclick="'intentarDesactivarCaja(' + ${caja.id} + ');'">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <a th:href="@{/caja/nueva}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Abrir nueva caja
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $('#tabla-cajas').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
+                },
+                "order": [[0, 'desc']]
+            });
+        });
+    </script>
+
+    <script th:fragment="js">
+
+        function intentarDesactivarCaja(cajaId) {
+            console.log("Intentando desactivar caja ID:", cajaId); // Debug
+
+            // AJAX Setup for CSRF should ideally be in layout or a global JS file.
+            // If not, ensure CSRF token is sent with POST requests below.
+            // Assuming CSRF is handled globally or by an existing setup.
+
+            // Step 1: Check if caja has movements
+            $.ajax({
+                url: '/caja/tiene-movimientos/' + cajaId,
+                type: 'GET',
+                success: function (response) {
+                    if (response.tieneMovimientos === false) {
+                        // Step 2a: No movements, simple confirmation for deactivation
+                        Swal.fire({
+                            title: '¿Desactivar Caja?',
+                            text: "Esta caja no tiene movimientos. ¿Está seguro que desea desactivarla? Ya no estará disponible para nuevas transacciones.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, desactivar',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Using GET as the controller endpoint @GetMapping("/eliminar/{id}") is GET
+                                $.ajax({
+                                    url: '/caja/eliminar/' + cajaId,
+                                    type: 'GET',
+                                    success: function (redirectResponse) {
+                                        Swal.fire('¡Desactivada!', 'La caja ha sido desactivada.', 'success')
+                                            .then(() => location.reload());
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.fire('Error', 'No se pudo desactivar la caja: ' + xhr.responseText, 'error');
+                                    }
+                                });
+                            }
+                        });
+                    } else if (response.tieneMovimientos === true) {
+                        // Step 2b: Has movements, requires admin password
+                        Swal.fire({
+                            title: 'Desactivación Administrativa',
+                            html: `Esta caja tiene movimientos asociados.<br>Para desactivarla, ingrese la contraseña de administrador:`,
+                            icon: 'warning',
+                            input: 'password',
+                            inputPlaceholder: 'Contraseña de administrador',
+                            inputAttributes: {
+                                autocapitalize: 'off'
+                            },
+                            showCancelButton: true,
+                            confirmButtonText: 'Desactivar',
+                            cancelButtonText: 'Cancelar',
+                            showLoaderOnConfirm: true,
+                            preConfirm: (password) => {
+                                if (!password) {
+                                    Swal.showValidationMessage('Por favor, ingrese la contraseña');
+                                    return false;
+                                }
+                                return $.ajax({
+                                    url: '/caja/desactivar-admin/' + cajaId,
+                                    type: 'POST',
+                                    data: { password: password },
+                                    // CSRF token: Assuming $.ajaxSetup is configured globally to send it.
+                                    // If not, it needs to be added here:
+                                    // beforeSend: function(xhr) {
+                                    //    var token = $("meta[name='_csrf']").attr("content");
+                                    //    var header = $("meta[name='_csrf_header']").attr("content");
+                                    //    if (token && header) {
+                                    //        xhr.setRequestHeader(header, token);
+                                    //    }
+                                    // }
+                                }).catch(error => {
+                                    let errorMessage = 'Error desconocido al contactar el servidor.';
+                                    if (error.responseJSON && error.responseJSON.message) {
+                                        errorMessage = error.responseJSON.message;
+                                    } else if (error.responseText) {
+                                        errorMessage = "Error del servidor. Verifique la consola.";
+                                        try {
+                                            // Attempt to parse if it's JSON hiding in text/html
+                                            const errData = JSON.parse(error.responseText);
+                                            if (errData && errData.message) errorMessage = errData.message;
+                                        } catch (e) { /* ignore parsing error */ }
+                                        console.error("Raw error response:", error.responseText);
+                                    } else if (error.statusText) {
+                                        errorMessage = error.statusText;
+                                    }
+                                    Swal.showValidationMessage(`Error: ${errorMessage}`);
+                                    return false;
+                                });
+                            },
+                            allowOutsideClick: () => !Swal.isLoading()
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value) {
+                                if (result.value.success) {
+                                    Swal.fire('¡Desactivada!', result.value.message || 'La caja ha sido desactivada.', 'success')
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire('Error', result.value.message || 'No se pudo desactivar la caja.', 'error');
+                                }
+                            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                // User cancelled, do nothing
+                            } else if (result.value === false) {
+                                // This case can happen if preConfirm returned false explicitly due to validation
+                                // or an error handled by Swal.showValidationMessage.
+                                // Swal usually doesn't close on its own if preConfirm returns false.
+                            }
+                        });
+                    } else {
+                        Swal.fire('Error', 'Respuesta inesperada al verificar movimientos.', 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire('Error', 'No se pudo verificar el estado de la caja: ' + xhr.responseText, 'error');
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

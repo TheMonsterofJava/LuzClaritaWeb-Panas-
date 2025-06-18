@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.5</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.analistas</groupId>
+    <artifactId>LuzClaritaWeb</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>LuzClaritaWeb</name>
+    <description>Proyecto Final con Spring Boot</description>
+    <url />
+    <licenses>
+        <license />
+    </licenses>
+    <developers>
+        <developer />
+    </developers>
+    <scm>
+        <connection />
+        <developerConnection />
+        <tag />
+        <url />
+    </scm>
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect -->
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+
+        <!-- Añadimos lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Añadimos Spring BootSecurity -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/me.paulschwarz/spring-dotenv -->
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!--Añadimos
+        la Api de Google y facebook para poder utilizar sus servicios e iniciar sesion y registrase
+        con ellas -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <!-- MP -->
+        <dependency>
+            <groupId>com.mercadopago</groupId>
+            <artifactId>dx-java</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
+
+
+<!--Arbol
+general del proyecto-->
+<!-- LuzClaritaWeb-Panas-/
+├── .gitignore
+├── .mvn/
+│   └── wrapper/
+│       ├── maven-wrapper.jar
+│       └── maven-wrapper.properties
+├── Cambios
+├── lombok.jar
+├── mvnw
+├── mvnw.cmd
+├── nb-configuration.xml
+├── nbactions.xml
+├── ngrok.exe
+├── pom.xml
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/analistas/luzclaritaweb/
+│   │   │       ├── LuzClaritaWebApplication.java
+│   │   │       ├── model/
+│   │   │       │   ├── domain/
+│   │   │       │   │   ├── Caja.java
+│   │   │       │   │   ├── Categoria.java
+│   │   │       │   │   ├── Cliente.java
+│   │   │       │   │   ├── Compra.java
+│   │   │       │   │   ├── Consulta.java
+│   │   │       │   │   ├── Curso.java
+│   │   │       │   │   ├── DetalleCompra.java
+│   │   │       │   │   ├── Detalle_factura.java
+│   │   │       │   │   ├── Factura.java
+│   │   │       │   │   ├── Inscripcion.java
+│   │   │       │   │   ├── Inventario.java
+│   │   │       │   │   ├── Movimiento_Caja.java
+│   │   │       │   │   ├── Permiso.java
+│   │   │       │   │   ├── Producto.java
+│   │   │       │   │   ├── Proveedor.java
+│   │   │       │   │   ├── Receta.java
+│   │   │       │   │   └── Usuario.java
+│   │   │       │   ├── repository/
+│   │   │       │   │   ├── ICategoriaRepository.java
+│   │   │       │   │   ├── IClienteRepository.java
+│   │   │       │   │   ├── IConsultaRepository.java
+│   │   │       │   │   ├── IPermisoRepository.java
+│   │   │       │   │   ├── IProductoRepository.java
+│   │   │       │   │   └── IUsuarioRepository.java
+│   │   │       │   └── service/
+│   │   │       │       ├── ConsultaServiceImpl.java
+│   │   │       │       ├── IClienteService.java
+│   │   │       │       ├── IConsultaService.java
+│   │   │       │       ├── IProductoService.java
+│   │   │       │       ├── IUsuariosService.java
+│   │   │       │       └── ProductoServiceImpl.java
+│   │   │       └── web/
+│   │   │           ├── config/
+│   │   │           │   └── WebSecurityConfig.java
+│   │   │           └── controller/
+│   │   │               ├── ConsultasController.java
+│   │   │               ├── HomeController.java
+│   │   │               ├── LoginController.java
+│   │   │               ├── ProductoController.java
+│   │   │               ├── RecetaController.java
+│   │   │               ├── RegistroClienteController.java
+│   │   │               └── RegistroUsuarioController.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── import.sql
+│   │       ├── messages.properties
+│   │       ├── plantilla.html
+│   │       ├── static/
+│   │       │   ├── assets/
+│   │       │   │   ├── demo/
+│   │       │   │   ├── fonts/
+│   │       │   │   └── img/
+│   │       │   ├── cdn-cgi/
+│   │       │   │   ├── l/
+│   │       │   │   └── scripts/
+│   │       │   ├── css/
+│   │       │   │   ├── bootstrap.min.css
+│   │       │   │   ├── carrito.css
+│   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap-icons@1.11.3_font_bootstrap-icons.min.css
+│   │       │   │   ├── cdn.jsdelivr.net_npm_bootstrap@5.3.3_dist_css_bootstrap.min.css
+│   │       │   │   ├── inventario.css
+│   │       │   │   ├── login.css
+│   │       │   │   ├── style.css
+│   │       │   │   └── styles.css
+│   │       │   ├── font/
+│   │       │   │   ├── AmaticSC-Regular.ttf
+│   │       │   │   ├── DancingScript-VariableFont_wght.ttf
+│   │       │   │   ├── Pacifico.ttf
+│   │       │   │   ├── Quicksand-VariableFont_wght.ttf
+│   │       │   │   └── Yakuza Lobster.ttf
+│   │       │   ├── img/
+│   │       │   │   ├── 123.png
+│   │       │   │   ├── car.jpg
+│   │       │   │   ├── car2.jpg
+│   │       │   │   ├── carr1.jpg
+│   │       │   │   ├── cart.png
+│   │       │   │   ├── login-background/
+│   │       │   │   ├── logo.png
+│   │       │   │   ├── producto-fondo.jpg
+│   │       │   │   ├── torta.jpeg
+│   │       │   │   ├── torta2.jpeg
+│   │       │   │   └── torta3.jpeg
+│   │       │   └── js/
+│   │       │       ├── carrito.js
+│   │       │       ├── datatables/
+│   │       │       ├── inventario-list.js
+│   │       │       ├── litepicker.js
+│   │       │       ├── login.js
+│   │       │       ├── markdown.js
+│   │       │       ├── productos-list.js
+│   │       │       ├── proveedor-list.js
+│   │       │       ├── scripts.js
+│   │       │       └── toasts.js
+│   │       └── templates/
+│   │           ├── Compras/
+│   │           │   ├── form.html
+│   │           │   └── listado.html
+│   │           ├── accessDenied.html
+│   │           ├── admin/
+│   │           │   ├── account-profile.html
+│   │           │   ├── dashboard-1.html
+│   │           │   ├── user-management-add-user.html
+│   │           │   ├── user-management-edit-user.html
+│   │           │   ├── user-management-groups-list.html
+│   │           │   └── user-management-list.html
+│   │           ├── consejos/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── consultas/
+│   │           │   ├── consulta.html
+│   │           │   └── list.html
+│   │           ├── index.html
+│   │           ├── inicioSesion/
+│   │           │   ├── login.html
+│   │           │   └── login3.html
+│   │           ├── inventario/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── layout/
+│   │           │   └── layout.html
+│   │           ├── movimientos/
+│   │           │   └── movimientos_caja.html
+│   │           ├── productos/
+│   │           │   ├── form.html
+│   │           │   ├── list.html
+│   │           │   └── list2.html
+│   │           ├── proveedor/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── receta-clasica/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           ├── receta-especial/
+│   │           │   ├── form.html
+│   │           │   └── list.html
+│   │           └── success.html
+│   └── test/
+│       └── java/
+│           └── com/analistas/luzclaritaweb/
+│               └── LuzClaritaWebApplicationTests.java -->

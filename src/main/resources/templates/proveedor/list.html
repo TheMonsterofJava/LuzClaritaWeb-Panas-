@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+</head>
+
+<body class="form-body">
+    <div layout:fragment="contenido" class="container-fluid py-4">
+        <div class="card card-text">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title" th:text="${titulo}">Proveedores</h4>
+            </div>
+            <div class="card-body shadow p-3 mb-5 bg-body rounded">
+                <div class="table-responsive">
+                    <table id="tabla-proveedores" class="table table-striped table-hover table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Contacto</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${proveedorList}" th:class="${not p.activo} ? 'table-secondary' : ''">
+                                <td th:text="${p.id}"></td>
+                                <td th:text="${p.nombre}"></td>
+                                <td th:text="${p.contacto}"></td>
+                                <td th:text="${p.telefono}"></td>
+                                <td th:text="${p.email}"></td>
+                                <td th:text="${p.direccion}"></td>
+                                <td>
+                                    <span th:text="${p.activo} ? 'Activo' : 'Inactivo'"
+                                        th:class="${p.activo} ? 'badge bg-success' : 'badge bg-danger'"></span>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <a th:href="@{/proveedor/editar/} + ${p.id}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a th:href="@{/proveedor/eliminar/} + ${p.id}" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar este proveedor?');">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <a th:href="@{/proveedor/nuevo}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nuevo proveedor
+                        </a>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <a th:href="@{/compras/nueva}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Compra a Proveedores
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>aaa
+    </div>
+    <script th:fragment="js" th:src="@{/js/proveedor-list.js}"></script>
+</body>
+
+</html>

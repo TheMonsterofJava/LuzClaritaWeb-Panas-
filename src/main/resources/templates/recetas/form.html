@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <title th:text="${titulo}"></title>
+    <style>
+        :root {
+            --primary: #ff6f61;
+            --secondary: #f8d0c0;
+            --accent: #ff9e80;
+            --dark: #6d4c41;
+            --light: #fff8f0;
+        }
+        
+        .form-body {
+            background-color: #fff9f5;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .card-receta {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header-receta {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+        
+        .titulo-form {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.8rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-body-receta {
+            padding: 2rem;
+            background-color: white;
+        }
+        
+        .form-group-receta {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        .form-group-receta label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control-receta {
+            border: 2px solid #f0e6e0;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fffcf9;
+        }
+        
+        .form-control-receta:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(255, 111, 97, 0.25);
+            background-color: white;
+        }
+        
+        .form-control-receta::placeholder {
+            color: #c7b8b0;
+        }
+        
+        .btn-guardar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+        
+        .btn-guardar:hover {
+            background: #ff5a4c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+        }
+        
+        .btn-cancelar {
+            background: white;
+            color: var(--dark);
+            border: 2px solid #f0e6e0;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancelar:hover {
+            background: #f9f1ed;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .card-footer-receta {
+            background-color: #f9f1ed;
+            border-top: none;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px dashed #f0e6e0;
+            display: none;
+        }
+        
+        .form-icon {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: var(--primary);
+            cursor: help;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body-receta {
+                padding: 1.5rem;
+            }
+            
+            .card-footer-receta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .btn-guardar, .btn-cancelar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="form-body">
+
+<div layout:fragment="contenido" class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-receta">
+                <div class="card-header card-header-receta">
+                    <h4 class="titulo-form" th:text="${titulo}"></h4>
+                </div>
+
+                <form th:action="@{/recetas/guardar}" method="post" th:object="${receta}" accept-charset="UTF-8" id="recetaForm">
+                    <div class="card-body card-body-receta">
+                        <!-- Nombre de la receta -->
+                        <div class="form-group-receta">
+                            <label for="nombre_receta">
+                                <i class="bi bi-card-heading me-2"></i>Nombre de la receta
+                            </label>
+                            <input id="nombre_receta" type="text" class="form-control form-control-receta"
+                                   th:field="*{nombre_receta}"
+                                   th:errorClass="'is-invalid'" required 
+                                   placeholder="Ej: Torta de chocolate sin TACC"/>
+                            <small class="error-message" th:errors="*{nombre_receta}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Ingresa un nombre descriptivo para tu receta"></i>
+                        </div>
+
+                        <!-- Descripción de la receta -->
+                        <div class="form-group-receta">
+                            <label for="descripcion">
+                                <i class="bi bi-chat-square-text me-2"></i>Descripción breve
+                            </label>
+                            <input id="descripcion" type="text" class="form-control form-control-receta"
+                                   th:field="*{descripcion}"
+                                   th:errorClass="'is-invalid'" required 
+                                   placeholder="Ej: Deliciosa torta de chocolate sin gluten"/>
+                            <small class="error-message" th:errors="*{descripcion}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Describe brevemente la receta (máx. 500 caracteres)"></i>
+                        </div>
+
+                        <!-- Ingredientes -->
+                        <div class="form-group-receta">
+                            <label for="ingredientes">
+                                <i class="bi bi-cup-straw me-2"></i>Ingredientes
+                            </label>
+                            <textarea id="ingredientes" class="form-control form-control-receta form-textarea"
+                                      th:field="*{ingredientes}"
+                                      th:errorClass="'is-invalid'"
+                                      rows="4" required 
+                                      placeholder="Ej: 
+- 2 tazas de harina sin TACC
+- 3 huevos
+- 1 taza de azúcar"></textarea>
+                            <small class="error-message" th:errors="*{ingredientes}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Lista los ingredientes, uno por línea"></i>
+                        </div>
+
+                        <!-- Pasos -->
+                        <div class="form-group-receta">
+                            <label for="pasos">
+                                <i class="bi bi-list-ol me-2"></i>Pasos de preparación
+                            </label>
+                            <textarea id="pasos" class="form-control form-control-receta form-textarea"
+                                      th:field="*{pasos}"
+                                      th:errorClass="'is-invalid'"
+                                      rows="6" required 
+                                      placeholder="Ej: 
+1. Precalentar el horno a 180°C
+2. Mezclar los ingredientes secos..."></textarea>
+                            <small class="error-message" th:errors="*{pasos}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Describe cada paso de la preparación, uno por línea"></i>
+                        </div>
+
+                        <!-- Tiempo de preparación -->
+                        <div class="form-group-receta">
+                            <label for="tiempo">
+                                <i class="bi bi-clock me-2"></i>Tiempo de preparación
+                            </label>
+                            <input id="tiempo" type="text" class="form-control form-control-receta"
+                                   th:field="*{tiempo}"
+                                   th:errorClass="'is-invalid'" required 
+                                   placeholder="Ej: 45 minutos"/>
+                            <small class="error-message" th:errors="*{tiempo}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Tiempo estimado para preparar la receta"></i>
+                        </div>
+
+                        <!-- Imagen Link -->
+                        <div class="form-group-receta">
+                            <label for="imagen_link">
+                                <i class="bi bi-image me-2"></i>URL de la imagen
+                            </label>
+                            <input id="imagen_link" type="text" class="form-control form-control-receta"
+                                   th:field="*{imagen_link}"
+                                   th:errorClass="'is-invalid'" required 
+                                   placeholder="Ej: https://ejemplo.com/imagen.jpg"/>
+                            <small class="error-message" th:errors="*{imagen_link}"></small>
+                            <i class="bi bi-info-circle form-icon" data-bs-toggle="tooltip" data-bs-placement="top" 
+                               title="Pega la URL de una imagen representativa de la receta"></i>
+                            <img id="imagePreview" class="preview-image" src="#" alt="Vista previa de la imagen" style="display: none;"/>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="card-footer card-footer-receta">
+                        <a th:href="@{/recetas/listado}" class="btn btn-cancelar">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-guardar">
+                            <i class="bi bi-save me-1"></i> Guardar Receta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:fragment="js">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                placement: 'top',
+                trigger: 'hover focus',
+                delay: { "show": 300, "hide": 100 }
+            });
+        });
+
+        // Vista previa de la imagen
+        const imageLinkInput = document.getElementById('imagen_link');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        imageLinkInput.addEventListener('change', function() {
+            if (this.value) {
+                imagePreview.src = this.value;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+        
+        // Mostrar alerta si hay mensajes flash
+        const successMessage = /*[[${success}]]*/ null;
+        if (successMessage) {
+            Swal.fire({
+                title: '¡Éxito!',
+                text: successMessage,
+                icon: 'success',
+                confirmButtonColor: '#ff6f61',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            }).then(() => {
+                if (window.location.pathname.includes('/recetas/form')) {
+                    window.location.href = '/recetas/listado';
+                }
+            });
+        }
+        
+        const errorMessage = /*[[${error}]]*/ null;
+        if (errorMessage) {
+            Swal.fire({
+                title: 'Error',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#ff6f61'
+            });
+        }
+        
+        // Validación antes de enviar el formulario
+        document.getElementById('recetaForm').addEventListener('submit', function(e) {
+            let isValid = true;
+            const requiredFields = this.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Campos incompletos',
+                    text: 'Por favor completa todos los campos requeridos',
+                    icon: 'warning',
+                    confirmButtonColor: '#ff6f61'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

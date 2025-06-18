@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Movimientos de Caja</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --color-primary: #ff6f61;
+            --color-secondary: #6c757d;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-info: #17a2b8;
+            --color-light: #f8f9fa;
+            --color-dark: #343a40;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ecd8df;
+            color: #333;
+        }
+        
+        .bg-image {
+            background-color: #f5edf3;
+            background-image: linear-gradient(to bottom, rgba(233, 215, 229, 0.9), rgba(220, 194, 217, 0.8)), 
+                              url('/img/background-pattern.png');
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        
+        .navbar {
+            background-color:  #F8D0C0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand img {
+            transition: transform 0.3s;
+        }
+        
+        .navbar-brand:hover img {
+            transform: scale(1.1);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--color-dark);
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+        
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+        
+        .breadcrumb-item.active {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .titulo-resaltado {
+            color: var(--color-dark);
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        
+        .titulo-resaltado::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--color-primary);
+            border-radius: 2px;
+        }
+        
+        .card-resumen {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .card-resumen:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .ingresos-card {
+            border-left: 5px solid var(--color-success);
+        }
+        
+        .egresos-card {
+            border-left: 5px solid var(--color-danger);
+        }
+        
+        .saldo-card {
+            border-left: 5px solid var(--color-info);
+        }
+        
+        .badge-ingreso {
+            background-color: var(--color-success);
+            color: white;
+            padding: 0.35em 0.65em;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .badge-egreso {
+            background-color: var(--color-danger);
+            color: white;
+            padding: 0.35em 0.65em;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .filtros-card {
+            background-color: white;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .btn-filtrar {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-filtrar:hover {
+            background-color: #ff4a3d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 111, 97, 0.3);
+        }
+        
+        .movimientos-table {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .movimientos-table th {
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+        }
+        
+        .movimientos-table td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+        }
+        
+        .movimientos-table tr:hover {
+            background-color: rgba(255, 111, 97, 0.05);
+        }
+        
+        .table-responsive {
+            border-radius: 15px;
+        }
+        
+        footer {
+            background-color:  #F8D0C0;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        footer a:hover {
+            color: var(--color-primary);
+        }
+        
+        .text-success {
+            color: var(--color-success) !important;
+        }
+        
+        .text-danger {
+            color: var(--color-danger) !important;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+
+<body class="bg-image">
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/home">
+                <img src="/img/logo.png" alt="Logo" width="45" height="45">
+                <span class="ms-2 fw-bold" style="color: var(--color-primary);">Luz Clarita</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
+                    </li>
+                </ul>
+                <div>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="bi bi-person-circle"></i> Mi Cuenta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container py-4">
+        <div id="hero" class="mb-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><b>Movimientos de Caja</b></li>
+                </ol>
+            </nav>
+            <h2 class="titulo text-center mb-4 col-12 h1 titulo-resaltado" th:text="${titulo}">Movimientos de Caja</h2>
+        </div>
+
+        <!-- Card de Filtros -->
+        <div class="card filtros-card mb-4 animated-card">
+            <div class="card-body">
+                <form th:action="@{/caja/movimientos}" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Fecha Inicio</label>
+                        <input type="date" class="form-control" 
+                               th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" 
+                               name="fechaInicio" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Fecha Fin</label>
+                        <input type="date" class="form-control" 
+                               th:value="${#temporals.format(fechaFin, 'yyyy-MM-dd')}" 
+                               name="fechaFin" required>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-filtrar">
+                            <i class="bi bi-funnel me-2"></i>Filtrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Cards de Resumen -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3 animated-card delay-1">
+                <div class="card card-resumen ingresos-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted">Ingresos</h5>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-arrow-down-circle text-success fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3 animated-card delay-2">
+                <div class="card card-resumen egresos-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted">Egresos</h5>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-arrow-up-circle text-danger fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3 animated-card delay-3">
+                <div class="card card-resumen saldo-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted">Saldo Actual</h5>
+                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
+                            </div>
+                            <div class="bg-info bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-wallet2 text-info fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Movimientos -->
+        <div class="card shadow-sm movimientos-table animated-card">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="bi bi-list-check me-2"></i>Detalle de Movimientos
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Fecha/Hora</th>
+                                <th>Tipo</th>
+                                <th class="text-end">Monto</th>
+                                <th>Descripción</th>
+                                <th>Operador</th>
+                                <th>Relación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="mov : ${movimientos}">
+                                <td class="text-center" th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td>
+                                    <span th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'badge badge-ingreso' : 'badge badge-egreso'" 
+                                          class="badge"
+                                          th:text="${mov.tipoOperacion.name()}"></span>
+                                </td>
+                                <td class="text-end fw-bold" 
+                                    th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'text-success' : 'text-danger'"
+                                    th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 2, 'COMMA')}"></td>
+                                <td th:text="${mov.descripcion}"></td>
+                                <td th:text="${mov.operador.nomb_usu}"></td>
+                                <td>
+                                    <span th:if="${mov.factura != null}" class="badge bg-primary">
+                                        <i class="bi bi-receipt me-1"></i>
+                                        <span th:text="${'Factura #' + mov.factura.numero_factura}"></span>
+                                    </span>
+                                    <span th:if="${mov.compra != null}" class="badge bg-secondary">
+                                        <i class="bi bi-cart me-1"></i>
+                                        <span th:text="${'Compra: ' + mov.compra.descripcion.substring(0, Math.min(mov.compra.descripcion.length(), 15)) + '...'}"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted" th:text="'Mostrando ' + ${movimientos.size()} + ' movimientos'"></small>
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-printer me-1"></i> Imprimir Reporte
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Luz Clarita</h5>
+                    <p class="text-muted">¡Hace más de 10 años llenando de dulzura cada momento!</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/home">Inicio</a></li>
+                        <li class="mb-2"><a href="/productos/listado">Productos</a></li>
+                        <li class="mb-2"><a href="/caja/movimientos">Caja</a></li>
+                        <li class="mb-2"><a href="/consultas/consulta">Consultas</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="bi bi-whatsapp me-2"></i> 3624-883171</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Calle 123, Resistencia</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> luzclarita@gmail.com</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter-x fs-4"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p class="mb-0 text-muted">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Scripts adicionales -->
+    <script>
+        // Animación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de aparición gradual
+            const cards = document.querySelectorAll('.animated-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+            });
+            
+            // Pequeño retraso para asegurar que las animaciones se vean bien
+            setTimeout(() => {
+                cards.forEach(card => {
+                    card.style.opacity = '1';
+                });
+            }, 100);
+            
+            // Tooltips para los badges de relación
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    <script th:fragment="js">
+        
+    </script>
+</body>
+</html>

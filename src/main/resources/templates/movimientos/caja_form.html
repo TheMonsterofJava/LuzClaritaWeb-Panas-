@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Abrir Nueva Caja</title>
+</head>
+<body>
+<div layout:fragment="contenido" class="container py-4">
+    <div class="card shadow p-3 mb-5 bg-body rounded">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Abrir Nueva Caja</h4>
+        </div>
+        <form th:action="@{/caja/guardar}" method="post" th:object="${caja}">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Saldo Inicial</label>
+                    <input type="number" step="0.01" min="0" th:field="*{saldoInicial}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Usuario (opcional)</label>
+                    <input type="text" th:field="*{usuario.nomb_usu}" class="form-control" readonly
+                        th:if="${caja.usuario != null}" />
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a th:href="@{/caja/listado}" class="btn btn-outline-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Abrir Caja</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:fragment="js"></script>
+</body>
+</html>
