@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+</head>
+
+<body>
+    <div layout:fragment="contenido" class="container-fluid py-4 ">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
+            <div class="card-header">
+                <h4 class="text-primary" th:text="${titulo}"></h4>
+            </div>
+            <form th:action="@{/proveedor/guardar}" method="post" th:object="${proveedor}">
+                <div class="card-body">
+                    <div class="form mb-3">
+                        <label for="nom" class="form-label">Nombre</label>
+                        <input id="nom" type="text" class="form-control" placeholder="Nombre del proveedor"
+                        th:field="*{nombre}"
+                        th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-label text-danger" th:errors="*{nombre}"></small>
+                    </div> 
+
+                    <div class="form mb-3">
+                        <label for="cont" class="form-label">Contacto</label>
+                        <input type="text" class="form-control" id="cont" placeholder="Nombre del contacto"
+                        th:field="*{contacto}"
+                        th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-label text-danger" th:errors="*{contacto}"></small>
+                    </div>
+
+                    <div class="form mb-3">
+                        <label for="tel" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="tel" placeholder="Ej: 3624123456"
+                        th:field="*{telefono}"
+                        th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-label text-danger" th:errors="*{telefono}"></small>
+                    </div>
+
+                    <div class="form mb-3">
+                        <label for="dir" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="dir" placeholder="Dirección completa"
+                        th:field="*{direccion}"
+                        th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-label text-danger" th:errors="*{direccion}"></small>
+                    </div>
+
+                    <div class="form mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="correo@ejemplo.com"
+                        th:field="*{email}"
+                        th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-label text-danger" th:errors="*{email}"></small>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a th:href="@{/proveedor/listado}" class="btn btn-outline-secondary me-md-2">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>        
+
+    <script th:fragment="js"></script>
+</body>
+</html>

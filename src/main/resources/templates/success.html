@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Success</title>
+    </head>
+    <body>
+        <h1>Success!</h1>
+        <h4 th:text="${titulo}" class="text-black-50 my-4"></h4>
+        <h5>Datos de la Operación</h5>
+        <p th:text="'Identificador del Pago: ' + ${paymentId}"></p>
+        <p th:text="'Estado del Pago: ' + ${status}"></p>
+        <!-- <p th:text="'Referencia Externa' + ${externalReference}"></p> -->
+        <p th:text="'Identificador de Orden de Pago: ' + ${merchantOrderId}"></p>
+        <br />
+        <p class="text-info">Ya puede cerrar esta ventana</p>
+    </body>
+</html>

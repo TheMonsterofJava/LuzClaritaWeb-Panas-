@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <title th:text="${titulo}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        .form-body {
+            background-color: #f8f9fa;
+        }
+        .card-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .card-header {
+            background-color: #F8C8DC;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .titulo-form {
+            margin: 0;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #5a5c69;
+        }
+        .form-control {
+            border-radius: 5px;
+            padding: 10px 15px;
+            border: 1px solid #d1d3e2;
+        }
+        .form-control:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #3a5bbf;
+            border-color: #3a5bbf;
+        }
+        .btn-secondary {
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        .card-footer {
+            background-color: #f8f9fc;
+            border-top: 1px solid #e3e6f0;
+            padding: 1.5rem;
+            border-radius: 0 0 10px 10px;
+            text-align: right;
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+        }
+        .invalid-feedback {
+            font-size: 0.85rem;
+        }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        .has-error {
+            margin-bottom: 15px;
+        }
+        /* Estilos para los nuevos campos */
+        .ingredientes-container {
+            margin-bottom: 15px;
+        }
+        .ingrediente-item {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .ingrediente-item input {
+            flex-grow: 1;
+            margin-right: 8px;
+        }
+        .btn-add-ingrediente {
+            margin-bottom: 15px;
+        }
+        .editor-textarea {
+            min-height: 150px;
+        }
+    </style>
+</head>
+
+<body class="form-body">
+
+    <div layout:fragment="contenido" class="container py-5">
+
+        <div class="card card-form">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="titulo-form" th:text="${titulo}"></h4>
+                <i class="fas fa-book fa-2x"></i>
+            </div>
+            
+            <!-- Mostrar alerta de error general -->
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <form th:action="@{/cursos/save}" method="post" th:object="${curso}">
+                <input type="hidden" th:field="*{id}" />
+                <div class="card-body">
+                    
+                    <!-- Nombre del Curso -->
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('nombreCurso')} ? 'has-error'">
+                        <label for="nombreCurso" class="form-label">
+                            <i class="fas fa-heading me-2"></i>Nombre del Curso:
+                        </label>
+                        <input type="text" id="nombreCurso" th:field="*{nombreCurso}" class="form-control" 
+                            placeholder="Ingrese el nombre del curso (5-60 caracteres)" 
+                            th:classappend="${#fields.hasErrors('nombreCurso')} ? 'is-invalid'" />
+                        <div th:if="${#fields.hasErrors('nombreCurso')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('nombreCurso')}" th:text="${err}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('descripcion')} ? 'has-error'">
+                        <label for="descripcion" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Descripción:
+                        </label>
+                        <textarea id="descripcion" th:field="*{descripcion}" class="form-control" 
+                                rows="4" placeholder="Describa el contenido del curso (máx. 500 caracteres)"
+                                th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid'"></textarea>
+                        <div th:if="${#fields.hasErrors('descripcion')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('descripcion')}" th:text="${err}"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Precio -->
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('precio')} ? 'has-error'">
+                        <label for="precio" class="form-label">
+                            <i class="fas fa-dollar-sign me-2"></i>Precio:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" step="0.01" min="0.01" id="precio" th:field="*{precio}" 
+                                class="form-control" placeholder="0.00" 
+                                th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid'" />
+                        </div>
+                        <div th:if="${#fields.hasErrors('precio')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('precio')}" th:text="${err}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Video URL -->
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('videoUrl')} ? 'has-error'">
+                        <label for="videoUrl" class="form-label">
+                            <i class="fab fa-youtube me-2 text-danger"></i>Video de YouTube:
+                        </label>
+                        <input type="url" id="videoUrl" th:field="*{videoUrl}" class="form-control" 
+                               placeholder="Ej: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                               th:classappend="${#fields.hasErrors('videoUrl')} ? 'is-invalid'" />
+                        <div th:if="${#fields.hasErrors('videoUrl')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('videoUrl')}" th:text="${err}"></span>
+                        </div>
+                        <small class="form-text text-muted">
+                            Pegue el enlace completo del video (ej: https://youtu.be/... o https://www.youtube.com/watch?v=...)
+                        </small>
+                        <!-- Vista previa del video solo si es válida -->
+                        <div class="ratio ratio-16x9 mt-3" 
+                             th:if="${curso.videoUrl != null and #strings.contains(curso.videoUrl, 'youtu') and #strings.contains(curso.videoUrl, 'v=')}" >
+                            <iframe th:src="'https://www.youtube.com/embed/' + ${#strings.substringAfter(curso.videoUrl, 'v=')}" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('imagenUrl')} ? 'has-error'">
+                        <label for="imagenUrl" class="form-label">
+                            <i class="fas fa-image me-2"></i>Imagen del Curso (URL):
+                        </label>
+                        <input type="url" id="imagenUrl" th:field="*{imagenUrl}" class="form-control" 
+                            placeholder="Ej: https://ejemplo.com/imagen.jpg"
+                            th:classappend="${#fields.hasErrors('imagenUrl')} ? 'is-invalid'" />
+                        <div th:if="${#fields.hasErrors('imagenUrl')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('imagenUrl')}" th:text="${err}"></span>
+                        </div>
+                        <small class="form-text text-muted">
+                            Ingrese la URL completa de la imagen (ej: https://...jpg, https://...png)
+                        </small>
+                        <!-- Vista previa de la imagen -->
+                        <div class="mt-3" th:if="${curso.imagenUrl != null and !curso.imagenUrl.isEmpty()}">
+                            <img th:src="${curso.imagenUrl}" alt="Vista previa de la imagen" 
+                            style="max-width: 200px; max-height: 200px;" class="img-thumbnail" />
+                            <div class="mt-2">
+                                <a th:href="${curso.imagenUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt me-1"></i> Ver imagen completa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ingredientes (Lista dinámica) -->
+                    <div class="form-group mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-list-check me-2"></i>Ingredientes:
+                        </label>
+                        <div class="ingredientes-container" id="ingredientesContainer">
+                            <!-- Iterar sobre los ingredientes existentes -->
+                            <div th:each="ingrediente, stat : *{ingredientes}" class="ingrediente-item">
+                                <input type="text" th:name="ingredientes" th:value="${ingrediente}" 
+                                       class="form-control" placeholder="Ej: 200g harina" />
+                                <button type="button" class="btn btn-danger btn-remove-ingrediente">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <!-- Campo vacío para nuevo ingrediente -->
+                            <div class="ingrediente-item">
+                                <input type="text" name="ingredientes" class="form-control" 
+                                       placeholder="Ej: 200g harina" />
+                                <button type="button" class="btn btn-danger btn-remove-ingrediente">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" id="btnAddIngrediente" class="btn btn-sm btn-primary btn-add-ingrediente">
+                            <i class="fas fa-plus me-1"></i> Agregar Ingrediente
+                        </button>
+                    </div>
+
+                    <!-- Pasos (Textarea con formato) -->
+                    <div class="form-group mb-4" th:classappend="${#fields.hasErrors('pasos')} ? 'has-error'">
+                        <label for="pasos" class="form-label">
+                            <i class="fas fa-list-ol me-2"></i>Pasos de Preparación:
+                        </label>
+                        <textarea id="pasos" th:field="*{pasos}" class="form-control editor-textarea" 
+                                  rows="6" placeholder="Describa los pasos en orden. Puede usar saltos de línea para separarlos."
+                                  th:classappend="${#fields.hasErrors('pasos')} ? 'is-invalid'"></textarea>
+                        <div th:if="${#fields.hasErrors('pasos')}" class="invalid-feedback">
+                            <span th:each="err : ${#fields.errors('pasos')}" th:text="${err}"></span>
+                        </div>
+                        <small class="form-text text-muted">
+                            Ejemplo:<br>
+                            1. Mezclar los ingredientes secos<br>
+                            2. Agregar los líquidos poco a poco<br>
+                            3. Hornear a 180°C por 30 minutos
+                        </small>
+                    </div>
+
+                    <!-- Consejos (Textarea) -->
+                    <div class="form-group mb-4">
+                        <label for="consejos" class="form-label">
+                            <i class="fas fa-lightbulb me-2 text-warning"></i>Consejos y Tips:
+                        </label>
+                        <textarea id="consejos" th:field="*{consejos}" class="form-control editor-textarea" 
+                                  rows="4" placeholder="Agregue consejos útiles para esta receta..."></textarea>
+                        <small class="form-text text-muted">
+                            Ejemplo: "Para un bizcocho más esponjoso, tamizar la harina 3 veces"
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-save me-1"></i> Guardar
+                    </button>
+                    <a th:href="@{/cursos/listado}" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap y Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <!-- Scripts propios -->
+    <script th:fragment="js">
+        // Validación de precio mínimo
+        document.getElementById('precio')?.addEventListener('change', function() {
+            if (this.value <= 0) {
+                this.value = '0.01';
+            }
+        });
+        
+        // Vista previa del video al cambiar el campo
+        document.getElementById('videoUrl')?.addEventListener('input', function() {
+            const videoContainer = this.closest('.form-group').querySelector('.ratio');
+            if (videoContainer) {
+                videoContainer.style.display = this.value ? 'block' : 'none';
+            }
+        });
+        
+        // Manejo dinámico de ingredientes
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('ingredientesContainer');
+            const btnAdd = document.getElementById('btnAddIngrediente');
+            
+            // Agregar nuevo campo de ingrediente
+            btnAdd?.addEventListener('click', function() {
+                const newItem = document.createElement('div');
+                newItem.className = 'ingrediente-item';
+                newItem.innerHTML = `
+                    <input type="text" name="ingredientes" class="form-control" placeholder="Ej: 200g harina" />
+                    <button type="button" class="btn btn-danger btn-remove-ingrediente">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(newItem);
+            });
+            
+            // Eliminar ingrediente (delegación de eventos)
+            container?.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-remove-ingrediente') || 
+                    e.target.closest('.btn-remove-ingrediente')) {
+                    const item = e.target.closest('.ingrediente-item');
+                    // No permitir eliminar el último campo
+                    if (container.querySelectorAll('.ingrediente-item').length > 1) {
+                        item.remove();
+                    }
+                }
+            });
+        });
+        
+        // Vista previa de la imagen al cambiar el campo
+    document.getElementById('imagenUrl')?.addEventListener('input', function() {
+        const previewContainer = this.closest('.form-group').querySelector('.mt-3');
+        const imgPreview = previewContainer?.querySelector('img');
+        
+        if (this.value && imgPreview) {
+            imgPreview.src = this.value;
+            previewContainer.style.display = 'block';
+        } else if (previewContainer) {
+            previewContainer.style.display = 'none';
+        }
+    });
+    </script>
+</body>
+</html>

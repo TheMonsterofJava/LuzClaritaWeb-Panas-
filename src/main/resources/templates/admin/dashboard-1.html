@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Panel de administración para pastelería" />
+    <meta name="author" content="" />
+    <title>Panel de Control - Pastelería</title>
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #D4A76A; /* Color pastel cálido */
+            --secondary-color: #F8EDEB;
+            --accent-color: #FFB5A7;
+            --dark-color: #6D6875;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar {
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar .nav-link {
+            color: var(--dark-color);
+            border-radius: 5px;
+            margin: 2px 0;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .stat-card .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, white 100%);
+            border: none;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        /* Estilos adicionales para los menús desplegables */
+        .submenu {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .submenu.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .submenu .nav-link {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-left: 2px solid var(--primary-color);
+        }
+        
+        .submenu .nav-link:hover {
+            color: var(--primary-color);
+            background-color: transparent;
+        }
+        
+        .nav-item.has-submenu > .nav-link {
+            position: relative;
+        }
+        
+        .nav-item.has-submenu > .nav-link:after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+        
+        .nav-item.has-submenu.active > .nav-link:after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Superior -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <a class="navbar-brand fw-bold ms-3" href="#">
+                <i class="fas fa-birthday-cake me-2" style="color: var(--primary-color);"></i>
+                Pastelería Admin
+            </a>
+            
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span id="username">Administrador</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column p-3" style="width: 250px;">
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-shopping-bag"></i>
+                    Pedidos
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pedidos/nuevos">
+                            <i class="fas fa-plus-circle me-1"></i>
+                            Nuevos Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pedidos/historial">
+                            <i class="fas fa-history me-1"></i>
+                            Historial
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-utensils"></i>
+                    Productos
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/productos/listado">
+                            <i class="fas fa-list me-1"></i>
+                            Lista de Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/productos/nuevo">
+                            <i class="fas fa-plus me-1"></i>
+                            Agregar Producto
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-box-open"></i>
+                    Inventario
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inventario/stock">
+                            <i class="fas fa-boxes me-1"></i>
+                            Control de Stock
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/inventario/ingredientes">
+                            <i class="fas fa-carrot me-1"></i>
+                            Ingredientes
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-truck"></i>
+                    Proveedores
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proveedores/listado">
+                            <i class="fas fa-address-book me-1"></i>
+                            Lista de Proveedores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proveedores/compras">
+                            <i class="fas fa-file-invoice-dollar me-1"></i>
+                            Compras
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-cash-register"></i>
+                    Ventas
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ventas/diarias">
+                            <i class="fas fa-calendar-day me-1"></i>
+                            Ventas Diarias
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ventas/reportes">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Reportes
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Cursos
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cursos/listado">
+                            <i class="fas fa-list me-1"></i>
+                            Listado de Cursos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cursos/form">
+                            <i class="fas fa-plus me-1"></i>
+                            Agregar Curso
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-users"></i>
+                    Clientes
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes/registro">
+                            <i class="fas fa-user-plus me-1"></i>
+                            Registro
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes/fidelizacion">
+                            <i class="fas fa-award me-1"></i>
+                            Fidelización
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="nav-item mb-1 has-submenu">
+                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
+                    <i class="fas fa-user-cog"></i>
+                    Usuarios
+                </a>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/usuarios/permisos">
+                            <i class="fas fa-key me-1"></i>
+                            Permisos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/usuarios/registro">
+                            <i class="fas fa-user-edit me-1"></i>
+                            Nuevo Usuario
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        <!-- Encabezado -->
+        <header class="page-header p-4 mb-4">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="page-header-title">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Panel de Control
+                        </h1>
+                        <p class="page-header-subtitle mb-0">Resumen de tu pastelería</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar...">
+                            <button class="btn btn-light" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card stat-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="stat-label">VENTAS HOY</p>
+                                <h3 class="stat-value">$12,450</h3>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-dollar-sign fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 12%</span>
+                            <span class="text-muted ms-2">vs ayer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card stat-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="stat-label">PEDIDOS HOY</p>
+                                <h3 class="stat-value">18</h3>
+                            </div>
+                            <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-shopping-bag fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 5%</span>
+                            <span class="text-muted ms-2">vs ayer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card stat-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="stat-label">PRODUCTOS</p>
+                                <h3 class="stat-value">42</h3>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-utensils fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-danger"><i class="fas fa-arrow-down me-1"></i> 2</span>
+                            <span class="text-muted ms-2">bajo stock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card stat-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="stat-label">CLIENTES NUEVOS</p>
+                                <h3 class="stat-value">5</h3>
+                            </div>
+                            <div class="bg-info bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-users fa-2x text-info"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 25%</span>
+                            <span class="text-muted ms-2">este mes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bienvenida y Resumen -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mb-4">
+                <div class="card welcome-card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">¡Bienvenido de nuevo!</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#">Actualizar</a></li>
+                                    <li><a class="dropdown-item" href="#">Configurar</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <p class="text-muted flex-grow-1">
+                            Aquí tienes un resumen de las actividades recientes de tu pastelería. 
+                            Hoy tienes 3 pedidos pendientes y 2 productos con stock bajo.
+                        </p>
+                        
+                        <div class="mt-auto">
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="small text-muted mb-0">
+                                <span class="fw-bold">65%</span> de tus metas mensuales alcanzadas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Productos más vendidos</h5>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center">
+                                <img src="https://via.placeholder.com/60" alt="Pastel de chocolate" class="product-img me-3">
+                                <div>
+                                    <h6 class="mb-1">Pastel de Chocolate</h6>
+                                    <small class="text-muted">12 ventas esta semana</small>
+                                </div>
+                                <span class="badge bg-primary ms-auto">$350</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <img src="https://via.placeholder.com/60" alt="Cupcakes" class="product-img me-3">
+                                <div>
+                                    <h6 class="mb-1">Cupcakes</h6>
+                                    <small class="text-muted">8 ventas esta semana</small>
+                                </div>
+                                <span class="badge bg-primary ms-auto">$180</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <img src="https://via.placeholder.com/60" alt="Galletas" class="product-img me-3">
+                                <div>
+                                    <h6 class="mb-1">Galletas Decoradas</h6>
+                                    <small class="text-muted">5 ventas esta semana</small>
+                                </div>
+                                <span class="badge bg-primary ms-auto">$220</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos y Tablas -->
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Ventas mensuales</h5>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Pedidos recientes</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1254</td>
+                                        <td>María González</td>
+                                        <td>$850</td>
+                                        <td><span class="badge bg-success">Completado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1253</td>
+                                        <td>Juan Pérez</td>
+                                        <td>$1,200</td>
+                                        <td><span class="badge bg-warning text-dark">En proceso</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1252</td>
+                                        <td>Ana Martínez</td>
+                                        <td>$450</td>
+                                        <td><span class="badge bg-danger">Cancelado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1251</td>
+                                        <td>Carlos Sánchez</td>
+                                        <td>$680</td>
+                                        <td><span class="badge bg-success">Completado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1250</td>
+                                        <td>Laura Díaz</td>
+                                        <td>$920</td>
+                                        <td><span class="badge bg-info">Enviado</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inventario bajo -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Productos con stock bajo</h5>
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Tienes 3 productos con stock bajo que necesitan atención.
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock actual</th>
+                                <th>Stock mínimo</th>
+                                <th>Proveedor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Harina de trigo</td>
+                                <td>2 kg</td>
+                                <td>5 kg</td>
+                                <td>Distribuidora Alimentos S.A.</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Chocolate negro</td>
+                                <td>500 g</td>
+                                <td>1 kg</td>
+                                <td>Chocolates Finos</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fresas</td>
+                                <td>0 kg</td>
+                                <td>2 kg</td>
+                                <td>Frutas Frescas S.A.</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Gráfico de ventas
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                datasets: [{
+                    label: 'Ventas 2023',
+                    data: [12000, 15000, 18000, 14000, 16000, 19000, 21000, 20000, 22000, 23000, 25000, 30000],
+                    backgroundColor: 'rgba(212, 167, 106, 0.2)',
+                    borderColor: 'rgba(212, 167, 106, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Activar tooltips de Bootstrap
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        function toggleSubmenu(event) {
+            // Evitar que el enlace principal navegue
+            event.preventDefault();
+            
+            // Obtener el elemento padre (li)
+            const parentItem = event.target.closest('.nav-item');
+            
+            // Alternar la clase 'active' en el ítem padre
+            parentItem.classList.toggle('active');
+            
+            // Encontrar el submenu asociado
+            const submenu = parentItem.querySelector('.submenu');
+            
+            // Alternar la visualización del submenu
+            submenu.classList.toggle('show');
+            
+            // Cerrar otros submenús abiertos
+            document.querySelectorAll('.nav-item.has-submenu').forEach(item => {
+                if (item !== parentItem) {
+                    item.classList.remove('active');
+                    item.querySelector('.submenu').classList.remove('show');
+                }
+            });
+        }
+        
+        // Cerrar menús al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.sidebar')) {
+                document.querySelectorAll('.submenu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                    menu.closest('.nav-item').classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
