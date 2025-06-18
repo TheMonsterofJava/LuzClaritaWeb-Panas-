@@ -1,0 +1,321 @@
+.recipe-header {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+        
+.section-title {
+    border-left: 5px solid #0d6efd;
+    padding-left: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.ingredient-item {
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.ingredient-item:hover {
+    background-color: #f8f9fa;
+    border-left: 3px solid #0d6efd;
+    transform: translateX(5px);
+}
+
+.steps-container {
+    counter-reset: step-counter;
+}
+
+.step-item {
+    position: relative;
+    padding-left: 3rem;
+    margin-bottom: 1.5rem;
+    counter-increment: step-counter;
+}
+
+.step-item:before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #0d6efd;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.tips-container {
+    background-color: #fff8e1;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border-left: 5px solid #ffc107;
+}
+
+.video-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-body {
+    background-color: #f8f9fa;
+}
+.card-form {
+    max-width: 800px;
+    margin: 2rem auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+.card-header {
+    background-color: #F8C8DC;
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    padding: 1.5rem;
+}
+.titulo-form {
+    margin: 0;
+    font-weight: 600;
+}
+.card-body {
+    padding: 2rem;
+}
+.form-label {
+    font-weight: 500;
+    color: #5a5c69;
+}
+.form-control {
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: 1px solid #d1d3e2;
+}
+.form-control:focus {
+    border-color: #bac8f3;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+    padding: 8px 20px;
+    font-weight: 500;
+}
+.btn-primary:hover {
+    background-color: #3a5bbf;
+    border-color: #3a5bbf;
+}
+.btn-secondary {
+    padding: 8px 20px;
+    font-weight: 500;
+}
+.card-footer {
+    background-color: #f8f9fc;
+    border-top: 1px solid #e3e6f0;
+    padding: 1.5rem;
+    border-radius: 0 0 10px 10px;
+    text-align: right;
+}
+.input-group-text {
+    background-color: #e9ecef;
+}
+.invalid-feedback {
+    font-size: 0.85rem;
+}
+.is-invalid {
+    border-color: #dc3545;
+}
+.has-error {
+    margin-bottom: 15px;
+}
+/* Estilos para los nuevos campos */
+.ingredientes-container {
+    margin-bottom: 15px;
+}
+.ingrediente-item {
+    display: flex;
+    margin-bottom: 8px;
+}
+.ingrediente-item input {
+    flex-grow: 1;
+    margin-right: 8px;
+}
+.btn-add-ingrediente {
+    margin-bottom: 15px;
+}
+.editor-textarea {
+    min-height: 150px;
+}
+:root {
+    --rosa-pastel: #FFE4E1;
+    --rosa-claro: #F8C8DC;
+    --rosa-medio: #F4A6C1;
+    --texto-oscuro: #5A5A5A;
+}
+
+body {
+    background-color: #fafafa;
+}
+
+.container-listado {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 15px;
+}
+
+.titulo-principal {
+    color: var(--texto-oscuro);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.titulo-principal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background-color: var(--rosa-medio);
+    border-radius: 2px;
+}
+
+.btn-nuevo {
+    background-color: var(--rosa-medio);
+    border-color: var(--rosa-medio);
+    color: white;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+}
+
+.btn-nuevo:hover {
+    background-color: #e095b0;
+    border-color: #e095b0;
+    transform: translateY(-2px);
+}
+
+.table-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.table-custom {
+    margin-bottom: 0;
+}
+
+.table-custom thead {
+    background-color: var(--rosa-claro);
+    color: white;
+}
+
+.table-custom th {
+    font-weight: 500;
+    padding: 1rem;
+    border: none;
+}
+
+.table-custom td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-top: 1px solid #f0f0f0;
+    color: var(--texto-oscuro);
+}
+
+.table-custom tbody tr:hover {
+    background-color: var(--rosa-pastel);
+}
+
+.btn-action {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 5px;
+    margin-right: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background-color: #a7c5eb;
+    border-color: #a7c5eb;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #8fb4e5;
+    border-color: #8fb4e5;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #f3a4a4;
+    border-color: #f3a4a4;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #e89090;
+    border-color: #e89090;
+    color: white;
+}
+
+.alert-empty {
+    background-color: var(--rosa-pastel);
+    border-color: var(--rosa-claro);
+    color: var(--texto-oscuro);
+    border-radius: 8px;
+}
+
+.precio-formato {
+    font-weight: 500;
+    color: #4a8f29;
+}
+
+.curso-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;+
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.curso-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.curso-img-container {
+    height: 180px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+.curso-img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.curso-card:hover .curso-img {
+    transform: scale(1.05);
+}
+
+.precio-badge {
+    background-color: #F8C8DC;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}

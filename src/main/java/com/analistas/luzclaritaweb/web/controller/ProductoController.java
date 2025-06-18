@@ -1,6 +1,7 @@
 package com.analistas.luzclaritaweb.web.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -145,5 +146,19 @@ public class ProductoController {
         return "redirect:" + request.getHeader("Referer"); // Redirigir a la página anterior después de guardar la categoría
     }
     
+    @GetMapping("/index")
+    public String index(Model model) {
+        List<Categoria> categorias = categoriaService.buscarTodo();
+        
+        // Obtener las 4 categorías con más productos
+        List<Categoria> topCategorias = categorias.stream()
+            .sorted((c1, c2) -> Integer.compare(
+                c2.getProductos().size(), c1.getProductos().size()))
+            .limit(4)
+            .collect(Collectors.toList());
 
+        model.addAttribute("categorias", topCategorias);
+        model.addAttribute("titulo", "Inicio");
+        return "index";
+    }
 }
