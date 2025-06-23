@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <title th:text="${titulo}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" th:href="@{/css/detalles.css}">
+</head>
+
+<body>
+    <div layout:fragment="contenido">
+        
+        <!-- Detalles del Producto -->
+        <div class="container my-5">
+            <div class="product-header">
+                <div class="row">
+                    <div th:if="${not #lists.isEmpty(producto.imagenes)}" class="mt-4">
+                        <h5>Imágenes del producto</h5>
+                        <div class="d-flex flex-wrap">
+                            <div th:each="imagen : ${producto.imagenes}" class="m-2">
+                                <img th:src="@{${imagen.rutaArchivo}}" style="max-width: 200px; max-height: 200px;" 
+                                    class="img-thumbnail" th:alt="${producto.nombre}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h1 th:text="${producto.nombre}" class="mb-3"></h1>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-secondary me-2" 
+                                  th:text="${producto.categoria.nombre}"></span>
+                            <small class="text-muted">Código: #<span th:text="${producto.id}"></span></small>
+                        </div>
+                        
+                        <div class="price-tag mb-3" 
+                             th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2, 'COMMA')}"></div>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="me-3"><strong>Stock:</strong> 
+                                <span th:text="${producto.stock}"></span> unidades
+                            </span>
+                            <span th:if="${producto.activo}" class="text-success">
+                                <i class="bi bi-check-circle-fill"></i> Activo
+                            </span>
+                            <span th:unless="${producto.activo}" class="text-danger">
+                                <i class="bi bi-x-circle-fill"></i> Inactivo
+                            </span>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a th:href="@{/productos/listado}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card detail-card">
+                        <div class="card-header">
+                            <i class="bi bi-card-text"></i> Descripción del Producto
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" th:text="${producto.descripcion} ?: 'No hay descripción disponible'"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos Relacionados -->
+            <div class="related-products" th:if="${not #lists.isEmpty(productosRelacionados)}">
+                <h3 class="mb-4"><i class="bi bi-box-seam"></i> Productos Relacionados</h3>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4" th:each="relacionado : ${productosRelacionados}">
+                        <div class="card related-product-card h-100">
+                            <a th:href="@{'/productos/detalle/' + ${relacionado.id}}" class="text-decoration-none">
+                                <div class="position-relative">
+                                    <img th:src="@{${relacionado.linkImagen}}" 
+                                         class="card-img-top related-product-img" 
+                                         alt="Producto relacionado"
+                                         onerror="this.src='/img/default-product.png'">
+                                    <span th:if="${!relacionado.activo || relacionado.stock <= 0}" 
+                                          class="badge bg-danger availability-badge">
+                                        Agotado
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${relacionado.nombre}"></h5>
+                                    <p class="card-text price-tag" 
+                                       th:text="'$' + ${#numbers.formatDecimal(relacionado.precio, 1, 2, 'COMMA')}"></p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="d-grid gap-2">
+                                        <a th:href="@{'/productos/detalle/' + ${relacionado.id}}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Ver Detalles
+                                        </a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/carrito.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejar imágenes por defecto
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = '/img/default-product.png';
+                };
+            });
+            
+            // Deshabilitar clic en botones desactivados
+            document.querySelectorAll('.agregar-carrito.disabled').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

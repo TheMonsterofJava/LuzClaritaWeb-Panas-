@@ -34,7 +34,7 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return id + " - " + nombre;
+        return nombre;
     }
 
 }

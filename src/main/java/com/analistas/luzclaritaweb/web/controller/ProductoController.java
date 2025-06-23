@@ -1,164 +1,200 @@
 package com.analistas.luzclaritaweb.web.controller;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.analistas.luzclaritaweb.model.domain.Categoria;
-import com.analistas.luzclaritaweb.model.domain.Producto;
-import com.analistas.luzclaritaweb.model.service.ICategoriaService;
-import com.analistas.luzclaritaweb.model.service.IProductoService;
+import com.analistas.luzclaritaweb.model.domain.*;
+import com.analistas.luzclaritaweb.model.service.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
-
 
 @Controller
 @RequestMapping("/productos")
 @SessionAttributes("producto")
 public class ProductoController {
 
+    private final Logger logger = LoggerFactory.getLogger(ProductoController.class);
+    
     @Autowired
-    IProductoService productoService;
+    private IProductoService productoService;
 
     @Autowired
-    ICategoriaService categoriaService;
+    private ICategoriaService categoriaService;
 
-    // @Autowired
-    // ICategoriaRepository categoriaRepository;
+    @Autowired
+    private IImagenProductoService imagenService;
 
-    //Implementar el controlador de producto
     @GetMapping("/listado")
     public String listar(Model model) {
-
         model.addAttribute("titulo", "Productos");
         model.addAttribute("productos", productoService.buscarTodo());
-        model.addAttribute("categoria", new Categoria()); // Añadir objeto categoría al modelo
-
+        model.addAttribute("categorias", categoriaService.buscarTodo());
+        model.addAttribute("categoria", new Categoria());
         return "productos/list";
     }
-    
+
     @GetMapping("/listado2")
-    public String listado2(Model model) {
-        model.addAttribute("titulo", "Listado de productos");
+    public String listar2(Model model) {
+        model.addAttribute("titulo", "Productos");
         model.addAttribute("productos", productoService.buscarTodo());
+        model.addAttribute("categorias", categoriaService.buscarTodo());
         model.addAttribute("categoria", new Categoria());
         return "productos/list2";
     }
-    
 
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
-
         model.addAttribute("titulo", "Nuevo Producto");
         model.addAttribute("producto", new Producto());
-
+        model.addAttribute("categorias", categoriaService.buscarTodo()); 
         return "productos/form";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable("id") Long id, Model model) {
-
         Producto producto = productoService.buscarPorId(id);
-        
         model.addAttribute("titulo", "Editar Producto");
         model.addAttribute("producto", producto);
-        
-
+        model.addAttribute("categorias", categoriaService.buscarTodo()); 
         return "productos/form";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@Valid Producto producto, BindingResult result,
-        Model model, SessionStatus status, RedirectAttributes flash) {
-        
-            //Verificar si hay errores...
-            if (result.hasErrors()) {
-                model.addAttribute("error", "Corrija los errores...");
-                return "productos/form";
+    public String guardar(@Valid Producto producto, 
+                        BindingResult result,
+                        @RequestParam("imagenes") MultipartFile[] archivos,
+                        Model model, 
+                        RedirectAttributes flash) {
+
+        // Validación del formulario
+        if (result.hasErrors()) {
+            model.addAttribute("categorias", categoriaService.buscarTodo());
+            model.addAttribute("error", "Por favor corrija los errores en el formulario");
+            return "productos/form";
+        }
+
+        try {
+            logger.info("Intentando guardar producto: {}", producto.getNombre());
+            
+            // 1. Guardar el producto primero para obtener ID
+            producto = productoService.guardar(producto);
+            logger.info("Producto guardado con ID: {}", producto.getId());
+
+            // 2. Procesar imágenes si existen
+            if (archivos != null && archivos.length > 0 && !archivos[0].isEmpty()) {
+                logger.info("Procesando {} imágenes", archivos.length);
+                
+                for (MultipartFile archivo : archivos) {
+                    if (!archivo.isEmpty()) {
+                        try {
+                            ImagenProducto imagen = imagenService.guardarImagen(archivo);
+                            imagen.setProducto(producto);
+                            producto.agregarImagen(imagen);
+                            logger.info("Imagen guardada: {}", imagen.getNombreArchivo());
+                        } catch (IOException e) {
+                            logger.error("Error al guardar imagen: {}", e.getMessage());
+                            flash.addFlashAttribute("error", "Error al guardar imagen: " + e.getMessage());
+                        }
+                    }
+                }
+                // Actualizar producto con las imágenes
+                productoService.guardar(producto);
             }
 
-            // Verificar si el producto tiene ID (lo que indica que es un producto existente)
-            boolean esNuevoProducto = (producto.getId() == null);
+            // Mensaje de éxito
+            String mensaje = (producto.getId() == null) ? 
+                "Producto creado exitosamente" : "Producto actualizado exitosamente";
+            String alertClass = (producto.getId() == null) ? "success" : "warning";
+            
+            flash.addFlashAttribute("info", mensaje);
+            flash.addFlashAttribute("alertClass", alertClass);
+            
+            return "redirect:/productos/listado";
 
-            productoService.guardar(producto);
-            status.setComplete();
-
-            // Determinar el mensaje y la clase del alert dependiendo si es un nuevo producto o uno editado
-            String mensaje = esNuevoProducto ? 
-            "Producto " + producto.getDescripcion() + " guardado con éxito" :
-            "Producto " + producto.getDescripcion() + " modificado con éxito";
-
-            String alertClass = esNuevoProducto ? "alert-success" : "alert-warning"; // Verde para nuevo, Naranja para editado
-
-            // Agregar el mensaje y la clase para el alert
-            flash.addFlashAttribute("info", mensaje); // Mensaje para mostrar
-            flash.addFlashAttribute("alertClass", alertClass); // Clase para el alert (verde o naranja)
-
-            return "redirect:/productos/listado"; // Redirigir al listado de productos
+        } catch (Exception e) {
+            logger.error("Error al guardar producto", e);
+            model.addAttribute("categorias", categoriaService.buscarTodo());
+            model.addAttribute("error", "Error crítico: " + e.getMessage());
+            return "productos/form";
         }
-    
-    @GetMapping("/borrar/{id}")
-    public String cambiarEstado(@PathVariable Long id, RedirectAttributes flash) {
-        
-        Producto producto = productoService.buscarPorId(id);
-        producto.setActivo(!producto.isActivo()); //Si esta activo lo desactiva y viceversa
-        productoService.guardar(producto);
-
-        String mensaje = producto.isActivo() ? 
-        "Producto " + producto.getDescripcion() + " habilitado" : "Producto " + producto.getDescripcion() + " deshabilitado";
-
-        // Añadir clase al flash para determinar el color del alert
-        String alertClass = producto.isActivo() ? "alert-info" : "alert-danger"; // Cambiar el color según el estado
-        flash.addFlashAttribute("info", mensaje);
-        flash.addFlashAttribute("alertClass", alertClass);
-
-        return "redirect:/productos/listado";
     }
     
-    @ModelAttribute("categorias")
-    public List<Categoria> listarCategorias() {
-        return productoService.getCategorias();
+    @GetMapping("/detalle/{id}")
+    public String verDetalle(@PathVariable("id") Long id, Model model) {
+        Producto producto = productoService.buscarPorId(id);
+        List<Producto> productosRelacionados = productoService.buscarPorCategoria(producto.getCategoria().getId());
+        
+        model.addAttribute("producto", producto);
+        model.addAttribute("productosRelacionados", productosRelacionados);
+        model.addAttribute("titulo", "Detalle: " + producto.getNombre());
+
+        return "productos/detalles";
     }
 
     @PostMapping("/categorias/guardar")
-    public String guardarCategoria(@Valid Categoria categoria, BindingResult result, RedirectAttributes flash, HttpServletRequest request) {
+    public String guardarCategoria(@Valid Categoria categoria, 
+                                BindingResult result, 
+                                RedirectAttributes flash, 
+                                HttpServletRequest request) {
         if (result.hasErrors()) {
-            flash.addFlashAttribute("error", "Corrija los errores...");
-            return "redirect:" + request.getHeader("Referer"); // Redirigir a la página anterior si hay errores
+            flash.addFlashAttribute("error", "Corrija los errores en la categoría");
+            return "redirect:" + request.getHeader("Referer");
         }
     
         categoriaService.guardar(categoria);
-        flash.addFlashAttribute("info", "Categoría " + categoria.getNombre() + " guardada con éxito");
-        return "redirect:" + request.getHeader("Referer"); // Redirigir a la página anterior después de guardar la categoría
+        flash.addFlashAttribute("info", "Categoría guardada: " + categoria.getNombre());
+        return "redirect:" + request.getHeader("Referer");
     }
-    
-    @GetMapping("/index")
-    public String index(Model model) {
-        List<Categoria> categorias = categoriaService.buscarTodo();
-        
-        // Obtener las 4 categorías con más productos
-        List<Categoria> topCategorias = categorias.stream()
-            .sorted((c1, c2) -> Integer.compare(
-                c2.getProductos().size(), c1.getProductos().size()))
-            .limit(4)
-            .collect(Collectors.toList());
 
-        model.addAttribute("categorias", topCategorias);
-        model.addAttribute("titulo", "Inicio");
-        return "index";
+    @GetMapping("/eliminar-imagen/{productoId}/{imagenId}")
+    public String eliminarImagen(@PathVariable Long productoId, 
+                              @PathVariable Long imagenId,
+                              RedirectAttributes flash) {
+        try {
+            imagenService.eliminarPorId(imagenId);
+            flash.addFlashAttribute("info", "Imagen eliminada correctamente");
+        } catch (Exception e) {
+            logger.error("Error al eliminar imagen", e);
+            flash.addFlashAttribute("error", "No se pudo eliminar la imagen");
+        }
+        return "redirect:/productos/editar/" + productoId;
+    }
+
+    // API endpoints
+    @GetMapping("/api")
+    @ResponseBody
+    public List<Producto> listarApi() {
+        return productoService.buscarTodo();
+    }
+
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public Producto detalleApi(@PathVariable Long id) {
+        return productoService.buscarPorId(id);
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id, RedirectAttributes flash) {
+        try {
+            productoService.borrarPorId(id);
+            flash.addFlashAttribute("info", "Producto eliminado correctamente");
+            flash.addFlashAttribute("alertClass", "success");
+        } catch (Exception e) {
+            logger.error("Error al eliminar producto", e);
+            flash.addFlashAttribute("error", "No se pudo eliminar el producto");
+            flash.addFlashAttribute("alertClass", "danger");
+        }
+        return "redirect:/productos/listado";
     }
 }

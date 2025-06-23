@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+
+<head>
+    <title th:text="${titulo}">Recetas</title>
+    <style>
+        :root {
+            --primary: #ff6f61;
+            --secondary: #f8d0c0;
+            --accent: #ff9e80;
+            --dark: #6d4c41;
+            --light: #fff8f0;
+        }
+
+        .recetas-container {
+            background-color: #fff9f5;
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .titulo-recetas {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            font-size: 2.5rem;
+        }
+
+        .titulo-recetas::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 0;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: #8c7b75;
+            margin-bottom: 2rem;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .empty-state .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state .btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .receta-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+
+        .receta-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .receta-img-container {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .receta-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .receta-card:hover .receta-img {
+            transform: scale(1.05);
+        }
+
+        .receta-time {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .receta-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receta-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .receta-desc {
+            color: #8c7b75;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .receta-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+            margin-top: auto;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .receta-btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 111, 97, 0.3);
+            color: white;
+        }
+
+        .receta-btn i {
+            margin-left: 0.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .receta-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        @media (max-width: 768px) {
+            .titulo-recetas {
+                font-size: 2rem;
+            }
+
+            .receta-img-container {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="contenido" class="recetas-container">
+        <div class="container">
+            <h1 class="titulo-recetas" th:text="${titulo}">Nuestras Recetas</h1>
+
+            <!-- Estado vacío -->
+            <div th:if="${recetas == null or recetas.empty}" class="empty-state">
+                <i class="bi bi-egg-fried"></i>
+                <h3>¡No hay recetas aún!</h3>
+                <p>Parece que todavía no hemos agregado recetas a nuestra colección. Vuelve más tarde o si eres
+                    administrador, agrega algunas recetas deliciosas.</p>
+                <a th:href="@{/recetas/form}" class="btn" sec:authorize="hasRole('ADMIN')">
+                    <i class="bi bi-plus-circle"></i> Crear primera receta
+                </a>
+            </div>
+
+            <!-- Listado de recetas -->
+            <div th:unless="${recetas == null or recetas.empty}" class="row g-4">
+                <div th:each="r : ${recetas}" class="col-sm-6 col-md-4 col-lg-3 d-flex">
+                    <div class="receta-card">
+                        <div class="receta-img-container">
+                            <img th:src="@{${r.imagen_link}}" class="receta-img" th:alt="${r.nombre_receta}">
+                            <span class="receta-time" th:text="${r.tiempo}"></span>
+                        </div>
+                        <div class="receta-body">
+                            <h3 class="receta-title" th:text="${r.nombre_receta}"></h3>
+                            <p class="receta-desc" th:text="${r.descripcion}"></p>
+                            <a th:href="@{/recetas/detalle/{id}(id=${r.id})}" class="receta-btn">
+                                Ver receta <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para animaciones -->
+    <script th:fragment="js">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animación para las cards
+            const cards = document.querySelectorAll('.receta-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.transitionDelay = `${index * 0.1}s`;
+
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+
+            // Mostrar alerta si hay mensajes flash
+            const successMessage = /*[[${success}]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    title: '¡Receta guardada!',
+                    text: successMessage,
+                    icon: 'success',
+                    confirmButtonColor: '#ff6f61',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

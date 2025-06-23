@@ -18,7 +18,6 @@ public class CategoriaServiceImpl implements ICategoriaService {
 
     @Override
     public List<Categoria> buscarTodo() {
-        // Retorna todas las categorías desde la base de datos
         return categoriaRepository.findAll();
     }
 

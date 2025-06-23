@@ -21,6 +21,21 @@
                 <h5 class="titulo-form" th:text="${titulo}"></h5>
             </div>
             <div class="card-body">
+                <!-- Mensajes de éxito o error -->
+                <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <span th:text="${mensajeExito}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <span th:text="${mensajeError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <!-- Mensaje de eliminación (rojo) -->
+                <div th:if="${mensajeEliminar}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <span th:text="${mensajeEliminar}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
                 <table id="tabla-productos" class="table table-striped table-hover table-bordered table-responsive" style="width: 100%;">
                     <thead>
                         <tr>
@@ -45,8 +60,10 @@
                             <td th:text="${p.categoria}"></td>
                             <td>
                                 <a th:href="@{/productos/editar/} + ${p.id}" class="bi bi-pencil btn btn-sm btn-warning"> Editar</a>
-                                <a th:href="@{/productos/borrar/} + ${p.id}" class="bi bi-trash btn btn-sm btn-danger">
-                                    <span th:text="${not p.activo} ? 'Habilitar' : 'Deshabilitar'"></span>
+                                <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" 
+                                   class="bi bi-trash btn btn-sm btn-danger"
+                                   onclick="return confirm('¿Seguro que desea eliminar este producto?');">
+                                   Eliminar
                                 </a>
                             </td>
                         </tr>

@@ -14,8 +14,11 @@ public interface IProductoRepository extends CrudRepository<Producto, Long> {
     List<Producto> buscarSoloActivos(); */
 
     //Con Query Methods
+    Optional<Producto> findByNombre(String nombre);
+    List<Producto> findByNombreContainingOrDescripcionContaining(String nombre, String descripcion);
     List<Producto> findByActivoTrue();
-
+    List<Producto> findByCategoriaIdAndActivoTrue(Long categoriaId);
+    List<Producto> findTop4ByActivoTrueOrderByPrecioDesc();
     Optional<Producto> findByDescripcion(String descripcion);
 
 }

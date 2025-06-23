@@ -196,16 +196,7 @@
         <h2 class="titulo col-12 text-center h1 text-muted">Categorías principales</h2>
       </div>
 
-      <div class="row justify-content-center">
-        <div th:each="c : ${categorias}" class="col-md-3 col-12 mb-4">
-          <div class="card shadow-sm border-0 rounded-lg">
-            <!-- Usamos una condición para asignar un color a cada categoría -->
-            <button type="button" th:value="${c.id}" class="btn category-btn w-100 p-3 rounded-lg btn-outline-peach">
-              <span th:text="${c.nombre}" class="h5 text-dark"></span>
-            </button>
-          </div>
-        </div>
-      </div>
+      
     </section>
 
     <div class="row mb-4">

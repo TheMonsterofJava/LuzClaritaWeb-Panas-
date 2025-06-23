@@ -42,16 +42,28 @@ public class Curso {
     @URL(message = "Debe ser una URL válida para la imagen")
     private String imagenUrl;
 
+    @Column(name = "porciones")
+    @Min(value = 1, message = "Debe tener al menos 1 porción")
+    private Integer porciones;
+
+    @Column(name = "tiempo_preparacion")
+    @Min(value = 1, message = "El tiempo mínimo es 1 minuto")
+    private Integer tiempoPreparacion; // en minutos
+
+    @Column(name = "dificultad")
+    @NotNull(message = "La dificultad es requerida")
+    private String dificultad; // Baja, Media, Alta
+
     @ElementCollection
     @CollectionTable(name = "curso_ingredientes", joinColumns = @JoinColumn(name = "curso_id"))
     @Column(name = "ingrediente")
-    private List<String> ingredientes; // Ej: ["200g harina", "3 huevos"]
+    private List<String> ingredientes;
 
     @Column(name = "pasos", columnDefinition = "TEXT", nullable = false)
-    private String pasos; // Pasos detallados (1. Mezclar..., 2. Hornear...)
+    private String pasos;
 
     @Column(name = "consejos", columnDefinition = "TEXT")
-    private String consejos; // Tips adicionales
+    private String consejos;
 
-    private boolean requiereCompra; // true = de pago, false = gratuito
+    private boolean requiereCompra;
 }
