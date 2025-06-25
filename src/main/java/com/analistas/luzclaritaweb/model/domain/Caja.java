@@ -4,6 +4,7 @@
  */
 package com.analistas.luzclaritaweb.model.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,11 +36,14 @@ public class Caja {
     @Column(name = "fecha")
     private LocalDateTime fecha;
     
-    @Column(name = "saldo_inicial", nullable = false)
-    private double saldoInicial;
+
+    // Agregamos la columna numero para identificar la caja
+    @Column(name = "saldo_inicial", nullable = false, columnDefinition = "DECIMAL(19,2)")
+    private BigDecimal saldoInicial;
     
-    @Column(name = "saldo_final", nullable = false)
-    private double saldoFinal;
+    // Agregamos la columna saldo_final para almacenar el saldo final de la caja
+    @Column(name = "saldo_final", nullable = false, columnDefinition = "DECIMAL(19,2)")
+    private BigDecimal saldoFinal;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)

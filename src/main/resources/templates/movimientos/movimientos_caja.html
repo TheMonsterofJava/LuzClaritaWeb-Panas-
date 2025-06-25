@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,469 +8,573 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
-    <!-- Estilos personalizados -->
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <style>
         :root {
-            --color-primary: #ff6f61;
-            --color-secondary: #6c757d;
-            --color-success: #28a745;
-            --color-danger: #dc3545;
-            --color-info: #17a2b8;
-            --color-light: #f8f9fa;
-            --color-dark: #343a40;
+            --primary: #ff6f61;
+            --secondary: #f8d0c0;
+            --accent: #ff9e80;
+            --dark: #6d4c41;
+            --light: #fff8f0;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
         }
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #ecd8df;
-            color: #333;
+            background-color: #fdf8f5;
+            color: #5a3929;
+            background-image: linear-gradient(to bottom, rgba(253, 248, 245, 0.95), rgba(253, 248, 245, 0.95)), 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="%23f8d0c0" opacity="0.3"/><circle cx="50" cy="50" r="2" fill="%23f8d0c0" opacity="0.3"/><circle cx="80" cy="70" r="4" fill="%23f8d0c0" opacity="0.3"/></svg>');
         }
         
-        .bg-image {
-            background-color: #f5edf3;
-            background-image: linear-gradient(to bottom, rgba(233, 215, 229, 0.9), rgba(220, 194, 217, 0.8)), 
-                              url('/img/background-pattern.png');
-            background-attachment: fixed;
+        .caja-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .caja-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,20 Q40,15 50,30 T80,20" fill="none" stroke="white" stroke-opacity="0.1" stroke-width="2"/></svg>');
             background-size: cover;
         }
         
-        .navbar {
-            background-color:  #F8D0C0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .navbar-brand img {
-            transition: transform 0.3s;
-        }
-        
-        .navbar-brand:hover img {
-            transform: scale(1.1);
-        }
-        
-        .nav-link {
-            font-weight: 500;
-            color: var(--color-dark);
-            transition: color 0.3s;
-        }
-        
-        .nav-link:hover {
-            color: var(--color-primary);
-        }
-        
-        .breadcrumb {
-            background-color: transparent;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-        }
-        
-        .breadcrumb-item.active {
-            font-weight: 600;
-            color: var(--color-primary);
-        }
-        
-        .titulo-resaltado {
-            color: var(--color-dark);
-            font-weight: 700;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        .header-content {
             position: relative;
-            display: inline-block;
-            padding-bottom: 0.5rem;
+            z-index: 1;
         }
         
-        .titulo-resaltado::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--color-primary);
-            border-radius: 2px;
+        .header-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         
-        .card-resumen {
-            border: none;
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .summary-card {
+            background: white;
             border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            border: none;
         }
         
-        .card-resumen:hover {
+        .summary-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         
-        .ingresos-card {
-            border-left: 5px solid var(--color-success);
+        .card-ingresos {
+            border-top: 5px solid var(--success);
         }
         
-        .egresos-card {
-            border-left: 5px solid var(--color-danger);
+        .card-egresos {
+            border-top: 5px solid var(--danger);
         }
         
-        .saldo-card {
-            border-left: 5px solid var(--color-info);
+        .card-saldo {
+            border-top: 5px solid var(--info);
         }
         
-        .badge-ingreso {
-            background-color: var(--color-success);
-            color: white;
-            padding: 0.35em 0.65em;
-            border-radius: 0.5rem;
-            font-weight: 500;
+        .summary-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
         
-        .badge-egreso {
-            background-color: var(--color-danger);
-            color: white;
-            padding: 0.35em 0.65em;
-            border-radius: 0.5rem;
-            font-weight: 500;
+        .summary-title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
         
-        .filtros-card {
-            background-color: white;
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .filters-card {
+            background: white;
             border-radius: 15px;
-            border: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
         }
         
-        .btn-filtrar {
-            background-color: var(--color-primary);
+        .filter-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-btn {
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
         
-        .btn-filtrar:hover {
-            background-color: #ff4a3d;
+        .filter-btn:hover {
+            background: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 111, 97, 0.3);
+            box-shadow: 0 4px 10px rgba(255, 111, 97, 0.3);
         }
         
-        .movimientos-table {
+        .movements-table {
+            background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
-        .movimientos-table th {
-            background-color: var(--color-primary);
+        .table-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            font-weight: 500;
-            padding: 1rem;
         }
         
-        .movimientos-table td {
-            padding: 0.75rem 1rem;
-            vertical-align: middle;
+        .movement-row {
+            transition: all 0.3s ease;
         }
         
-        .movimientos-table tr:hover {
+        .movement-row:hover {
             background-color: rgba(255, 111, 97, 0.05);
         }
         
-        .table-responsive {
-            border-radius: 15px;
+        .movement-type {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
         
-        footer {
-            background-color:  #F8D0C0;
+        .type-ingreso {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: var(--success);
+        }
+        
+        .type-egreso {
+            background-color: rgba(220, 53, 69, 0.15);
+            color: var(--danger);
+        }
+        
+        .movement-amount {
+            font-weight: 700;
+        }
+        
+        .export-btn {
+            background: var(--dark);
             color: white;
-            padding: 2rem 0;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .export-btn:hover {
+            background: #5a3929;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(90, 57, 41, 0.3);
+            color: white;
+        }
+        
+        .footer-caja {
+            background: linear-gradient(135deg, var(--dark), #5a3929);
+            color: white;
+            padding: 3rem 0;
             margin-top: 3rem;
         }
         
-        footer a {
-            color: var(--color-light);
-            text-decoration: none;
-            transition: color 0.3s;
+        .footer-logo {
+            max-width: 80px;
+            margin-bottom: 1rem;
         }
         
-        footer a:hover {
-            color: var(--color-primary);
+        .footer-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            margin-bottom: 1rem;
         }
         
-        .text-success {
-            color: var(--color-success) !important;
+        .footer-contact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
         }
         
-        .text-danger {
-            color: var(--color-danger) !important;
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         
-        .animated-card {
-            animation: fadeIn 0.6s ease-out forwards;
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
         }
         
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2.5rem;
+            }
+            
+            .summary-value {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-image">
+<body>
     <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="/home">
-                <img src="/img/logo.png" alt="Logo" width="45" height="45">
-                <span class="ms-2 fw-bold" style="color: var(--color-primary);">Luz Clarita</span>
+                <img src="/img/logo.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+                <span class="ms-2 fw-bold" style="color: var(--primary);">Luz Clarita</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/home">Inicio</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/caja/movimientos">Caja</a>
+                    </li>
                 </ul>
                 <div>
                     <a href="#" class="btn btn-outline-primary">
-                        <i class="bi bi-person-circle"></i> Mi Cuenta
+                        <i class="bi bi-person-circle me-1"></i> Mi Cuenta
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Contenido principal -->
+    <!-- Encabezado de la caja -->
+    <div class="caja-header">
+        <div class="container text-center header-content">
+            <h1 class="header-title">Movimientos de Caja</h1>
+            <p class="header-subtitle">Seguimiento detallado de todos los ingresos y egresos de tu pastelería</p>
+        </div>
+    </div>
+
     <div class="container py-4">
-        <div id="hero" class="mb-5">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><b>Movimientos de Caja</b></li>
-                </ol>
-            </nav>
-            <h2 class="titulo text-center mb-4 col-12 h1 titulo-resaltado" th:text="${titulo}">Movimientos de Caja</h2>
+        <!-- Tarjetas de resumen -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="summary-card card-ingresos">
+                    <div class="card-body text-center">
+                        <div class="summary-icon text-success">
+                            <i class="bi bi-arrow-down-circle"></i>
+                        </div>
+                        <h3 class="summary-title">Total Ingresos</h3>
+                        <p class="summary-value text-success" 
+                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                            $0.00
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-card card-egresos">
+                    <div class="card-body text-center">
+                        <div class="summary-icon text-danger">
+                            <i class="bi bi-arrow-up-circle"></i>
+                        </div>
+                        <h3 class="summary-title">Total Egresos</h3>
+                        <p class="summary-value text-danger" 
+                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                            $0.00
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-card card-saldo">
+                    <div class="card-body text-center">
+                        <div class="summary-icon text-info">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <h3 class="summary-title">Saldo Actual</h3>
+                        <p class="summary-value text-info" 
+                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
+                            $0.00
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Card de Filtros -->
-        <div class="card filtros-card mb-4 animated-card">
-            <div class="card-body">
-                <form th:action="@{/caja/movimientos}" method="get" class="row g-3 align-items-end">
+        <!-- Filtros -->
+        <div class="filters-card">
+            <form th:action="@{/caja/movimientos}" method="get">
+                <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Fecha Inicio</label>
+                        <label class="filter-label">Fecha Inicio</label>
                         <input type="date" class="form-control" 
                                th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" 
                                name="fechaInicio" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Fecha Fin</label>
+                        <label class="filter-label">Fecha Fin</label>
                         <input type="date" class="form-control" 
                                th:value="${#temporals.format(fechaFin, 'yyyy-MM-dd')}" 
                                name="fechaFin" required>
                     </div>
-                    <div class="col-md-4 d-grid">
-                        <button type="submit" class="btn btn-filtrar">
-                            <i class="bi bi-funnel me-2"></i>Filtrar
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="filter-btn w-100">
+                            <i class="bi bi-funnel me-1"></i> Filtrar Movimientos
                         </button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-        
-        <!-- Cards de Resumen -->
-        <div class="row mb-4">
-            <div class="col-md-4 mb-3 animated-card delay-1">
-                <div class="card card-resumen ingresos-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="card-title text-muted">Ingresos</h5>
-                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
-                            </div>
-                            <div class="bg-success bg-opacity-10 p-3 rounded">
-                                <i class="bi bi-arrow-down-circle text-success fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3 animated-card delay-2">
-                <div class="card card-resumen egresos-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="card-title text-muted">Egresos</h5>
-                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
-                            </div>
-                            <div class="bg-danger bg-opacity-10 p-3 rounded">
-                                <i class="bi bi-arrow-up-circle text-danger fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3 animated-card delay-3">
-                <div class="card card-resumen saldo-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="card-title text-muted">Saldo Actual</h5>
-                                <h3 class="mb-0" th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">$0.00</h3>
-                            </div>
-                            <div class="bg-info bg-opacity-10 p-3 rounded">
-                                <i class="bi bi-wallet2 text-info fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tabla de Movimientos -->
-        <div class="card shadow-sm movimientos-table animated-card">
-            <div class="card-header bg-white border-0">
+
+        <!-- Tabla de movimientos -->
+        <div class="movements-table">
+            <div class="table-header p-3">
                 <h5 class="mb-0 d-flex align-items-center">
-                    <i class="bi bi-list-check me-2"></i>Detalle de Movimientos
+                    <i class="bi bi-list-check me-2"></i> Detalle de Movimientos
                 </h5>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Fecha/Hora</th>
-                                <th>Tipo</th>
-                                <th class="text-end">Monto</th>
-                                <th>Descripción</th>
-                                <th>Operador</th>
-                                <th>Relación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="mov : ${movimientos}">
-                                <td class="text-center" th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td>
-                                    <span th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'badge badge-ingreso' : 'badge badge-egreso'" 
-                                          class="badge"
-                                          th:text="${mov.tipoOperacion.name()}"></span>
-                                </td>
-                                <td class="text-end fw-bold" 
-                                    th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'text-success' : 'text-danger'"
-                                    th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 2, 'COMMA')}"></td>
-                                <td th:text="${mov.descripcion}"></td>
-                                <td th:text="${mov.operador.nomb_usu}"></td>
-                                <td>
-                                    <span th:if="${mov.factura != null}" class="badge bg-primary">
-                                        <i class="bi bi-receipt me-1"></i>
-                                        <span th:text="${'Factura #' + mov.factura.numero_factura}"></span>
-                                    </span>
-                                    <span th:if="${mov.compra != null}" class="badge bg-secondary">
-                                        <i class="bi bi-cart me-1"></i>
-                                        <span th:text="${'Compra: ' + mov.compra.descripcion.substring(0, Math.min(mov.compra.descripcion.length(), 15)) + '...'}"></span>
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Fecha/Hora</th>
+                            <th>Tipo</th>
+                            <th class="text-end">Monto</th>
+                            <th>Descripción</th>
+                            <th>Operador</th>
+                            <th>Origen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="movement-row" th:each="mov : ${movimientos}">
+                            <td class="text-center" th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <span class="movement-type" 
+                                      th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'type-ingreso' : 'type-egreso'"
+                                      th:text="${mov.tipoOperacion.name()}"></span>
+                            </td>
+                            <td class="text-end movement-amount" 
+                                th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'text-success' : 'text-danger'"
+                                th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 2, 'COMMA')}"></td>
+                            <td th:text="${mov.descripcion != null ? mov.descripcion : '-'}"></td>
+                            <td th:text="${mov.operador != null ? mov.operador.nomb_usu : 'Sistema'}"></td>
+                            <td th:switch="${true}" data-bs-toggle="tooltip"
+                                th:title="${mov.compra != null ? 'ID Compra: ' + mov.compra.id : 
+                                           (mov.factura != null ? 'ID Factura: ' + mov.factura.id + ' / N°: ' + mov.factura.numero_factura :
+                                           (mov.venta != null ? 'ID Venta: ' + mov.venta.id : 'Sin origen específico'))}">
+                                <span th:case="${mov.compra != null}" class="badge bg-info">
+                                    <i class="bi bi-bag-check me-1"></i>
+                                    <span th:text="'Compra #' + mov.compra.id"></span>
+                                </span>
+                                <span th:case="${mov.factura != null}" class="badge bg-success">
+                                    <i class="bi bi-receipt-cutoff me-1"></i>
+                                    <span th:text="'Venta Fact. #' + mov.factura.numero_factura"></span>
+                                </span>
+                                <span th:case="${mov.venta != null}" class="badge bg-warning text-dark">
+                                    <i class="bi bi-cart3 me-1"></i>
+                                    <span th:text="'Venta #' + mov.venta.id"></span>
+                                </span>
+                                <span th:case="*" class="text-muted">N/A</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="card-footer bg-white border-0">
+            <div class="p-3 border-top">
                 <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted" th:text="'Mostrando ' + ${movimientos.size()} + ' movimientos'"></small>
-                    <button class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-printer me-1"></i> Imprimir Reporte
-                    </button>
+                    <a th:if="${cajaId != null}"
+                        th:href="@{/caja/exportar/pdf(cajaId=${cajaId}, fechaInicio=${#temporals.format(fechaInicio, 'yyyy-MM-dd')}, fechaFin=${#temporals.format(fechaFin, 'yyyy-MM-dd')})}"
+                        class="export-btn" target="_blank">
+                        <i class="bi bi-printer"></i> Exportar PDF
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer-caja">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="text-white mb-3">Luz Clarita</h5>
-                    <p class="text-muted">¡Hace más de 10 años llenando de dulzura cada momento!</p>
+                <div class="col-md-4 mb-4">
+                    <img src="/img/logo-white.png" alt="Logo Luz Clarita" class="footer-logo">
+                    <h3 class="footer-title">Luz Clarita</h3>
+                    <p class="mb-4">¡Hace más de 10 años llenando de dulzura cada momento!</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon">
+                            <i class="bi bi-facebook text-white"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="bi bi-instagram text-white"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="bi bi-whatsapp text-white"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="text-white mb-3">Enlaces</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/home">Inicio</a></li>
-                        <li class="mb-2"><a href="/productos/listado">Productos</a></li>
-                        <li class="mb-2"><a href="/caja/movimientos">Caja</a></li>
-                        <li class="mb-2"><a href="/consultas/consulta">Consultas</a></li>
-                    </ul>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-white mb-4">Contacto</h5>
+                    <div class="footer-contact">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Calle 123, Resistencia, Chaco</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-telephone"></i>
+                        <span>3624-883171</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-envelope"></i>
+                        <span>luzclarita@gmail.com</span>
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="text-white mb-3">Contacto</h5>
-                    <ul class="list-unstyled text-muted">
-                        <li class="mb-2"><i class="bi bi-whatsapp me-2"></i> 3624-883171</li>
-                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Calle 123, Resistencia</li>
-                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> luzclarita@gmail.com</li>
-                    </ul>
-                    <div class="mt-3">
-                        <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
-                        <a href="#" class="text-white"><i class="bi bi-twitter-x fs-4"></i></a>
+                    <h5 class="text-white mb-4">Horarios</h5>
+                    <div class="footer-contact">
+                        <i class="bi bi-clock"></i>
+                        <span>Lunes a Viernes: 8:00 - 20:00</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-clock"></i>
+                        <span>Sábados: 9:00 - 13:00</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-clock"></i>
+                        <span>Domingos: Cerrado</span>
                     </div>
                 </div>
             </div>
-            <hr class="my-4 bg-light">
+            <hr class="my-4 bg-light opacity-25">
             <div class="text-center">
-                <p class="mb-0 text-muted">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
+                <p class="mb-0">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Scripts adicionales -->
     <script>
-        // Animación al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            // Efecto de aparición gradual
-            const cards = document.querySelectorAll('.animated-card');
-            cards.forEach(card => {
-                card.style.opacity = '0';
+            // Inicializar tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
             
-            // Pequeño retraso para asegurar que las animaciones se vean bien
-            setTimeout(() => {
-                cards.forEach(card => {
+            // Animación de las tarjetas
+            const cards = document.querySelectorAll('.summary-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
                     card.style.opacity = '1';
-                });
-            }, 100);
+                    card.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
             
-            // Tooltips para los badges de relación
-            $('[data-bs-toggle="tooltip"]').tooltip();
+            // Verificar si hay mensajes flash
+            const successMessage = /*[[${success}]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    title: 'Operación exitosa',
+                    text: successMessage,
+                    icon: 'success',
+                    confirmButtonColor: '#ff6f61',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+            
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#ff6f61'
+                });
+            }
         });
-    </script>
-    <script th:fragment="js">
-        
     </script>
 </body>
 </html>
+
+<!-- Fix: Corregir asignación de usuario a caja y origen de movimiento.
+
+Este commit incluye las siguientes correcciones:
+
+1.  **Asignación de Usuario a Caja:**
+    *   En `CajaController`, al guardar una nueva caja, ahora se asigna correctamente el usuario autenticado a la entidad `Caja`. Esto asegura que el creador de la caja se registre y se muestre en el listado de cajas.
+
+2.  **Visualización de Origen del Movimiento:**
+    *   En `ComprasController`, al registrar una compra y crear el `MovimientoCaja` de egreso asociado, se asegura que la entidad `Compra` (persistida) se vincule correctamente al `MovimientoCaja`. Esto permite que la columna "Origen Movimiento" en la vista `movimientos_caja.html` muestre la referencia a la compra (ej. "Compra #ID").
+
+3.  **Limpieza de Código:**
+    *   Se eliminaron los `System.out.println` de diagnóstico que se habían añadido temporalmente en `ComprasController` para el problema del nombre del proveedor (solucionado previamente). -->

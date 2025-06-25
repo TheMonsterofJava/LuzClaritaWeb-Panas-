@@ -18,9 +18,9 @@ INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Vainilla');
 INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Donas');
 
 -- PRODUCTOS
-INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '5000.00', '6', '2', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
-INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '6840.00', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
-INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '4500.00', '20', '4', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
+INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '6', '2', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
+INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
+INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '20', '4', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
 
 -- CAJAS
 INSERT INTO `luzclaritaweb`.`caja` (`saldo_final`, `saldo_inicial`, `fecha`, `id_usuario`, `estado`) VALUES ('10000.00', '10000.00', '2025-04-20 00:00:00', 1, 'ABIERTA');

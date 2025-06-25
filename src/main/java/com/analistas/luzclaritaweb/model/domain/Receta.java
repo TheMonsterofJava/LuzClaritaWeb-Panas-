@@ -32,7 +32,7 @@ public class Receta {
 
     @Column(name = "nombre_receta")
     @NotEmpty(message = "El Nombre de la Receta es requerida...")
-    @Size(min = 10, max = 100, message = "El Nombre del la Receta debe tener hasta 100 caracteres...")
+    @Size(min = 1, max = 100, message = "El Nombre del la Receta debe tener hasta 100 caracteres...")
     private String nombre_receta;
 
     @Column(name = "descripcion")

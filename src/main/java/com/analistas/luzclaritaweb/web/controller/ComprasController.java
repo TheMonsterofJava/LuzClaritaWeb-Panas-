@@ -23,6 +23,7 @@ import com.analistas.luzclaritaweb.model.domain.Compra;
 import com.analistas.luzclaritaweb.model.domain.DetalleCompra;
 import com.analistas.luzclaritaweb.model.domain.Inventario;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
+import com.analistas.luzclaritaweb.model.domain.Proveedor;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.ICajaService;
 import com.analistas.luzclaritaweb.model.service.ICompraService;
@@ -129,25 +130,61 @@ public class ComprasController {
             return "redirect:/compras/nueva";
         }
 
-        compraService.guardarCompra(compra);
+        // Guardar la compra y obtener la instancia persistida (con ID)
+        Compra compraGuardada = compraService.guardarCompra(compra);
 
         // 4. Registramos el movimiento de caja tipo (EGRESO),
         MovimientoCaja egreso = new MovimientoCaja();
         egreso.setFecha(LocalDateTime.now());
-        egreso.setMonto(total);
-        egreso.setMontoDouble(total.doubleValue());
+        egreso.setMonto(total); // total ya es BigDecimal
+        // egreso.setMontoDouble(total.doubleValue()); // Eliminado
         egreso.setTipo("EGRESO");
         egreso.setTipoOperacion(MovimientoCaja.TipoOperacion.EGRESO);
-        egreso.setDescripcion("Compra a Porveedores" + compra.getProveedor().getNombre());
-        egreso.setCaja(compra.getCaja());
-        egreso.setOperador(compra.getUsuario());
+        // Obtener el nombre del proveedor de forma segura
+        String nombreProveedor = "Desconocido";
+        if (compra.getProveedor() != null && compra.getProveedor().getId() != null) {
+            Proveedor proveedorRecargado = proveedorService.buscarPorId(compra.getProveedor().getId());
+            if (proveedorRecargado != null) {
+                if (proveedorRecargado.getNombre() != null && !proveedorRecargado.getNombre().isEmpty()) {
+                    nombreProveedor = proveedorRecargado.getNombre();
+                }
+            }
+        }
+        egreso.setDescripcion("Compra a Proveedor: " + nombreProveedor);
+
+        // Asignar la caja de la compra al movimiento de egreso
+        // Es importante que compra.getCaja() no sea nulo aquí.
+        // Se asume que se valida o se asigna una caja a la compra antes de este punto.
+        if (compraGuardada.getCaja() == null || compraGuardada.getCaja().getId() == null) {
+            redirect.addFlashAttribute("error", "La compra guardada no tiene una caja asignada.");
+            // Esto podría indicar un problema si la caja es obligatoria para la compra.
+            // Considerar si se debe deshacer la compra o manejar de otra forma.
+            return "redirect:/compras/nueva";
+        }
+        egreso.setCaja(compraGuardada.getCaja());
+        egreso.setOperador(compraGuardada.getUsuario());
+        egreso.setCompra(compraGuardada); // Asociar la compra al movimiento de caja
         movimientoCajaService.guardarMovimiento(egreso);
 
         // 5. Actualizar caja
-        Caja caja = compra.getCaja();
-        caja.setEstado(Caja.EstadoCaja.ABIERTA); // Aseguramos que la caja esté abierta
-        caja.setSaldoFinal(caja.getSaldoFinal() - total.doubleValue()); // Actualizar saldo final
-        cajaService.guardarCaja(caja);
+        // Recargar la entidad Caja para asegurar que operamos sobre el estado más
+        // reciente
+        Caja cajaParaActualizar = cajaService.obtenerCajaPorId(compraGuardada.getCaja().getId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Caja con ID " + compraGuardada.getCaja().getId() + " no encontrada para actualizar."));
+
+        // Asegurar que el saldo final no sea nulo antes de operar
+        BigDecimal saldoFinalActual = cajaParaActualizar.getSaldoFinal() != null ? cajaParaActualizar.getSaldoFinal()
+                : BigDecimal.ZERO;
+
+        BigDecimal nuevoSaldoFinal = saldoFinalActual.subtract(total);
+        cajaParaActualizar.setSaldoFinal(nuevoSaldoFinal);
+        // El estado de la caja debería manejarse consistentemente. Si una compra
+        // implica que la caja está abierta,
+        // este estado ya debería estar así o ser validado. Forzarlo aquí podría no ser
+        // siempre correcto.
+        // cajaParaActualizar.setEstado(Caja.EstadoCaja.ABIERTA);
+        cajaService.guardarCaja(cajaParaActualizar);
 
         redirect.addFlashAttribute("success", "Compra registrada!");
         return "redirect:/compras/listado";

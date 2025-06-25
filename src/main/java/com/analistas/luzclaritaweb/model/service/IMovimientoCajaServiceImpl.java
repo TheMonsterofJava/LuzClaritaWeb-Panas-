@@ -69,6 +69,8 @@ public class IMovimientoCajaServiceImpl implements IMovimientoCajaService {
         throw new UnsupportedOperationException("Unimplemented method 'registrarIngreso'");
     }
 
+    // Método para registrar un egreso
+    // Sirve para registrar un egreso de dinero de la caja
     @Override
     public Map<String, Double> getResumenMovimientos(LocalDateTime desde, LocalDateTime hasta) {
         List<MovimientoCaja> movimientos = movimientoCajaRepository.findByFechaBetween(desde, hasta);
@@ -76,11 +78,13 @@ public class IMovimientoCajaServiceImpl implements IMovimientoCajaService {
         double totalIngresos = 500000.0;
         double totalEgresos = 0.0;
 
+        //for para recorrer la lista de movimientos y calcular los totales
+        // Se inicializa totalIngresos con un valor fijo para pruebas, luego se calculará dinámicamente
         for (MovimientoCaja m : movimientos) {
             if (m.getTipo().equalsIgnoreCase("INGRESO")) {
-                totalIngresos += m.getMontoDouble();
+                totalIngresos += m.getMonto().doubleValue();
             } else if (m.getTipo().equalsIgnoreCase("EGRESO")) {
-                totalEgresos += m.getMontoDouble();
+                totalEgresos += m.getMonto().doubleValue();
             }
         }
 
