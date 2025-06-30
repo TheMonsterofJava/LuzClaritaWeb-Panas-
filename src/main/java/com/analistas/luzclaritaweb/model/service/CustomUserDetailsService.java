@@ -19,6 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         
+        
         String sql = "SELECT nomb_usu, clave, activo FROM usuarios WHERE nomb_usu = ? OR email = ?";
         
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {

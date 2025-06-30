@@ -22,6 +22,9 @@ public interface IMovimientoCajaService {
     List<MovimientoCaja> buscarPorRangoDeFechas(LocalDateTime inicio, LocalDateTime fin);
     List<MovimientoCaja> buscarPorOperador(Long operadorId);
 
+    //Metodo para registra una venta online
+    MovimientoCaja registrarIngresoPorVentaOnline(Factura factura, Usuario operador);
+
     // Registrar movimiento de caja (ingreso)
     MovimientoCaja registrarIngreso(MovimientoCaja movimiento, Usuario operador, Long cajaId, Factura factura);
    

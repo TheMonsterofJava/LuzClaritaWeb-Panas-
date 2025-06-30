@@ -94,6 +94,9 @@ public class WebSecurityConfig {
                         // "/inventario/editar", "/inventario/guardar", "/inventario/borrar",
                         // "/productos/**", "/success/**")
                         // .permitAll()
+                        //Carrito
+                        // .requestMatchers("/api/carrito/**").authenticated() // Proteger endpoints de carrito
+                        // .requestMatchers("/createAndRedirect").authenticated() // Proteger pago
                         .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
                         // 2. Luego la general
                         .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/caja/**")

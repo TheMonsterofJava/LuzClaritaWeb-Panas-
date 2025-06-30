@@ -34,8 +34,9 @@ public class MovimientoCaja {
     @NumberFormat(pattern = "#,##0.00")
     private BigDecimal monto;
 
-     // Se elimina montoDouble para usar solo BigDecimal monto para precisión.
-    // private double montoDouble; 
+    @Column(name = "monto_double", nullable = false)
+    @NumberFormat(pattern = "#,##0.00")
+    private double montoDouble; 
 
     @Column(name = "tipo", nullable = false, length = 10)
     private String tipo; // "INGRESO" o "EGRESO"
