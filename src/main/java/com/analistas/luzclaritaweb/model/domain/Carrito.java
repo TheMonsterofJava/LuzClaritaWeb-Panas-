@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "carrito")  // La tabla se llama "carrito" en singular
+@Table(name = "carrito") 
 public class Carrito {
 
     @Id
@@ -34,22 +34,3 @@ public class Carrito {
     @Column(columnDefinition = "INT NOT NULL DEFAULT 1")
     private int cantidad;
 }
-
-//CODIGO VIEJO: ()
-// private final List<Producto> productos = new ArrayList<>();
-
-// public void agregarProducto(Producto producto) {
-//     productos.add(producto);
-// }
-
-// public void quitarProducto(Long id) {
-//     productos.removeIf(product -> product.getId().equals(id));
-// }
-
-// public void vaciar() {
-//     productos.clear();
-// }
-
-// public List<Producto> getProductos() {
-//     return productos;
-// }

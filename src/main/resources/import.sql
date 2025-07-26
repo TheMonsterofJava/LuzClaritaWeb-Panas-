@@ -7,15 +7,6 @@ INSERT INTO `permisos` (nombre, descripcion) VALUES ('ROLE_ADMIN', 'Dueño de la
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 1, 'Osvaldo', '$2y$10$ZP7gE3toR10ffABvlsvJXOGQsHaUQPizzXpuBZj5Gkf.7mT3hFmQS', 'Osvaldo@gmail.com.ar') /*user*/
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 3, 'Santi', '$2y$10$Y5PE96MBydWiAVCAkf1TQu99d7NKYNPWU/HEAZGQ2l5OQu2XiPiiC', 'Santi@gmail.com.ar') /*cliente*/
 
-
-
-
--- CATEGORÍAS
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Chocolate');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Frutilla');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Vainilla');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Donas');
-
 -- PRODUCTOS
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '5000.00', '6', '2', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '6840.00', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');

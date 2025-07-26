@@ -123,6 +123,57 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <!-- Porciones -->
+                        <div class="col-md-4">
+                            <div class="form-group mb-4" th:classappend="${#fields.hasErrors('porciones')} ? 'has-error'">
+                                <label for="porciones" class="form-label">
+                                    <i class="fas fa-utensils me-2"></i>Porciones:
+                                </label>
+                                <input type="number" min="1" id="porciones" th:field="*{porciones}" class="form-control" 
+                                    placeholder="Ej: 4" 
+                                    th:classappend="${#fields.hasErrors('porciones')} ? 'is-invalid'" />
+                                <div th:if="${#fields.hasErrors('porciones')}" class="invalid-feedback">
+                                    <span th:each="err : ${#fields.errors('porciones')}" th:text="${err}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tiempo de preparación -->
+                        <div class="col-md-4">
+                            <div class="form-group mb-4" th:classappend="${#fields.hasErrors('tiempoPreparacion')} ? 'has-error'">
+                                <label for="tiempoPreparacion" class="form-label">
+                                    <i class="fas fa-clock me-2"></i>Tiempo (min):
+                                </label>
+                                <input type="number" min="1" id="tiempoPreparacion" th:field="*{tiempoPreparacion}" 
+                                    class="form-control" placeholder="Ej: 30" 
+                                    th:classappend="${#fields.hasErrors('tiempoPreparacion')} ? 'is-invalid'" />
+                                <div th:if="${#fields.hasErrors('tiempoPreparacion')}" class="invalid-feedback">
+                                    <span th:each="err : ${#fields.errors('tiempoPreparacion')}" th:text="${err}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dificultad -->
+                        <div class="col-md-4">
+                            <div class="form-group mb-4" th:classappend="${#fields.hasErrors('dificultad')} ? 'has-error'">
+                                <label for="dificultad" class="form-label">
+                                    <i class="fas fa-signal me-2"></i>Dificultad:
+                                </label>
+                                <select id="dificultad" th:field="*{dificultad}" class="form-select"
+                                        th:classappend="${#fields.hasErrors('dificultad')} ? 'is-invalid'">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('dificultad')}" class="invalid-feedback">
+                                    <span th:each="err : ${#fields.errors('dificultad')}" th:text="${err}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Ingredientes (Lista dinámica) -->
                     <div class="form-group mb-4">
                         <label class="form-label">

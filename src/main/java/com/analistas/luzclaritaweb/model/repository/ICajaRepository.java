@@ -21,11 +21,3 @@ public interface ICajaRepository extends JpaRepository<Caja, Long> {
     // Buscar cajas dentro de un rango de fechas
     List<Caja> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin);
 }
-
-// 📝 Explicación:
-
-// findTopByEstadoOrderByFechaDesc(EstadoCaja estado): Obtiene la última caja abierta.
-
-// findByUsuarioId(Long usuarioId): Filtra las cajas por usuario.
-
-// findByFechaBetween(LocalDateTime inicio, LocalDateTime fin): Obtiene las cajas de un periodo determinado.

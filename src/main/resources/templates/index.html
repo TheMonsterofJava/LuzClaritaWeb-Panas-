@@ -196,16 +196,7 @@
         <h2 class="titulo col-12 text-center h1 text-muted">Categorías principales</h2>
       </div>
 
-      <div class="row justify-content-center">
-        <div th:each="c : ${categorias}" class="col-md-3 col-12 mb-4">
-          <div class="card shadow-sm border-0 rounded-lg">
-            <!-- Usamos una condición para asignar un color a cada categoría -->
-            <button type="button" th:value="${c.id}" class="btn category-btn w-100 p-3 rounded-lg btn-outline-peach">
-              <span th:text="${c.nombre}" class="h5 text-dark"></span>
-            </button>
-          </div>
-        </div>
-      </div>
+      
     </section>
 
     <div class="row mb-4">
@@ -213,24 +204,37 @@
     </div>
 
     <!-- CARDS -->
-    <div class="container mt-2">
-      <div class="d-flex flex-wrap justify-content-center"> <!-- Centra horizontalmente -->
-        <div th:each="p : ${productos}" class="col-md-4 mb-4">
-          <div class="card custom-card pastel-card shadow-sm">
-            <img th:src="@{${p.linkImagen}}" class="card-img-top" alt="Imagen del producto">
-            <div class="card-body text-center">
-              <h5 class="card-title" th:text="${p.descripcion}">Nombre del Producto</h5>
-              <p class="card-text"> $<span th:text="${p.precio}">$0.00</span></p>
-              <!-- Botón con atributos data-* -->
-              <a href="#" class="agregar-carrito bi bi-cart4" th:data-id="${p.id}" th:data-nombre="${p.descripcion}"
-                th:data-precio="${p.precio}" th:data-imagen="${p.linkImagen}">
-                Añadir al Carrito
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="container mt-4">
+                    <div class="d-flex flex-wrap justify-content-center">
+                        <!-- Iteración de productos -->
+                        <div th:each="p : ${productos}" class="col-md-4 mb-4">
+                            <div class="card custom-card pastel-card shadow-lg rounded-3">
+                                <a th:href="@{'/productos/detalle/' + ${p.id}}" class="text-decoration-none text-dark">
+                                    <img th:src="@{${p.linkImagen}}" class="card-img-top" alt="Imagen del producto">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title" th:text="${p.nombre}">Nombre del Producto</h5>
+                                        <p class="card-text text-muted"> $<span th:text="${p.precio}">$0.00</span></p>
+                                    </div>
+                                </a>
+
+                                <!-- Y para el botón de detalles -->
+                                <a th:href="@{'/productos/detalle/' + ${p.id}}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye-fill"></i> Ver Detalles
+                                </a>
+                                        <!-- Botón para añadir al carrito -->
+                                        <a href="#" class="btn btn-sm btn-outline-success agregar-carrito" 
+                                           th:data-id="${p.id}"
+                                           th:data-nombre="${p.nombre}"
+                                           th:data-precio="${p.precio}"
+                                           th:data-imagen="${p.linkImagen}">
+                                            <i class="bi bi-cart-plus"></i> Añadir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
     <div class="container mt-5 mb-4">
       <div class="row">
         <div class="col text-center">

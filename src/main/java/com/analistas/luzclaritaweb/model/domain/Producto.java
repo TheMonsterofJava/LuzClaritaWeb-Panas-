@@ -30,8 +30,12 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotEmpty(message = "El nombre es requerido...")
+    @Size(max = 65, message = "El nombre debe tener máximo 65 caracteres...")
+    private String nombre;
+
     @NotEmpty(message = "El producto es requerido...")
-    @Size(max = 65, message = "El producto debe tener máximo 65 caracteres...")
+    @Size(max = 400, message = "El producto debe tener máximo 400 caracteres...")
     private String descripcion;
 
     @Column(columnDefinition = "decimal(10, 2) default 0.00")
@@ -39,10 +43,6 @@ public class Producto {
     @Positive(message = "El precio debe ser mayor que cero")
     @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)
     private BigDecimal precio;
-
-    // @NotNull(message = "El precio es requerido...")
-    // @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)
-    // private BigDecimal precio;
 
     @NotNull(message = "El stock es requerido...")
     private Integer stock;

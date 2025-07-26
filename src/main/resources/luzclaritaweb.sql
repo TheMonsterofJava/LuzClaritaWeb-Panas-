@@ -47,17 +47,12 @@ alter table movimientos_caja add constraint FKq6p24j6nsky3mrdsx3h1cg96c foreign 
 alter table movimientos_caja add constraint FKlqsh77mc9fttu2gv7c0fj94q7 foreign key (id_factura) references facturas (id);
 alter table movimientos_caja add constraint FKgg5hupo8fx8run98bgv1vll1u foreign key (id_usuario) references usuarios (id);
 alter table movimientos_caja add constraint FKfbwwbwirle698wn2ruo1csw74 foreign key (id_venta) references ventas (id);
-alter table productos add constraint FKdtoa37luoxhhvbicrfiu5ygbj foreign key (id_categoria) references categorias (id);
 alter table usuarios add constraint FK_USUARIO_PERMISO foreign key (id_permiso) references permisos (id);
 alter table ventas add constraint FK_VENTA_CLIENTE foreign key (id_cliente) references clientes (id);
 alter table ventas add constraint FK_VENTA_USUARIO foreign key (id_usuario) references usuarios (id);
 INSERT INTO `permisos` (nombre, descripcion) VALUES ('ROLE_ADMIN', 'Dueño de la empresa - Tiene menos permisos que programador'),('ROLE_OPERADOR', 'Trabajador de la empresa - Tiene algunos permisos'),('ROLE_CLIENTE', 'Usuario Registrado que realiza una compra'),('ROLE_UNLOGUED', 'Consultas algunos elementos de la pagina sin estar registrado');
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 1, 'Osvaldo', '$2y$10$ZP7gE3toR10ffABvlsvJXOGQsHaUQPizzXpuBZj5Gkf.7mT3hFmQS', 'Osvaldo@gmail.com.ar') /*user*/;
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 3, 'Santi', '$2y$10$Y5PE96MBydWiAVCAkf1TQu99d7NKYNPWU/HEAZGQ2l5OQu2XiPiiC', 'Santi@gmail.com.ar') /*cliente*/;
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Chocolate');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Frutilla');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Vainilla');
-INSERT INTO `luzclaritaweb`.`categorias` (`nombre`) VALUES ('Donas');
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '5000.00', '6', '2', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '6840.00', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
 INSERT INTO `luzclaritaweb`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '4500.00', '20', '4', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
