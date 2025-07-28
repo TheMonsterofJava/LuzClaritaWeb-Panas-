@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.analistas.luzclaritaweb.model.domain.Categoria;
@@ -18,7 +19,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
 
     @Override
     public List<Categoria> buscarTodo() {
-        return categoriaRepository.findAll();
+        return (List<Categoria>) categoriaRepository.findAll();
     }
 
     @Override
@@ -38,5 +39,10 @@ public class CategoriaServiceImpl implements ICategoriaService {
     public void eliminar(Long id) {
         // Elimina una categoría por su ID
         categoriaRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Categoria> buscarTopCategorias(Pageable pageable) {
+        return categoriaRepository.findTopByProductos(pageable);
     }
 }

@@ -105,17 +105,15 @@ public class WebSecurityConfig {
                         // .permitAll()
 
                         // Rutas públicas (acceso para todos)
-                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
-                                "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**")
+                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/font/**", "/uploads/**", "/assets/**",
+                                "/consultas/**", "/inicioSesion/**", "/registro/**", "/productos/**")
                         .permitAll()
 
                         .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/inventario/ajax/crear")
                         .hasAnyAuthority("ROLE_ADMIN") //
 
-                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**", "/index",
-                                "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**")
+                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/font/**", "/uploads/**", "/assets/**", "/index",
+                                "/consultas/**", "/inicioSesion/**", "/registro/**", "/productos/**")
                         .hasAnyAuthority("ROLE_CLIENTE")
 
                         .anyRequest().authenticated())

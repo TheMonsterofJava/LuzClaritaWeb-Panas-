@@ -195,8 +195,16 @@
       <div class="row mb-4">
         <h2 class="titulo col-12 text-center h1 text-muted">Categorías principales</h2>
       </div>
-
-      
+      <div class="row justify-content-center">
+        <div class="col-md-2 mb-3" th:each="cat : ${categoriasTop}">
+          <div class="card text-center pastel-card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${cat.nombre}">Nombre Categoría</h5>
+              <p class="card-text text-muted" th:text="'Productos: ' + ${#lists.size(cat.productos)}"></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <div class="row mb-4">

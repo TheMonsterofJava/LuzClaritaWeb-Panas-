@@ -262,8 +262,8 @@ a {
     /* Ajusta la posición del contenedor y permite escalar */
     z-index: 101;
     /* Capa superior sobre otros elementos */
-    background: #fff;
-    /* Fondo blanco */
+    background: rgba(255, 255, 255, 0.92);
+    /* Fondo blanco semi-transparente */
     padding: 25px;
     /* Relleno interno */
     border-radius: 12px;
@@ -543,4 +543,10 @@ a {
 
 .tooltip {
     pointer-events: none !important;
+}
+
+/* Fondo de la página de login */
+body {
+    background: url('/img/login-background/fondo-login.jpg') no-repeat center center fixed;
+    background-size: cover;
 }

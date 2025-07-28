@@ -174,19 +174,8 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/cursos/listado2}">Cursos</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="/caja/movimientos">Caja</a>
-                    </li> -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Recetas
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/recetas/clasicas">Clásicas</a></li>
-                            <li><a class="dropdown-item" href="/recetas/especiales">Especiales</a></li>
-                            <li><a class="dropdown-item" href="/recetas/consejos">Consejos de cocina</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/recetas/cards">Recetas</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
