@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,11 +31,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
-
-import com.analistas.luzclaritaweb.model.repository.IUsuarioRepository;
 import com.analistas.luzclaritaweb.web.config.security.CustomAuthenticationSuccessHandler;
 import com.analistas.luzclaritaweb.web.config.security.CustomUniversalLogoutSuccessHandler;
-import com.analistas.luzclaritaweb.web.config.security.CustomUserDetailsService;
+
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,14 +44,18 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
+    private final MessageSource messageSource;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    public WebSecurityConfig(DataSource dataSource, MessageSource messageSource,
+            ClientRegistrationRepository clientRegistrationRepository, UserDetailsService userDetailsService) {
+        this.dataSource = dataSource;
+        this.messageSource = messageSource;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
@@ -76,10 +78,10 @@ public class WebSecurityConfig {
     // @Qualifier("userDetailsService")
     // private UserDetailsService userDetailsService;
 
-    @Bean
-    public UserDetailsService userDetailsService(IUsuarioRepository usuarioRepository) {
-        return new CustomUserDetailsService(usuarioRepository);
-    }
+    // @Bean
+    // public UserDetailsService userDetailsService(IUsuarioRepository usuarioRepository) {
+    //     return new CustomUserDetailsService(usuarioRepository);
+    // }
 
     // Bean para manejar sincronización del carrito después del login
     @Bean
@@ -120,13 +122,14 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/inicioSesion/login")
+                        .loginProcessingUrl("/login") // URL de procesamiento del login
                         .successHandler(customAuthenticationSuccessHandler())
                         .failureUrl("/inicioSesion/login?error")
                         .usernameParameter("emailOrUser")
                         .passwordParameter("password")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService(null)) // Inyectar el servicio corregido
+                .userDetailsService(userDetailsService) // Inyectar el servicio corregido
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/inicioSesion/login")
                         .successHandler(customAuthenticationSuccessHandler())
@@ -141,7 +144,7 @@ public class WebSecurityConfig {
                         .key(System.getenv("SPRING_SECURITY_REMEMBER_ME_KEY"))
                         .tokenRepository(persistentTokenRepository())
                         .tokenValiditySeconds(1209600)
-                        .userDetailsService(userDetailsService(null)))
+                        .userDetailsService(userDetailsService))
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             request.getSession().setAttribute("error",
