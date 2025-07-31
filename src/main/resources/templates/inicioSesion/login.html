@@ -50,22 +50,26 @@
             </div>
 
             <!-- Formulario de Inicio de Sesión -->
+            <!-- Formulario Corregido para usarlo con Spring Security -->
             <div class="form login_form">
-                <form th:action="@{/inicioSesion/login}" method="POST" id="loginForm">
+                <form th:action="@{/login}" method="POST" id="loginForm">
+
+                    <!-- TOKEN CSRF OBLIGATORIO PARA SPRING SECURITY -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                     <h2>Inicio De Sesión</h2>
 
                     <div class="input_box">
                         <input type="text" name="emailOrUser" placeholder="Ingresa tu Usuario o Email:"
-                            th:value="${emailOrUser}">
-
+                            th:value="${emailOrUser}" required>
                         <i class="uil uil-user text"></i>
                     </div>
                     <div class="input_box">
-                        <input type="password" name="password" placeholder="Ingresa tu Contraseña">
+                        <input type="password" name="password" placeholder="Ingresa tu Contraseña" required>
                         <i class="uil uil-lock password"></i>
                         <i class="uil uil-eye-slash pw_hide"></i>
                     </div>
-                    <button class="button">Iniciar Sesión</button>
+                    <button type="submit" class="button">Iniciar Sesión</button>
                     <div class="option_field">
                         <span class="checkbox"> <!-- Checkbox para recordar contraseña -->
                             <input type="checkbox" id="check" name="remember-me">
@@ -112,14 +116,14 @@
                         <i class="uil uil-phone-alt text"></i>
                     </div>
                     <div class="input_box">
-                        <input type="email" name="correo" placeholder="Ingresa tu Email" maxlength="120" required 
-                         data-bs-toggle="tooltip" data-bs-html="true"
+                        <input type="email" name="correo" placeholder="Ingresa tu Email" maxlength="120" required
+                            data-bs-toggle="tooltip" data-bs-html="true"
                             title="<em>Ingresa un correo que utilizeces seguido:</em><br>- Gmail<br>- O hotmail<br>">
                         <i class="uil uil-envelope-alt email"></i>
                     </div>
                     <div class="input_box">
                         <input type="text" name="direccion" placeholder="Ingresa tu Domicilio" maxlength="120" required
-                         data-bs-toggle="tooltip" data-bs-html="true"
+                            data-bs-toggle="tooltip" data-bs-html="true"
                             title="<em>Ingresa la direccion:</em><br>- Ingresa tambien la altura<br>- Máximo 60 caracteres<br>">
                         <i class="uil uil-user-location text"></i>
                     </div>
@@ -132,8 +136,7 @@
                     </div>
                     <div class="input_box">
                         <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" minlength="5"
-                            maxlength="71"
-                            required data-bs-toggle="tooltip" data-bs-html="true"
+                            maxlength="71" required data-bs-toggle="tooltip" data-bs-html="true"
                             title="<em>Vuelve a ingresar tu contraseña:</em>">
                         <i class="uil uil-lock password"></i>
                         <i class="uil uil-eye-slash pw_hide"></i>

@@ -374,6 +374,8 @@
                         }
                     });
                     $(document).data('csrf-ajaxsend-attached', true);
+                    //Console log para verificar que el handler se adjuntó correctamente
+                    //Esto sirve para depurar y asegurarse de que el handler se adjuntó una sola vez
                     console.log("CSRF ajaxSend handler attached globally.");
                 }
             } else {

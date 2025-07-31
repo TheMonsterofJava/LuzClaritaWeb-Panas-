@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.analistas.luzclaritaweb.model.domain.Categoria;
 import com.analistas.luzclaritaweb.model.domain.Producto;
-import com.analistas.luzclaritaweb.model.service.IProductoService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
 
 
     

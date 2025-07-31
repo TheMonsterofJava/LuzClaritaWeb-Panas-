@@ -1,7 +1,7 @@
 package com.analistas.luzclaritaweb.web.controller;
 
 import com.analistas.luzclaritaweb.model.domain.Receta;
-import com.analistas.luzclaritaweb.model.service.IRecetasService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IRecetasService;
 
 import jakarta.validation.Valid;
 

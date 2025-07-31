@@ -27,6 +27,7 @@ public class Cliente {
     @Size(min = 5, max = 60, message = "El Nombre y Apellido debe tener entre 5 y 60 caracteres...")
     private String nomb_ape;
 
+    //Representa 
     @Column(name = "nomb_usu")
     @NotEmpty(message = "El Nombre de Usuario es requerido...")
     @Size(min = 5, max = 60, message = "El Nombre de Usuario debe tener entre 5 y 60 caracteres...")

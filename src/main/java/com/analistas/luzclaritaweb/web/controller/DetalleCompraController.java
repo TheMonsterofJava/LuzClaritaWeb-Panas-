@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.analistas.luzclaritaweb.model.domain.DetalleCompra;
-import com.analistas.luzclaritaweb.model.service.IDetalleCompraService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IDetalleCompraService;
 
 @RestController
 @RequestMapping("/detalles-compra")

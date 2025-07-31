@@ -19,8 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.model.domain.Categoria;
 import com.analistas.luzclaritaweb.model.domain.Producto;
-import com.analistas.luzclaritaweb.model.service.ICategoriaService;
-import com.analistas.luzclaritaweb.model.service.IProductoService;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICategoriaService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

@@ -10,35 +10,74 @@ import org.springframework.stereotype.Repository;
 
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 
+// Repositorio para manejar operaciones CRUD de Usuario
+// Extiende JpaRepository para proporcionar métodos de acceso a datos
+// Incluye consultas personalizadas para buscar usuarios por email o nombre de usuario
+// Es manejado por Spring Data JPA, lo que permite realizar operaciones de base de datos sin necesidad de implementar los métodos manualmente
+// Tambien esta contralado unicamente por Spring Security, por lo que no es necesario implementar la verificación de contraseñas
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    // Verificar si el usuario existe por su email
     Optional<Usuario> findByEmail(String email);
 
-    // Buscar usuario por nombre de usuario (nomb_usu) usando una consulta
-    // personalizada
     @Query("SELECT u FROM Usuario u WHERE u.nomb_usu = :nombUsu")
     Optional<Usuario> findByNombUsu(@Param("nombUsu") String nombUsu);
 
-    @Query("SELECT u FROM Usuario u WHERE u.email = :email")
-    Optional<Usuario> findByEmail2(@Param("email") String email);
+    @Query("SELECT u FROM Usuario u WHERE LOWER(u.email) = LOWER(:identificador) OR LOWER(u.nomb_usu) = LOWER(:identificador)")
+    Optional<Usuario> findByEmailOrNombUsu(@Param("identificador") String identificador);
 
-    @Query("SELECT u FROM Usuario u WHERE (u.email = :emailOrUser OR u.nomb_usu = :emailOrUser) AND u.clave = :password")
-    Usuario findByEmailOrUSerAndPassword(@Param("emailOrUser") String emailOrUser, @Param("password") String password);
-
-    // Consulta personalizada para eliminar un usuario por ID
     @Modifying
     @Query("DELETE FROM Usuario u WHERE u.id = :id")
     void eliminarUsuario(@Param("id") Long id);
 
-    // Conuslta a la base de datos para saber si existe un usuario en la base de
-    // datos
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
             "FROM Usuario u WHERE u.email = ?1 OR u.nomb_usu = ?1")
     boolean existsByEmailOrNombUsu(String identificador);
-
 }
+
+// ELIMINAR: El método findByEmailOrUSerAndPassword ya no se necesita
+// Spring Security + CustomPasswordEncoder manejan la verificación de
+// contraseñas
+
+/**
+ * NUEVO: Método necesario para Spring Security
+ * Busca usuario por email O nombre de usuario (para el login)
+ */
+// @Query("SELECT u FROM Usuario u WHERE u.email = :identificador OR u.nomb_usu
+// = :identificador")
+// Búsqueda insensible a mayúsculas/minúsculas
+
+// @Repository
+// public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
+
+// Verificar si el usuario existe por su email
+// Optional<Usuario> findByEmail(String email);
+
+// Buscar usuario por nombre de usuario (nomb_usu) usando una consulta
+// personalizada
+// @Query("SELECT u FROM Usuario u WHERE u.nomb_usu = :nombUsu")
+// Optional<Usuario> findByNombUsu(@Param("nombUsu") String nombUsu);
+
+// @Query("SELECT u FROM Usuario u WHERE u.email = :email")
+// Optional<Usuario> findByEmail2(@Param("email") String email);
+
+// @Query("SELECT u FROM Usuario u WHERE (u.email = :emailOrUser OR u.nomb_usu =
+// :emailOrUser) AND u.clave = :password")
+// Usuario findByEmailOrUSerAndPassword(@Param("emailOrUser") String
+// emailOrUser, @Param("password") String password);
+
+// Consulta personalizada para eliminar un usuario por ID
+// @Modifying
+// @Query("DELETE FROM Usuario u WHERE u.id = :id")
+// void eliminarUsuario(@Param("id") Long id);
+
+// Conuslta a la base de datos para saber si existe un usuario en la base de
+// datos
+// @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
+// "FROM Usuario u WHERE u.email = ?1 OR u.nomb_usu = ?1")
+// boolean existsByEmailOrNombUsu(String identificador);
+
+// }
 
 // fin de la interface IUsuarioRepository
 

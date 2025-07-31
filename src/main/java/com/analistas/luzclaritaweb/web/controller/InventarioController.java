@@ -27,9 +27,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.analistas.luzclaritaweb.model.domain.Inventario;
 import com.analistas.luzclaritaweb.model.domain.Proveedor;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
-import com.analistas.luzclaritaweb.model.service.IInventarioService;
-import com.analistas.luzclaritaweb.model.service.IProveedorService;
-import com.analistas.luzclaritaweb.model.service.IUsuariosService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IInventarioService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProveedorService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
 
 import jakarta.validation.Valid;
 

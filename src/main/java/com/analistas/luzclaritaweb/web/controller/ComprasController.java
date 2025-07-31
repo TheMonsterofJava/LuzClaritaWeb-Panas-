@@ -25,12 +25,12 @@ import com.analistas.luzclaritaweb.model.domain.Inventario;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
 import com.analistas.luzclaritaweb.model.domain.Proveedor;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
-import com.analistas.luzclaritaweb.model.service.ICajaService;
-import com.analistas.luzclaritaweb.model.service.ICompraService;
-import com.analistas.luzclaritaweb.model.service.IInventarioService;
-import com.analistas.luzclaritaweb.model.service.IMovimientoCajaService;
-import com.analistas.luzclaritaweb.model.service.IProveedorService;
-import com.analistas.luzclaritaweb.model.service.IUsuariosService;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICompraService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IInventarioService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IMovimientoCajaService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProveedorService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
 
 @Controller
 @RequestMapping("/compras")

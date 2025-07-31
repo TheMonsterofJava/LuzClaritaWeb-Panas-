@@ -25,8 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.analistas.luzclaritaweb.model.domain.Cliente;
 import com.analistas.luzclaritaweb.model.domain.Permiso;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
-import com.analistas.luzclaritaweb.model.service.IClienteService;
-import com.analistas.luzclaritaweb.model.service.IUsuariosService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IClienteService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
 
 import jakarta.transaction.Transactional;
 

@@ -5,19 +5,18 @@ import java.io.IOException;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -27,10 +26,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
+
+import com.analistas.luzclaritaweb.model.repository.IUsuarioRepository;
+import com.analistas.luzclaritaweb.web.config.security.CustomAuthenticationSuccessHandler;
+import com.analistas.luzclaritaweb.web.config.security.CustomUniversalLogoutSuccessHandler;
+import com.analistas.luzclaritaweb.web.config.security.CustomUserDetailsService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,12 +53,7 @@ public class WebSecurityConfig {
     private MessageSource messageSource;
 
     @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository; // Para OAuth2
-
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
@@ -65,8 +65,6 @@ public class WebSecurityConfig {
         return new CustomAccessDeniedHandler(messageSource);
     }
 
-    // Bean para el repositorio de tokens persistentes
-    // Se utiliza para recordar la sesión del usuario
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
         JdbcTokenRepositoryImpl tokenRepo = new JdbcTokenRepositoryImpl();
@@ -74,74 +72,76 @@ public class WebSecurityConfig {
         return tokenRepo;
     }
 
-    @Autowired
-    @Qualifier("userDetailsService")
-    private UserDetailsService userDetailsService;
+    // @Autowired
+    // @Qualifier("userDetailsService")
+    // private UserDetailsService userDetailsService;
+
+    @Bean
+    public UserDetailsService userDetailsService(IUsuarioRepository usuarioRepository) {
+        return new CustomUserDetailsService(usuarioRepository);
+    }
+
+    // Bean para manejar sincronización del carrito después del login
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+
+    //Bean para manejar el TestAuthController:
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         CustomUniversalLogoutSuccessHandler logoutSuccessHandler = new CustomUniversalLogoutSuccessHandler(
                 clientRegistrationRepository);
         http
-                // CSRF protection is enabled by default, no need to explicitly enable it
-                // .csrf(csrf -> csrf.enable()) el token esta activado por defecto
                 .authorizeHttpRequests((requests) -> requests
-                        // .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
-                        // "/consultas/**",
-                        // "/inicioSesion/**", "/registro/**", "/receta-clasica/**",
-                        // "/receta-especial/**", "/proveedor/listado", "/proveedor/**",
-                        // "/inventario/listado", "/inventario/**", "/inventario/form",
-                        // "/inventario/editar", "/inventario/guardar", "/inventario/borrar",
-                        // "/productos/**", "/success/**")
-                        // .permitAll()
-                        //Carrito
-                        // .requestMatchers("/api/carrito/**").authenticated() // Proteger endpoints de carrito
-                        // .requestMatchers("/createAndRedirect").authenticated() // Proteger pago
+                        // Admin routes
                         .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
-                        // 2. Luego la general
                         .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/caja/**")
                         .hasAnyAuthority("ROLE_ADMIN")
-                        // 3. Rutas públicas
-                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
+                        // Public routes
+                        .requestMatchers(
+                                "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/accessDenied")
+                                "/receta-clasica/**", "/receta-especial/**", "/productos/**",
+                                "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar")
                         .permitAll()
-                        // 4. Rutas cliente
-                        .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**", "/index",
-                                "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**")
-                        .hasAnyAuthority("ROLE_CLIENTE")
+                        // Client routes
+                        .requestMatchers("/api/carrito/**")
+                        .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/inicioSesion/login")
-                        // .defaultSuccessUrl("/home", true)
-                        .defaultSuccessUrl("/inicioSesion/login?success=Inicio+de+sesión+exitoso", true)
-                        .failureUrl("/inicioSesion/login?error") /// inicioSesion/login?error=true
+                        .successHandler(customAuthenticationSuccessHandler())
+                        .failureUrl("/inicioSesion/login?error")
                         .usernameParameter("emailOrUser")
                         .passwordParameter("password")
-                        .permitAll())
+                        .permitAll()
+                )
+                .userDetailsService(userDetailsService(null)) // Inyectar el servicio corregido
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/inicioSesion/login") // Página de inicio de sesión personalizada
-                        // .defaultSuccessUrl("/home", true) // Redirigir después del éxito
-                        .defaultSuccessUrl("/inicioSesion/login?success=Inicio+de+sesión+exitoso", true)
-                        .failureUrl("/inicioSesion/login?error") // Redirigir en caso de error
-                                                                 // ///inicioSesion/login?error=true
+                        .loginPage("/inicioSesion/login")
+                        .successHandler(customAuthenticationSuccessHandler())
+                        .failureUrl("/inicioSesion/login?error")
                         .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(this.oidcUserService()) // Para Google
-                                .userService(this.oauth2UserService()) // Para Facebook
-                        ))
+                                .oidcUserService(this.oidcUserService())
+                                .userService(this.oauth2UserService())))
                 .logout(logout -> logout
                         .logoutSuccessHandler(logoutSuccessHandler)
-                        .permitAll()
-
-                )
-                // metodo para recordar la sesion
+                        .permitAll())
                 .rememberMe(rememberMe -> rememberMe
-                        .key(System.getenv("SPRING_SECURITY_REMEMBER_ME_KEY")) // Clave secreta para recordar la sesión
-                        .tokenRepository(persistentTokenRepository()) // Repositorio de tokens en la base de datos
-                        .tokenValiditySeconds(1209600) // 14 días en segundos
-                        .userDetailsService(userDetailsService)) // Servicio de detalles de usuario
-
+                        .key(System.getenv("SPRING_SECURITY_REMEMBER_ME_KEY"))
+                        .tokenRepository(persistentTokenRepository())
+                        .tokenValiditySeconds(1209600)
+                        .userDetailsService(userDetailsService(null)))
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             request.getSession().setAttribute("error",
@@ -154,30 +154,27 @@ public class WebSecurityConfig {
 
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        return new com.analistas.luzclaritaweb.model.service.CustomOidcUserService();
+        return new com.analistas.luzclaritaweb.web.config.security.CustomOidcUserService();
     }
 
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-        return new com.analistas.luzclaritaweb.model.service.CustomOAuth2UserService();
+        return new com.analistas.luzclaritaweb.web.config.security.CustomOAuth2UserService();
     }
 
-    // ACA BAN LOS BUILDERS QUE COMENTE
-
+    // Handlers internos...
     @Component
     public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-
         private final MessageSource messageSource;
 
         public CustomAuthenticationFailureHandler(MessageSource messageSource) {
             this.messageSource = messageSource;
-            setDefaultFailureUrl("/inicioSesion/login?error"); // Redirige con parámetro error
+            setDefaultFailureUrl("/inicioSesion/login?error");
         }
 
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                AuthenticationException exception)
-                throws IOException, ServletException {
+                AuthenticationException exception) throws IOException, ServletException {
             String errorMessage = messageSource.getMessage("error.auth", null, LocaleContextHolder.getLocale());
             request.getSession().setAttribute("errorMessage", errorMessage);
             super.onAuthenticationFailure(request, response, exception);
@@ -186,7 +183,6 @@ public class WebSecurityConfig {
 
     @Component
     public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-
         private final MessageSource messageSource;
 
         public CustomAccessDeniedHandler(MessageSource messageSource) {
@@ -195,15 +191,15 @@ public class WebSecurityConfig {
 
         @Override
         public void handle(HttpServletRequest request, HttpServletResponse response,
-                AccessDeniedException accessDeniedException)
-                throws IOException, ServletException {
+                AccessDeniedException accessDeniedException) throws IOException, ServletException {
             String errorMessage = messageSource.getMessage("error.accessDenied", null, LocaleContextHolder.getLocale());
             request.getSession().setAttribute("accessDeniedMessage", errorMessage);
-            response.sendRedirect(request.getContextPath() + "/accessDenied"); // Redirige a /accessDenied
+            response.sendRedirect(request.getContextPath() + "/accessDenied");
         }
     }
-}
 
+    
+}
 // Anulamos los metodos de configuracion de autenticacion por jdbc, ya que no se
 // utilizan
 // @Autowired

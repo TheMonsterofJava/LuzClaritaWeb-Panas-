@@ -7,3 +7,748 @@ Abria que ver la forma de poder crear usuarios con privilegios mas altos, por el
 Faltan cosas por agregar y unificar.
 Ahora estoy con el inicio de sesion, manejando las diferentes alertas en la creacion e inicio de sesion de los usuarios. 
 A grandes razgos es eso. 
+
+
+arbol del proyecto:
+C:.
+│   .env.properties
+│   .gitignore
+│   Cambios
+│   lombok.jar
+│   mvnw
+│   mvnw.cmd
+│   nb-configuration.xml
+│   nbactions.xml
+│   ngrok.exe
+│   pom.xml
+│   
+├───.mvn
+│   └───wrapper
+│           maven-wrapper.properties
+│
+├───.vscode
+│       launch.json
+│       settings.json
+│       
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───com
+│   │   │       └───analistas
+│   │   │           └───luzclaritaweb
+│   │   │               │   LuzClaritaWebApplication.java
+│   │   │               │
+│   │   │               ├───model
+│   │   │               │   ├───domain
+│   │   │               │   │       Caja.java
+│   │   │               │   │       Carrito.java
+│   │   │               │   │       Categoria.java
+│   │   │               │   │       Cliente.java
+│   │   │               │   │       Compra.java
+│   │   │               │   │       Consulta.java
+│   │   │               │   │       Curso.java
+│   │   │               │   │       DetalleCompra.java
+│   │   │               │   │       DetalleVenta.java
+│   │   │               │   │       Detalle_factura.java
+│   │   │               │   │       Factura.java
+│   │   │               │   │       Inscripcion.java
+│   │   │               │   │       Inventario.java
+│   │   │               │   │       MovimientoCaja.java
+│   │   │               │   │       Permiso.java
+│   │   │               │   │       PersistentLogins.java
+│   │   │               │   │       Producto.java
+│   │   │               │   │       Proveedor.java
+│   │   │               │   │       Receta.java
+│   │   │               │   │       Usuario.java
+│   │   │               │   │       Venta.java
+│   │   │               │   │
+│   │   │               │   ├───repository
+│   │   │               │   │       ICajaRepository.java
+│   │   │               │   │       ICarritoRepository.java
+│   │   │               │   │       ICategoriaRepository.java
+│   │   │               │   │       IClienteRepository.java
+│   │   │               │   │       ICompraRepository.java
+│   │   │               │   │       IConsultaRepository.java
+│   │   │               │   │       ICursoRepository.java
+│   │   │               │   │       IDetalleCompraRepository.java
+│   │   │               │   │       IDetalleFacturaRepository.java
+│   │   │               │   │       IDetalleVentaRepository.java
+│   │   │               │   │       IFacturaRepository.java
+│   │   │               │   │       IInventarioRepository.java
+│   │   │               │   │       IMovimientoCajaRepository.java
+│   │   │               │   │       IPermisoRepository.java
+│   │   │               │   │       IProductoRepository.java
+│   │   │               │   │       IProveedorRepository.java
+│   │   │               │   │       IRecetaRepository.java
+│   │   │               │   │       IUsuarioRepository.java
+│   │   │               │   │       IVentaRepository.java
+│   │   │               │   │
+│   │   │               │   └───service
+│   │   │               │           CategoriaServiceImpl.java
+│   │   │               │           ConsultaServiceImpl.java
+│   │   │               │           CursoServiceImpl.java
+│   │   │               │           CustomOAuth2UserService.java
+│   │   │               │           CustomOidcUserService.java
+│   │   │               │           CustomUserDetails.java
+│   │   │               │           CustomUserDetailsService.java
+│   │   │               │           CustomUserDetailsService3.java
+│   │   │               │           ICajaService.java
+│   │   │               │           ICajaServiceImpl.java
+│   │   │               │           ICarritoService.java
+│   │   │               │           ICategoriaService.java
+│   │   │               │           IClienteService.java
+│   │   │               │           ICompraService.java
+│   │   │               │           ICompraServiceImpl.java
+│   │   │               │           IConsultaService.java
+│   │   │               │           ICursoService.java
+│   │   │               │           IDetalleCompraService.java
+│   │   │               │           IDetalleCompraServiceImpl.java
+│   │   │               │           IDetalleVentaService.java
+│   │   │               │           IDetalleVentaServiceImpl.java
+│   │   │               │           IFacturaService.java
+│   │   │               │           IFacturaServiceImp.java
+│   │   │               │           IInventarioService.java
+│   │   │               │           IMovimientoCajaService.java
+│   │   │               │           IMovimientoCajaServiceImpl.java
+│   │   │               │           InventarioServiceImpl.java
+│   │   │               │           IProcesamientoPagoService.java
+│   │   │               │           IProductoService.java
+│   │   │               │           IProveedorService.java
+│   │   │               │           IRecetaServiceImpl.java
+│   │   │               │           IRecetasService.java
+│   │   │               │           IUsuariosService.java
+│   │   │               │           IVentaService.java
+│   │   │               │           IVentaServiceImpl.java
+│   │   │               │           ProcesamientoPagoServiceImpl.java
+│   │   │               │           ProductoServiceImpl.java
+│   │   │               │           ProveedorServiceImpl.java
+│   │   │               │
+│   │   │               └───web
+│   │   │                   ├───config
+│   │   │                   │       CustomAuthenticationSuccessHandler.java
+│   │   │                   │       CustomUniversalLogoutSuccessHandler.java
+│   │   │                   │       PasswordEncoderConfig.java
+│   │   │                   │       WebSecurityConfig.java
+│   │   │                   │
+│   │   │                   ├───controller
+│   │   │                   │       CajaController.java
+│   │   │                   │       CarritoController.java
+│   │   │                   │       CategoriaController.java
+│   │   │                   │       ComprasController.java
+│   │   │                   │       ConsultasController.java
+│   │   │                   │       CursoController.java
+│   │   │                   │       DashboardController.java
+│   │   │                   │       DetalleCompraController.java
+│   │   │                   │       HomeController.java
+│   │   │                   │       InventarioController.java
+│   │   │                   │       LoginController.java
+│   │   │                   │       MercadoPagoController.java
+│   │   │                   │       ProductoController.java
+│   │   │                   │       ProveedorController.java
+│   │   │                   │       RecetaController.java
+│   │   │                   │       RegistroClienteController.java
+│   │   │                   │       TestAuthController.java
+│   │   │                   │       UsuarioController.java
+│   │   │                   │
+│   │   │                   └───excepciones
+│   │   │                           MontoDelPagoNoCoincideException.java
+│   │   │                           OrdenYaProcesadaException.java
+│   │   │                           PagoNoAprobadoException.java
+│   │   │                           StockInsuficienteException.java
+│   │   │
+│   │   └───resources
+│   │       │   application.properties
+│   │       │   import.sql
+│   │       │   luzclaritaweb.sql
+│   │       │   messages.properties
+│   │       │   plantilla.html
+│   │       │
+│   │       ├───static
+│   │       │   ├───assets
+│   │       │   │   ├───demo
+│   │       │   │   │       chart-area-demo.js
+│   │       │   │   │       chart-bar-demo.js
+│   │       │   │   │       chart-pie-demo.js
+│   │       │   │   │
+│   │       │   │   ├───fonts
+│   │       │   │   │   └───metropolis
+│   │       │   │   │           Metropolis-Black.otf
+│   │       │   │   │           Metropolis-BlackItalic.otf
+│   │       │   │   │           Metropolis-Bold.otf
+│   │       │   │   │           Metropolis-BoldItalic.otf
+│   │       │   │   │           Metropolis-ExtraBold.otf
+│   │       │   │   │           Metropolis-ExtraBoldItalic.otf
+│   │       │   │   │           Metropolis-ExtraLight.otf
+│   │       │   │   │           Metropolis-ExtraLightItalic.otf
+│   │       │   │   │           Metropolis-Light.otf
+│   │       │   │   │           Metropolis-LightItalic.otf
+│   │       │   │   │           Metropolis-Medium.otf
+│   │       │   │   │           Metropolis-MediumItalic.otf
+│   │       │   │   │           Metropolis-Regular.otf
+│   │       │   │   │           Metropolis-RegularItalic.otf
+│   │       │   │   │           Metropolis-SemiBold.otf
+│   │       │   │   │           Metropolis-SemiBoldItalic.otf
+│   │       │   │   │           Metropolis-Thin.otf
+│   │       │   │   │           Metropolis-ThinItalic.otf
+│   │       │   │   │
+│   │       │   │   └───img
+│   │       │   │       │   favicon.png
+│   │       │   │       │
+│   │       │   │       ├───backgrounds
+│   │       │   │       │       bg-angles.svg
+│   │       │   │       │       bg-pattern-shapes.png
+│   │       │   │       │       bg-waves.svg
+│   │       │   │       │
+│   │       │   │       ├───demo
+│   │       │   │       │   │   demo-logo.svg
+│   │       │   │       │   │   demo-ocean-lg.jpg
+│   │       │   │       │   │   demo-ocean-sm.jpg
+│   │       │   │       │   │   pug.svg
+│   │       │   │       │   │   user-placeholder1.svg
+│   │       │   │       │   │   usseradd.png
+│   │       │   │       │   │
+│   │       │   │       │   └───cards
+│   │       │   │       │           card-img-bottom.jpg
+│   │       │   │       │           card-img-left.jpg
+│   │       │   │       │           card-img-overlay.jpg
+│   │       │   │       │           card-img-right.jpg
+│   │       │   │       │           card-img-top.jpg
+│   │       │   │       │
+│   │       │   │       └───illustrations
+│   │       │   │           │   400-error-bad-request.svg
+│   │       │   │           │   401-error-unauthorized.svg
+│   │       │   │           │   403-error-forbidden.svg
+│   │       │   │           │   404-error-with-a-cute-animal.svg
+│   │       │   │           │   404-error.svg
+│   │       │   │           │   500-internal-server-error.svg
+│   │       │   │           │   503-error-service-unavailable.svg
+│   │       │   │           │   504-error-gateway-timeout.svg
+│   │       │   │           │   at-work.svg
+│   │       │   │           │   browser-stats.svg
+│   │       │   │           │   data-report.svg
+│   │       │   │           │   problem-solving.svg
+│   │       │   │           │   processing.svg
+│   │       │   │           │   statistics.svg
+│   │       │   │           │   team-spirit.svg
+│   │       │   │           │   windows.svg
+│   │       │   │           │
+│   │       │   │           └───profiles
+│   │       │   │                   profile-1.png
+│   │       │   │                   profile-2.png
+│   │       │   │                   profile-3.png
+│   │       │   │                   profile-4.png
+│   │       │   │                   profile-5.png
+│   │       │   │                   profile-6.png
+│   │       │   │
+│   │       │   ├───cdn-cgi
+│   │       │   │   ├───l
+│   │       │   │   │       email-protection.html
+│   │       │   │   │
+│   │       │   │   └───scripts
+│   │       │   │       └───5c5dd728
+│   │       │   │           └───cloudflare-static
+│   │       │   │                   email-decode.min.js
+│   │       │   │
+│   │       │   ├───css
+│   │       │   │       bootstrap.min.css
+│   │       │   │       carrito.css
+│   │       │   │       cdn.jsdelivr.net_npm_bootstrap-icons@1.11.3_font_bootstrap-icons.min.css
+│   │       │   │       cdn.jsdelivr.net_npm_bootstrap@5.3.3_dist_css_bootstrap.min.css
+│   │       │   │       cursos.css
+│   │       │   │       inventario.css
+│   │       │   │       login.css
+│   │       │   │       recetas.css
+│   │       │   │       style.css
+│   │       │   │       styles.css
+│   │       │   │
+│   │       │   ├───font
+│   │       │   │       AmaticSC-Regular.ttf
+│   │       │   │       DancingScript-VariableFont_wght.ttf
+│   │       │   │       Pacifico.ttf
+│   │       │   │       Quicksand-VariableFont_wght.ttf
+│   │       │   │       Yakuza Lobster.ttf
+│   │       │   │
+│   │       │   ├───img
+│   │       │   │   │   123.png
+│   │       │   │   │   car.jpg
+│   │       │   │   │   car2.jpg
+│   │       │   │   │   carr1.jpg
+│   │       │   │   │   cart.png
+│   │       │   │   │   logo.png
+│   │       │   │   │   producto-fondo.jpg
+│   │       │   │   │   torta.jpeg
+│   │       │   │   │   torta2.jpeg
+│   │       │   │   │   torta3.jpeg
+│   │       │   │   │
+│   │       │   │   └───login-background
+│   │       │   │           p1 (1).webp
+│   │       │   │           p1 (2).webp
+│   │       │   │           p1 (3).webp
+│   │       │   │           p1 (4).webp
+│   │       │   │           p1 (5).webp
+│   │       │   │
+│   │       │   └───js
+│   │       │       │   carrito.js
+│   │       │       │   inventario-list.js
+│   │       │       │   litepicker.js
+│   │       │       │   login.js
+│   │       │       │   markdown.js
+│   │       │       │   productos-list.js
+│   │       │       │   proveedor-list.js
+│   │       │       │   recetas-listado.js
+│   │       │       │   scripts.js
+│   │       │       │   toasts.js
+│   │       │       │
+│   │       │       └───datatables
+│   │       │           │   datatables-simple-demo.js
+│   │       │           │
+│   │       │           └───i18n
+│   │       │                   es-ES.json
+│   │       │
+│   │       └───templates
+│   │           │   accessDenied.html
+│   │           │   index.html
+│   │           │   success.html
+│   │           │
+│   │           ├───admin
+│   │           │       account-profile.html
+│   │           │       dashboard-1.html
+│   │           │       user-management-add-user.html
+│   │           │       user-management-edit-user.html
+│   │           │       user-management-groups-list.html
+│   │           │       user-management-list.html
+│   │           │
+│   │           ├───Compras
+│   │           │       form.html
+│   │           │       listado.html
+│   │           │       
+│   │           ├───consejos
+│   │           │       form.html
+│   │           │       list.html
+│   │           │
+│   │           ├───consultas
+│   │           │       consulta.html
+│   │           │       list.html
+│   │           │
+│   │           ├───cursos
+│   │           │       detalle.html
+│   │           │       form.html
+│   │           │       list.html
+│   │           │       list2.html
+│   │           │
+│   │           ├───inicioSesion
+│   │           │       login.html
+│   │           │       login3.html
+│   │           │
+│   │           ├───inventario
+│   │           │       form.html
+│   │           │       list.html
+│   │           │
+│   │           ├───layout
+│   │           │       layout.html
+│   │           │
+│   │           ├───movimientos
+│   │           │       caja.html
+│   │           │       caja_form.html
+│   │           │       detalle_caja.html
+│   │           │       movimientos_caja.html
+│   │           │
+│   │           ├───productos
+│   │           │       form.html
+│   │           │       list.html
+│   │           │       list2.html
+│   │           │
+│   │           ├───proveedor
+│   │           │       form.html
+│   │           │       list.html
+│   │           │
+│   │           └───recetas
+│   │                   cards.html
+│   │                   detalle.html
+│   │                   form.html
+│   │                   listado.html
+│   │
+│   └───test
+│       └───java
+│           └───com
+│               └───analistas
+│                   └───luzclaritaweb
+│                           LuzClaritaWebApplicationTests.java
+│
+└───target
+    │   LuzClaritaWeb-0.0.1-SNAPSHOT.jar
+    │   LuzClaritaWeb-0.0.1-SNAPSHOT.jar.original
+    │
+    ├───classes
+    │   │   .netbeans_automatic_build
+    │   │   application.properties
+    │   │   import.sql
+    │   │   luzclaritaweb.sql
+    │   │   messages.properties
+    │   │   plantilla.html
+    │   │
+    │   ├───com
+    │   │   └───analistas
+    │   │       └───luzclaritaweb
+    │   │           │   LuzClaritaWebApplication.class
+    │   │           │
+    │   │           ├───model
+    │   │           │   ├───domain
+    │   │           │   │       Caja$EstadoCaja.class
+    │   │           │   │       Caja.class
+    │   │           │   │       Carrito.class
+    │   │           │   │       Categoria.class
+    │   │           │   │       Cliente.class
+    │   │           │   │       Compra.class
+    │   │           │   │       Consulta.class
+    │   │           │   │       Curso.class
+    │   │           │   │       DetalleCompra.class
+    │   │           │   │       DetalleVenta$TipoItem.class
+    │   │           │   │       DetalleVenta.class
+    │   │           │   │       Detalle_factura.class
+    │   │           │   │       Factura.class
+    │   │           │   │       Inscripcion.class
+    │   │           │   │       Inventario.class
+    │   │           │   │       MovimientoCaja$TipoOperacion.class
+    │   │           │   │       MovimientoCaja.class
+    │   │           │   │       Permiso.class
+    │   │           │   │       PersistentLogins.class
+    │   │           │   │       Producto.class
+    │   │           │   │       Proveedor.class
+    │   │           │   │       Receta.class
+    │   │           │   │       Usuario.class
+    │   │           │   │       Venta$EstadoVenta.class
+    │   │           │   │       Venta.class
+    │   │           │   │
+    │   │           │   ├───repository
+    │   │           │   │       ICajaRepository.class
+    │   │           │   │       ICarritoRepository.class
+    │   │           │   │       ICategoriaRepository.class
+    │   │           │   │       IClienteRepository.class
+    │   │           │   │       ICompraRepository.class
+    │   │           │   │       IConsultaRepository.class
+    │   │           │   │       ICursoRepository.class
+    │   │           │   │       IDetalleCompraRepository.class
+    │   │           │   │       IDetalleFacturaRepository.class
+    │   │           │   │       IDetalleVentaRepository.class
+    │   │           │   │       IFacturaRepository.class
+    │   │           │   │       IInventarioRepository.class
+    │   │           │   │       IMovimientoCajaRepository.class
+    │   │           │   │       IPermisoRepository.class
+    │   │           │   │       IProductoRepository.class
+    │   │           │   │       IProveedorRepository.class
+    │   │           │   │       IRecetaRepository.class
+    │   │           │   │       IUsuarioRepository.class
+    │   │           │   │       IVentaRepository.class
+    │   │           │   │
+    │   │           │   └───service
+    │   │           │           CategoriaServiceImpl.class
+    │   │           │           ConsultaServiceImpl.class
+    │   │           │           CursoServiceImpl.class
+    │   │           │           CustomOAuth2UserService.class
+    │   │           │           CustomOidcUserService.class
+    │   │           │           CustomUserDetails.class
+    │   │           │           CustomUserDetailsService.class
+    │   │           │           ICajaService.class
+    │   │           │           ICajaServiceImpl.class
+    │   │           │           ICarritoService.class
+    │   │           │           ICategoriaService.class
+    │   │           │           IClienteService.class
+    │   │           │           ICompraService.class
+    │   │           │           ICompraServiceImpl.class
+    │   │           │           IConsultaService.class
+    │   │           │           ICursoService.class
+    │   │           │           IDetalleCompraService.class
+    │   │           │           IDetalleCompraServiceImpl.class
+    │   │           │           IDetalleVentaService.class
+    │   │           │           IDetalleVentaServiceImpl.class
+    │   │           │           IFacturaService.class
+    │   │           │           IFacturaServiceImp.class
+    │   │           │           IInventarioService.class
+    │   │           │           IMovimientoCajaService.class
+    │   │           │           IMovimientoCajaServiceImpl.class
+    │   │           │           InventarioServiceImpl.class
+    │   │           │           IProcesamientoPagoService.class
+    │   │           │           IProductoService.class
+    │   │           │           IProveedorService.class
+    │   │           │           IRecetaServiceImpl.class
+    │   │           │           IRecetasService.class
+    │   │           │           IUsuariosService.class
+    │   │           │           IVentaService.class
+    │   │           │           IVentaServiceImpl.class
+    │   │           │           ProcesamientoPagoServiceImpl.class
+    │   │           │           ProductoServiceImpl.class
+    │   │           │           ProveedorServiceImpl.class
+    │   │           │
+    │   │           └───web
+    │   │               ├───config
+    │   │               │       CustomAuthenticationSuccessHandler.class
+    │   │               │       CustomPasswordEncoder.class
+    │   │               │       CustomUniversalLogoutSuccessHandler.class
+    │   │               │       PasswordEncoderConfig.class
+    │   │               │       WebSecurityConfig$CustomAccessDeniedHandler.class
+    │   │               │       WebSecurityConfig$CustomAuthenticationFailureHandler.class
+    │   │               │       WebSecurityConfig.class
+    │   │               │
+    │   │               ├───controller
+    │   │               │       CajaController.class
+    │   │               │       CarritoController$ItemCarritoLocal.class
+    │   │               │       CarritoController.class
+    │   │               │       CategoriaController.class
+    │   │               │       ComprasController.class
+    │   │               │       ConsultasController.class
+    │   │               │       CursoController.class
+    │   │               │       DashboardController.class
+    │   │               │       DetalleCompraController.class
+    │   │               │       HomeController.class
+    │   │               │       InventarioController.class
+    │   │               │       LoginController.class
+    │   │               │       MercadoPagoController.class
+    │   │               │       ProductoController.class
+    │   │               │       ProveedorController.class
+    │   │               │       RecetaController.class
+    │   │               │       RegistroClienteController.class
+    │   │               │       TestAuthController.class
+    │   │               │       UsuarioController.class
+    │   │               │
+    │   │               └───excepciones
+    │   │                       MontoDelPagoNoCoincideException.class
+    │   │                       OrdenYaProcesadaException.class
+    │   │                       PagoNoAprobadoException.class
+    │   │                       StockInsuficienteException.class
+    │   │
+    │   ├───static
+    │   │   ├───assets
+    │   │   │   ├───demo
+    │   │   │   │       chart-area-demo.js
+    │   │   │   │       chart-bar-demo.js
+    │   │   │   │       chart-pie-demo.js
+    │   │   │   │
+    │   │   │   ├───fonts
+    │   │   │   │   └───metropolis
+    │   │   │   │           Metropolis-Black.otf
+    │   │   │   │           Metropolis-BlackItalic.otf
+    │   │   │   │           Metropolis-Bold.otf
+    │   │   │   │           Metropolis-BoldItalic.otf
+    │   │   │   │           Metropolis-ExtraBold.otf
+    │   │   │   │           Metropolis-ExtraBoldItalic.otf
+    │   │   │   │           Metropolis-ExtraLight.otf
+    │   │   │   │           Metropolis-ExtraLightItalic.otf
+    │   │   │   │           Metropolis-Light.otf
+    │   │   │   │           Metropolis-LightItalic.otf
+    │   │   │   │           Metropolis-Medium.otf
+    │   │   │   │           Metropolis-MediumItalic.otf
+    │   │   │   │           Metropolis-Regular.otf
+    │   │   │   │           Metropolis-RegularItalic.otf
+    │   │   │   │           Metropolis-SemiBold.otf
+    │   │   │   │           Metropolis-SemiBoldItalic.otf
+    │   │   │   │           Metropolis-Thin.otf
+    │   │   │   │           Metropolis-ThinItalic.otf
+    │   │   │   │
+    │   │   │   └───img
+    │   │   │       │   favicon.png
+    │   │   │       │
+    │   │   │       ├───backgrounds
+    │   │   │       │       bg-angles.svg
+    │   │   │       │       bg-pattern-shapes.png
+    │   │   │       │       bg-waves.svg
+    │   │   │       │
+    │   │   │       ├───demo
+    │   │   │       │   │   demo-logo.svg
+    │   │   │       │   │   demo-ocean-lg.jpg
+    │   │   │       │   │   demo-ocean-sm.jpg
+    │   │   │       │   │   pug.svg
+    │   │   │       │   │   user-placeholder1.svg
+    │   │   │       │   │   usseradd.png
+    │   │   │       │   │
+    │   │   │       │   └───cards
+    │   │   │       │           card-img-bottom.jpg
+    │   │   │       │           card-img-left.jpg
+    │   │   │       │           card-img-overlay.jpg
+    │   │   │       │           card-img-right.jpg
+    │   │   │       │           card-img-top.jpg
+    │   │   │       │
+    │   │   │       └───illustrations
+    │   │   │           │   400-error-bad-request.svg
+    │   │   │           │   401-error-unauthorized.svg
+    │   │   │           │   403-error-forbidden.svg
+    │   │   │           │   404-error-with-a-cute-animal.svg
+    │   │   │           │   404-error.svg
+    │   │   │           │   500-internal-server-error.svg
+    │   │   │           │   503-error-service-unavailable.svg
+    │   │   │           │   504-error-gateway-timeout.svg
+    │   │   │           │   at-work.svg
+    │   │   │           │   browser-stats.svg
+    │   │   │           │   data-report.svg
+    │   │   │           │   problem-solving.svg
+    │   │   │           │   processing.svg
+    │   │   │           │   statistics.svg
+    │   │   │           │   team-spirit.svg
+    │   │   │           │   windows.svg
+    │   │   │           │
+    │   │   │           └───profiles
+    │   │   │                   profile-1.png
+    │   │   │                   profile-2.png
+    │   │   │                   profile-3.png
+    │   │   │                   profile-4.png
+    │   │   │                   profile-5.png
+    │   │   │                   profile-6.png
+    │   │   │
+    │   │   ├───cdn-cgi
+    │   │   │   ├───l
+    │   │   │   │       email-protection.html
+    │   │   │   │
+    │   │   │   └───scripts
+    │   │   │       └───5c5dd728
+    │   │   │           └───cloudflare-static
+    │   │   │                   email-decode.min.js
+    │   │   │
+    │   │   ├───css
+    │   │   │       bootstrap.min.css
+    │   │   │       carrito.css
+    │   │   │       cdn.jsdelivr.net_npm_bootstrap-icons@1.11.3_font_bootstrap-icons.min.css
+    │   │   │       cdn.jsdelivr.net_npm_bootstrap@5.3.3_dist_css_bootstrap.min.css
+    │   │   │       cursos.css
+    │   │   │       inventario.css
+    │   │   │       login.css
+    │   │   │       recetas.css
+    │   │   │       style.css
+    │   │   │       styles.css
+    │   │   │
+    │   │   ├───font
+    │   │   │       AmaticSC-Regular.ttf
+    │   │   │       DancingScript-VariableFont_wght.ttf
+    │   │   │       Pacifico.ttf
+    │   │   │       Quicksand-VariableFont_wght.ttf
+    │   │   │       Yakuza Lobster.ttf
+    │   │   │
+    │   │   ├───img
+    │   │   │   │   123.png
+    │   │   │   │   car.jpg
+    │   │   │   │   car2.jpg
+    │   │   │   │   carr1.jpg
+    │   │   │   │   cart.png
+    │   │   │   │   logo.png
+    │   │   │   │   producto-fondo.jpg
+    │   │   │   │   torta.jpeg
+    │   │   │   │   torta2.jpeg
+    │   │   │   │   torta3.jpeg
+    │   │   │   │
+    │   │   │   └───login-background
+    │   │   │           p1 (1).webp
+    │   │   │           p1 (2).webp
+    │   │   │           p1 (3).webp
+    │   │   │           p1 (4).webp
+    │   │   │           p1 (5).webp
+    │   │   │
+    │   │   └───js
+    │   │       │   carrito.js
+    │   │       │   inventario-list.js
+    │   │       │   litepicker.js
+    │   │       │   login.js
+    │   │       │   markdown.js
+    │   │       │   productos-list.js
+    │   │       │   proveedor-list.js
+    │   │       │   recetas-listado.js
+    │   │       │   scripts.js
+    │   │       │   toasts.js
+    │   │       │
+    │   │       └───datatables
+    │   │           │   datatables-simple-demo.js
+    │   │           │
+    │   │           └───i18n
+    │   │                   es-ES.json
+    │   │
+    │   └───templates
+    │       │   accessDenied.html
+    │       │   index.html
+    │       │   success.html
+    │       │
+    │       ├───admin
+    │       │       account-profile.html
+    │       │       dashboard-1.html
+    │       │       user-management-add-user.html
+    │       │       user-management-edit-user.html
+    │       │       user-management-groups-list.html
+    │       │       user-management-list.html
+    │       │
+    │       ├───Compras
+    │       │       form.html
+    │       │       listado.html
+    │       │
+    │       ├───consejos
+    │       │       form.html
+    │       │       list.html
+    │       │
+    │       ├───consultas
+    │       │       consulta.html
+    │       │       list.html
+    │       │
+    │       ├───cursos
+    │       │       detalle.html
+    │       │       form.html
+    │       │       list.html
+    │       │       list2.html
+    │       │
+    │       ├───inicioSesion
+    │       │       login.html
+    │       │       login3.html
+    │       │
+    │       ├───inventario
+    │       │       form.html
+    │       │       list.html
+    │       │
+    │       ├───layout
+    │       │       layout.html
+    │       │
+    │       ├───movimientos
+    │       │       caja.html
+    │       │       caja_form.html
+    │       │       detalle_caja.html
+    │       │       movimientos_caja.html
+    │       │
+    │       ├───productos
+    │       │       form.html
+    │       │       list.html
+    │       │       list2.html
+    │       │
+    │       ├───proveedor
+    │       │       form.html
+    │       │       list.html
+    │       │
+    │       └───recetas
+    │               cards.html
+    │               detalle.html
+    │               form.html
+    │               listado.html
+    │
+    ├───generated-sources
+    │   └───annotations
+    ├───generated-test-sources
+    │   └───test-annotations
+    ├───maven-archiver
+    │       pom.properties
+    │
+    ├───maven-status
+    │   └───maven-compiler-plugin
+    │       ├───compile
+    │       │   └───default-compile
+    │       │           createdFiles.lst
+    │       │           inputFiles.lst
+    │       │
+    │       └───testCompile
+    │           └───default-testCompile
+    │                   createdFiles.lst
+    │                   inputFiles.lst
+    │
+    ├───surefire-reports
+    │       com.analistas.luzclaritaweb.LuzClaritaWebApplicationTests.txt
+    │       TEST-com.analistas.luzclaritaweb.LuzClaritaWebApplicationTests.xml
+    │
+    └───test-classes
+        │   .netbeans_automatic_build
+        │
+        └───com
+            └───analistas
+                └───luzclaritaweb
+                        LuzClaritaWebApplicationTests.class

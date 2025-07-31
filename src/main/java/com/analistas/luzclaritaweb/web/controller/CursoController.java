@@ -1,7 +1,7 @@
 package com.analistas.luzclaritaweb.web.controller;
 
 import com.analistas.luzclaritaweb.model.domain.Curso;
-import com.analistas.luzclaritaweb.model.service.ICursoService;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICursoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

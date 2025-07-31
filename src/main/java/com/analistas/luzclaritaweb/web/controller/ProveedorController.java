@@ -13,7 +13,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.model.domain.Proveedor;
-import com.analistas.luzclaritaweb.model.service.IProveedorService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProveedorService;
 
 import jakarta.validation.Valid;
 

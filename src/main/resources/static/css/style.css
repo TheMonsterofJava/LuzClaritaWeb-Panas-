@@ -133,21 +133,32 @@ h2 {
 
 @font-face {
   font-family: 'titulos'; /* TITULO */
-  src: url('../font/Pacifico.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  /*src: url('../font/Pacifico.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  /*Arreglar el error de las fuentes*/
+  src: url('/font/Pacifico.woff2') format('woff2'),
+        url('/font/Pacifico.ttf') format('truetype');
   font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
   font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
 }
 
 @font-face {
   font-family: 'fuente'; /* Fuente utilizado en toda la web */
-  src: url('../font/Quicksand-VariableFont_wght.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  /*src: url('../font/Quicksand-VariableFont_wght.ttf') format('truetype');  Ruta relativa al archivo .ttf */
+  /*Arreglar el error de las fuentes*/
+  src: url('/font/Quicksand-VariableFont_wght.woff2') format('woff2'),
+       url('/font/Quicksand-VariableFont_wght.ttf') format('truetype');
   font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
   font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
 }
 
 @font-face {
   font-family: 'card-titulo'; /* Fuente usada en ** TITULOS CARDS ** */
-  src: url('../font/DancingScript-VariableFont_wght.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  /*src: url('../font/DancingScript-VariableFont_wght.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  
+  /*Arreglar el error de las fuentes*/
+  src: url('/font/DancingScript-VariableFont_wght.woff2') format('woff2'),
+       url('/font/DancingScript-VariableFont_wght.ttf') format('truetype');
+
   font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
   font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
 }
@@ -155,6 +166,11 @@ h2 {
 @font-face {
   font-family: 'nav'; /* Fuente NAVBAR */
   src: url('../font/AmaticSC-Regular.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  
+  /*Arreglar el error de las fuentes*/
+  src: url('/font/AmaticSC-Regular.woff2') format('woff2'),
+       url('/font/AmaticSC-Regular.ttf') format('truetype');
+
   font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
   font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
 }
@@ -162,6 +178,11 @@ h2 {
 @font-face {
   font-family: 'Forms-titulo'; /* Fuente titulos en form */
   src: url('../font/Yakuza\ Lobster.ttf') format('truetype'); /* Ruta relativa al archivo .ttf */
+  
+  /*Arreglar el error de las fuentes*/
+  src: url('/font/YakuzaLobster.woff2') format('woff2'),
+       url('/font/YakuzaLobster.ttf') format('truetype');
+
   font-weight: normal; /* Peso de la fuente (puedes especificar "bold" o "normal") */
   font-style: normal; /* Estilo de la fuente (puedes poner "italic" si es cursiva) */
 }
