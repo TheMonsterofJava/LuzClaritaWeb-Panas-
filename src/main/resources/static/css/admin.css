@@ -1,0 +1,46 @@
+/* Fondo general marrón pastel */
+.grupos-bg {
+    background: linear-gradient(120deg, #e9dac5 0%, #d4a76a 100%) !important;
+}
+
+/* Header/Nav marrón pastel oscuro */
+.grupos-bg .page-header,
+.grupos-bg .page-header.page-header-compact,
+.grupos-bg header.page-header-light {
+    background: linear-gradient(90deg, #b48a5a 0%, #d4a76a 100%) !important;
+    color: #fff !important;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(180, 138, 90, 0.12);
+    border: none;
+}
+
+/* Tarjetas y tablas con fondo pastel claro */
+.grupos-bg .card, 
+.grupos-bg .card-body, 
+.grupos-bg .modal-content {
+    background: rgba(255, 250, 245, 0.97) !important;
+    color: #6D6875;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(180, 138, 90, 0.08);
+    border: none;
+}
+
+/* Encabezado de tabla */
+.grupos-bg .table thead {
+    background: #e9dac5;
+    color: #6D6875;
+}
+
+/* Botones pastel */
+.grupos-bg .btn-light.text-primary, 
+.grupos-bg .btn-light {
+    background: #f8ede9 !important;
+    color: #b48a5a !important;
+    border: 1px solid #e7cba9 !important;
+}
+.grupos-bg .btn-light.text-primary:hover, 
+.grupos-bg .btn-light:hover {
+    background: #ffe5d9 !important;
+    color: #a97c50 !important;
+    border: 1px solid #d4a76a !important;
+}

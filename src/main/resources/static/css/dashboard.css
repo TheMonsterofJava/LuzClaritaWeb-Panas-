@@ -5,33 +5,49 @@
             --dark-color: #6D6875;
         }
 body {
-            /* background-color: #f9f9f9; */
-            background: linear-gradient(135deg, #fff1f7 0%, #ffe5ec 100%);
+            background: 
+        linear-gradient(rgba(60,40,20,0.55), rgba(60,40,20,0.55)),
+        url('/img/food-brownie.jpg') no-repeat center center fixed;
+        background-size: cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
 .navbar {
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: linear-gradient(90deg, #b48a5a 0%, #d4a76a 100%);
+            color: #fff !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .dropdown-toggle,
+.navbar .dropdown-item {
+    color: #fff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-item:hover {
+    color: #ffe5ec !important;
+}
 
 .sidebar {
             /* background-color: white; */
-            background: linear-gradient(135deg, #fff5e1 0%, #ffe5ec 100%);
+            background: linear-gradient(135deg, #b48a5a 0%, #d4a76a 100%);
+            color: #fff;
             height: 100vh;
             position: fixed;
             box-shadow: 2px 0 10px rgba(212, 167, 106, 0.08);
         }
         
 .sidebar .nav-link {
-            color: var(--dark-color);
+            color: #fff !important;
             border-radius: 5px;
             margin: 2px 0;
         }
         
 .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: var(--secondary-color);
-            color: var(--primary-color);
+            background: rgba(255,255,255,0.08);
+            color: #ffe5ec !important;
         }
         
 .sidebar .nav-link i {
@@ -86,9 +102,8 @@ body {
         }
         
         .page-header {
-            /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); */
-            background: linear-gradient(90deg, #ffb5a7 0%, #f8edeb 100%);
-            color: #6D6875;
+            background: #fffdfa !important;
+            color: #333 !important;
             border-radius: 18px;
             margin-bottom: 24px;
             box-shadow: 0 4px 16px rgba(255, 181, 167, 0.12);

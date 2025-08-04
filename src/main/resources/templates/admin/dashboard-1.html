@@ -28,7 +28,7 @@
             
             <a class="navbar-brand fw-bold ms-3" href="#">
                 <i class="fas fa-birthday-cake me-2" style="color: var(--primary-color);"></i>
-                Pastelería Admin
+                LuzClarita - Admin
             </a>
             
             <div class="collapse navbar-collapse" id="navbarToggler">
@@ -188,41 +188,26 @@
             
             <li class="nav-item mb-1 has-submenu">
                 <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
-                    <i class="fas fa-users"></i>
-                    Clientes
-                </a>
-                <ul class="submenu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/clientes/registro">
-                            <i class="fas fa-user-plus me-1"></i>
-                            Registro
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/clientes/fidelizacion">
-                            <i class="fas fa-award me-1"></i>
-                            Fidelización
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            
-            <li class="nav-item mb-1 has-submenu">
-                <a class="nav-link" href="#" onclick="toggleSubmenu(event)">
                     <i class="fas fa-user-cog"></i>
                     Usuarios
                 </a>
                 <ul class="submenu">
                     <li class="nav-item">
-                        <a class="nav-link" href="/usuarios/permisos">
-                            <i class="fas fa-key me-1"></i>
-                            Permisos
+                        <a class="nav-link" href="/admin/user-management-add-user">
+                            <i class="fas fa-user-edit me-1"></i>
+                            Nuevo Usuario
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/usuarios/registro">
+                        <a class="nav-link" href="/admin/user-management-list">
                             <i class="fas fa-user-edit me-1"></i>
-                            Nuevo Usuario
+                            Listado de Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/user-management-groups-list">
+                            <i class="fas fa-user-edit me-1"></i>
+                            Listado de Grupos
                         </a>
                     </li>
                 </ul>
@@ -241,15 +226,6 @@
                             <i class="fas fa-tachometer-alt me-2"></i>
                             Panel de Control
                         </h1>
-                        <p class="page-header-subtitle mb-0">Resumen de tu pastelería</p>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Buscar...">
-                            <button class="btn btn-light" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -262,212 +238,6 @@
             </a>
         </div>
 
-        <!-- Tarjetas de Estadísticas -->
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="stat-label">VENTAS HOY</p>
-                                <h3 class="stat-value">$12,450</h3>
-                            </div>
-                            <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                <i class="fas fa-dollar-sign fa-2x text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 12%</span>
-                            <span class="text-muted ms-2">vs ayer</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="stat-label">PEDIDOS HOY</p>
-                                <h3 class="stat-value">18</h3>
-                            </div>
-                            <div class="bg-warning bg-opacity-10 p-3 rounded">
-                                <i class="fas fa-shopping-bag fa-2x text-warning"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 5%</span>
-                            <span class="text-muted ms-2">vs ayer</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="stat-label">PRODUCTOS</p>
-                                <h3 class="stat-value">42</h3>
-                            </div>
-                            <div class="bg-success bg-opacity-10 p-3 rounded">
-                                <i class="fas fa-utensils fa-2x text-success"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-danger"><i class="fas fa-arrow-down me-1"></i> 2</span>
-                            <span class="text-muted ms-2">bajo stock</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="stat-label">CLIENTES NUEVOS</p>
-                                <h3 class="stat-value">5</h3>
-                            </div>
-                            <div class="bg-info bg-opacity-10 p-3 rounded">
-                                <i class="fas fa-users fa-2x text-info"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-success"><i class="fas fa-arrow-up me-1"></i> 25%</span>
-                            <span class="text-muted ms-2">este mes</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bienvenida y Resumen -->
-        <div class="row mb-4">
-            <div class="col-lg-8 mb-4">
-                <div class="card welcome-card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title mb-0">¡Bienvenido de nuevo!</h5>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#">Actualizar</a></li>
-                                    <li><a class="dropdown-item" href="#">Configurar</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <p class="text-muted flex-grow-1">
-                            Aquí tienes un resumen de las actividades recientes de tu pastelería. 
-                            Hoy tienes 3 pedidos pendientes y 2 productos con stock bajo.
-                        </p>
-                        
-                        <div class="mt-auto">
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="small text-muted mb-0">
-                                <span class="fw-bold">65%</span> de tus metas mensuales alcanzadas
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Productos más vendidos</h5>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Pastel de chocolate" class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-1">Pastel de Chocolate</h6>
-                                    <small class="text-muted">12 ventas esta semana</small>
-                                </div>
-                                <span class="badge bg-primary ms-auto">$350</span>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Cupcakes" class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-1">Cupcakes</h6>
-                                    <small class="text-muted">8 ventas esta semana</small>
-                                </div>
-                                <span class="badge bg-primary ms-auto">$180</span>
-                            </div>
-                            <div class="list-group-item d-flex align-items-center">
-                                <img src="https://via.placeholder.com/60" alt="Galletas" class="product-img me-3">
-                                <div>
-                                    <h6 class="mb-1">Galletas Decoradas</h6>
-                                    <small class="text-muted">5 ventas esta semana</small>
-                                </div>
-                                <span class="badge bg-primary ms-auto">$220</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <!-- Inventario bajo -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Productos con stock bajo</h5>
-                <div class="alert alert-warning mb-4">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Tienes 3 productos con stock bajo que necesitan atención.
-                </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Stock actual</th>
-                                <th>Stock mínimo</th>
-                                <th>Proveedor</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Harina de trigo</td>
-                                <td>2 kg</td>
-                                <td>5 kg</td>
-                                <td>Distribuidora Alimentos S.A.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Chocolate negro</td>
-                                <td>500 g</td>
-                                <td>1 kg</td>
-                                <td>Chocolates Finos</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Fresas</td>
-                                <td>0 kg</td>
-                                <td>2 kg</td>
-                                <td>Frutas Frescas S.A.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">Ordenar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- JavaScript -->
