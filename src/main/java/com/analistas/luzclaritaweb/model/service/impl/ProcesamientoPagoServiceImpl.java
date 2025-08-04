@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service; // Para idempotencia
 import org.springframework.transaction.annotation.Transactional;
 
-import com.analistas.luzclaritaweb.model.domain.Carrito;
+import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
@@ -41,7 +41,7 @@ public class ProcesamientoPagoServiceImpl implements IProcesamientoPagoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Factura procesarPagoExitosoMP(
-            List<Carrito> itemsCarrito,
+            List<CarritoDTO> itemsCarrito,
             Usuario usuario,
             String metodoPago,
             String collectionId,

@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.analistas.luzclaritaweb.model.domain.Carrito;
+import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
@@ -105,7 +105,7 @@ public class MercadoPagoController {
         }
 
         // Obtener items del carrito
-        List<Carrito> itemsCarrito = carritoService.obtenerCarritoPorUsuario(usuario.getId());
+        List<CarritoDTO> itemsCarrito = carritoService.obtenerCarritoPorUsuario(usuario.getId());
         
         // Crear factura
         Factura factura = facturaService.crearFacturaDesdeCarrito(itemsCarrito, usuario, "MercadoPago");

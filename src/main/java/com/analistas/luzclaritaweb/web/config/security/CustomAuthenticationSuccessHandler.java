@@ -20,23 +20,32 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             Authentication authentication) throws IOException, ServletException {
         
         // URL base de redirección
-        String redirectUrl = "/inicioSesion/login";
+        // String redirectUrl = "/inicioSesion/login";
         
         // Detectar si viene de un intento de checkout/pago
         String fromCheckout = request.getParameter("fromCheckout");
         boolean isFromCheckout = "true".equals(fromCheckout);
         
         // Construir parámetros de la URL
-        StringBuilder params = new StringBuilder();
-        params.append("?success=").append("Inicio+de+sesión+exitoso");
+        // StringBuilder params = new StringBuilder();
+        // params.append("?success=").append("Inicio+de+sesión+exitoso");
         
-        // Si viene de checkout, agregar syncCart=true
-        if (isFromCheckout) {
-            params.append("&syncCart=true");
-        }
+        // // Si viene de checkout, agregar syncCart=true
+        // if (isFromCheckout) {
+        //     params.append("&syncCart=true");
+        // }
         
-        // URL final
-        redirectUrl += params.toString();
+        // // URL final
+        // redirectUrl += params.toString();
+
+
+        //Definir la URL de redirección base 
+        //Si viene del checkout, lo ideal es mandarlo a una pagina de carrito o pago.
+        //Si no a la pagina pirnciapal
+        String redirectUrl = isFromCheckout ? "/pago" : "/home";
+
+        //Construimos la URL final con el parametro para forzar la sincronización del carrito
+        redirectUrl += "?sync=true";
         
         System.out.println("CustomAuthenticationSuccessHandler: Redirigiendo a " + redirectUrl);
         System.out.println("From checkout: " + isFromCheckout);

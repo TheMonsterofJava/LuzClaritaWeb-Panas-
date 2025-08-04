@@ -1,6 +1,6 @@
 package com.analistas.luzclaritaweb.model.service.interfaces;
 
-import com.analistas.luzclaritaweb.model.domain.Carrito;
+import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.web.excepciones.MontoDelPagoNoCoincideException;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface IProcesamientoPagoService {
 
     Factura procesarPagoExitosoMP(
-        List<Carrito> itemsCarrito,
+        List<CarritoDTO> itemsCarrito,
         Usuario usuario,
         String metodoPago,
         String collectionId,    // ID de pago de Mercado Pago

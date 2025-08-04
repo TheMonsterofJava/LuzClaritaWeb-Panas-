@@ -124,59 +124,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Manejo de Login exitoso con Spring Security
-    if (success || syncCart) {
-        let title = "¡Sesión Iniciada Correctamente!"; // CORREGIDO: era titleText
-        let shouldSyncCart = false;
+    // if (success || syncCart) {
+    //     let title = "¡Sesión Iniciada Correctamente!"; // CORREGIDO: era titleText
+    //     let shouldSyncCart = false;
 
-        // Si viene de intentar pagar (syncCart = true), mostrar un mensaje diferente
-        if (syncCart) {
-            title = "¡Sesión Iniciada! Sincronizando carrito..."; // CORREGIDO: era titleText
-            shouldSyncCart = true;
-        }
+    //     // Si viene de intentar pagar (syncCart = true), mostrar un mensaje diferente
+    //     if (syncCart) {
+    //         title = "¡Sesión Iniciada! Sincronizando carrito..."; // CORREGIDO: era titleText
+    //         shouldSyncCart = true;
+    //     }
 
-        Swal.fire({
-            icon: 'success',
-            title: title, // CORREGIDO: era titleText
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Aceptar',
-            timer: shouldSyncCart ? undefined : 2000,
-            timerProgressBar: !shouldSyncCart,
-            didOpen: () => {
-                // Limpiar parámetros de la URL
-                const cleanUrlParams = new URLSearchParams(window.location.search);
-                cleanUrlParams.delete('success');
-                cleanUrlParams.delete('syncCart');
-                const newUrl = window.location.pathname + (cleanUrlParams.toString() ? '?' + cleanUrlParams.toString() : '');
-                window.history.replaceState({}, document.title, newUrl);
-            }
-        }).then(async (result) => {
-            try {
-                // Si necesitamos sincronizar el carrito
-                if (shouldSyncCart) {
-                    await sincronizarCarritoConBackend();
-                }
+    //     Swal.fire({
+    //         icon: 'success',
+    //         title: title, // CORREGIDO: era titleText
+    //         confirmButtonColor: '#3085d6',
+    //         confirmButtonText: 'Aceptar',
+    //         timer: shouldSyncCart ? undefined : 2000,
+    //         timerProgressBar: !shouldSyncCart,
+    //         didOpen: () => {
+    //             // Limpiar parámetros de la URL
+    //             const cleanUrlParams = new URLSearchParams(window.location.search);
+    //             cleanUrlParams.delete('success');
+    //             cleanUrlParams.delete('syncCart');
+    //             const newUrl = window.location.pathname + (cleanUrlParams.toString() ? '?' + cleanUrlParams.toString() : '');
+    //             window.history.replaceState({}, document.title, newUrl);
+    //         }
+    //     }).then(async (result) => {
+    //         try {
+    //             // Si necesitamos sincronizar el carrito
+    //             if (shouldSyncCart) {
+    //                 await sincronizarCarritoConBackend();
+    //             }
                 
-                // Llamar a la función de Post-Login del carrito
-                if (window.gestionarPostLogin) {
-                    console.log("Llamando a gestionarPostLogin desde login.js");
-                    await window.gestionarPostLogin();
-                } else {
-                    console.warn("gestionarPostLogin no disponible.");
-                }
+    //             // Llamar a la función de Post-Login del carrito
+    //             if (window.gestionarPostLogin) {
+    //                 console.log("Llamando a gestionarPostLogin desde login.js");
+    //                 await window.gestionarPostLogin();
+    //             } else {
+    //                 console.warn("gestionarPostLogin no disponible.");
+    //             }
 
-                // Redirigir al home después de aceptar o al finalizar el timer
-                setTimeout(() => {
-                    window.location.href = "/home";
-                }, 500);
-            } catch (error) {
-                console.error("Error al sincronizar el carrito:", error);
-                // Aún así redirigir al home
-                setTimeout(() => {
-                    window.location.href = "/home";
-                }, 500);
-            }
-        });
-    }
+    //             // Redirigir al home después de aceptar o al finalizar el timer
+    //             setTimeout(() => {
+    //                 window.location.href = "/home";
+    //             }, 500);
+    //         } catch (error) {
+    //             console.error("Error al sincronizar el carrito:", error);
+    //             // Aún así redirigir al home
+    //             setTimeout(() => {
+    //                 window.location.href = "/home";
+    //             }, 500);
+    //         }
+    //     });
+    // }
 
     // Event listeners para abrir y cerrar el formulario
     if (formOpenBtn && home) {

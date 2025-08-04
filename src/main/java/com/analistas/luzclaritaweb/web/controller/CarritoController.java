@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.analistas.luzclaritaweb.model.domain.Carrito;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
+import com.analistas.luzclaritaweb.dto.CarritoDTO; // Importar CarritoDTO
 
 
 @RestController
@@ -29,15 +29,14 @@ public class CarritoController {
     @Autowired
     private ICarritoService carritoService;
 
-    // Modificado para usar AuthenticationPrincipal
-    @GetMapping // Ya no necesita {usuarioId} en la URL si es para el usuario autenticado
-    public ResponseEntity<List<Carrito>> obtenerCarrito(@AuthenticationPrincipal Usuario usuarioAutenticado) {
+    // Modificado para usar AuthenticationPrincipal y devolver DTOs
+    @GetMapping
+    public ResponseEntity<List<CarritoDTO>> obtenerCarrito(@AuthenticationPrincipal Usuario usuarioAutenticado) {
         if (usuarioAutenticado == null) {
-            // Usuario no logueado, devuelve carrito vacío o un error si prefieres.
-            // Devolver una lista vacía es amigable para el frontend.
+            // Usuario no logueado, devuelve carrito vacío, lo cual es correcto.
             return ResponseEntity.ok(Collections.emptyList());
         }
-        List<Carrito> carrito = carritoService.obtenerCarritoPorUsuario(usuarioAutenticado.getId());
+        List<CarritoDTO> carrito = carritoService.obtenerCarritoPorUsuario(usuarioAutenticado.getId());
         return ResponseEntity.ok(carrito);
     }
 
@@ -50,7 +49,7 @@ public class CarritoController {
         if (usuarioAutenticado == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // O FORBIDDEN si tiene más sentido
         }
-        carritoService.agregarProducto(usuarioAutenticado.getId(), productoId, cantidad);
+        carritoService.agregarProducto(usuarioAutenticado, productoId, cantidad);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +75,7 @@ public class CarritoController {
     }
 
     @PostMapping("/sincronizar")
+    @SuppressWarnings("CallToPrintStackTrace")
     public ResponseEntity<?> sincronizarCarrito(
             @AuthenticationPrincipal Usuario usuarioAutenticado,
             @RequestBody List<ItemCarritoLocal> itemsLocal) {
@@ -86,22 +86,14 @@ public class CarritoController {
         }
 
         try {
-            // Agregar cada item del localStorage al carrito del usuario
-            for (ItemCarritoLocal item : itemsLocal) {
-                carritoService.agregarProducto(
-                    usuarioAutenticado.getId(), 
-                    item.getId(), 
-                    item.getCantidad()
-                );
-            }
-            
-            return ResponseEntity.ok(Collections.singletonMap("success", 
-                "Carrito sincronizado correctamente"));
-                
+            carritoService.sincronizarDesdeLocalStorage(usuarioAutenticado, itemsLocal);
+            return ResponseEntity.ok(Collections.singletonMap("success", "Carrito sincronizado correctamente"));
         } catch (Exception e) {
+            // Log the exception for debugging purposes
+            System.err.println("Error grave durante la sincronización del carrito: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", 
-                        "Error al sincronizar carrito: " + e.getMessage()));
+                    .body(Collections.singletonMap("error", "Error interno al sincronizar el carrito."));
         }
     }
 

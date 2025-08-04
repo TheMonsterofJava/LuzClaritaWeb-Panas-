@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+//imports para el manejo de autenticación y autorización, para TestAuthController
+// import org.springframework.security.authentication.AuthenticationManager;
+// import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,6 +31,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 import com.analistas.luzclaritaweb.web.config.security.CustomAuthenticationSuccessHandler;
 import com.analistas.luzclaritaweb.web.config.security.CustomUniversalLogoutSuccessHandler;
@@ -84,6 +86,7 @@ public class WebSecurityConfig {
     // }
 
     // Bean para manejar sincronización del carrito después del login
+
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
@@ -91,11 +94,12 @@ public class WebSecurityConfig {
 
 
     //Bean para manejar el TestAuthController:
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+    // Activar si queremos usar el TestAuthController
+    // @Bean
+    // public AuthenticationManager authenticationManager(
+    //         AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    //     return authenticationConfiguration.getAuthenticationManager();
+    // }
 
     
 
@@ -104,6 +108,9 @@ public class WebSecurityConfig {
         CustomUniversalLogoutSuccessHandler logoutSuccessHandler = new CustomUniversalLogoutSuccessHandler(
                 clientRegistrationRepository);
         http
+                .csrf(csrf -> csrf
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .authorizeHttpRequests((requests) -> requests
                         // Admin routes
                         .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
