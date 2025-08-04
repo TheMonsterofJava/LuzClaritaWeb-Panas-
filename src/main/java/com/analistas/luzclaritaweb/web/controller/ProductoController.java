@@ -156,6 +156,18 @@ public class ProductoController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes flash) {
+        Producto producto = productoService.buscarPorId(id);
+        // Eliminar imagen física si existe
+        if (producto != null && producto.getLinkImagen() != null && !producto.getLinkImagen().isEmpty()) {
+            try {
+                // Elimina el primer '/' si existe
+                String rutaRelativa = producto.getLinkImagen().startsWith("/") ? producto.getLinkImagen().substring(1) : producto.getLinkImagen();
+                Path rutaImagen = Paths.get(rutaRelativa).toAbsolutePath();
+                Files.deleteIfExists(rutaImagen);
+            } catch (Exception e) {
+                flash.addFlashAttribute("error", "No se pudo eliminar la imagen asociada al producto.");
+            }
+        }
         productoService.borrarPorId(id);
         flash.addFlashAttribute("info", "Producto eliminado correctamente");
         flash.addFlashAttribute("alertClass", "alert-danger");
