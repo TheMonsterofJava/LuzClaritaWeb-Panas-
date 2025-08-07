@@ -1,38 +1,30 @@
 package com.analistas.luzclaritaweb.web.config.security;
 
-import java.util.Collection;
-
+import com.analistas.luzclaritaweb.model.domain.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 
-//Clase que sirve para crear un objeto de usuario personalizado
-// Extiende User de Spring Security para incluir información adicional del usuario
+import java.util.Collection;
+
 public class CustomUserDetails extends org.springframework.security.core.userdetails.User {
 
-    private final Long userId;
-    private final String realusername;
+    private final Usuario usuario;
 
     public CustomUserDetails(
-        String username,
-        String password,
-        boolean enabled,
-        boolean accountNonExpired,
-        boolean credentialsNonExpired,
-        boolean accountNonLocked,
-        Collection<? extends GrantedAuthority> authorities,
-        Long userId,
-        String realusername) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
-            authorities);
-        this.userId = userId;
-        this.realusername = realusername;
+            Usuario usuario,
+            Collection<? extends GrantedAuthority> authorities) {
+        super(usuario.getEmail(), usuario.getClave(), usuario.isActivo(), true, true, true, authorities);
+        this.usuario = usuario;
     }
 
     public Long getUserId() {
-        return userId;
+        return usuario.getId();
     }
 
     public String getRealUsername() {
-        return realusername;
+        return usuario.getNomb_usu();
     }
 
+    public Usuario getUsuario() {
+        return this.usuario;
+    }
 }

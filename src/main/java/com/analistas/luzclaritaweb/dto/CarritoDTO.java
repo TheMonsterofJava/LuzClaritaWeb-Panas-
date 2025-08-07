@@ -18,6 +18,12 @@ public class CarritoDTO {
     private BigDecimal productoPrecio;
     private String productoLinkImagen;
 
+    //constructor vacio
+    //No borrar
+    //Sirve para deserializar el JSON de cartData
+    public CarritoDTO() {
+    }
+
     public CarritoDTO(Carrito carrito) {
         this.cantidad = carrito.getCantidad();
         this.productoId = carrito.getProducto().getId();

@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 //imports para el manejo de autenticación y autorización, para TestAuthController
 // import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +36,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 import com.analistas.luzclaritaweb.web.config.security.CustomAuthenticationSuccessHandler;
 import com.analistas.luzclaritaweb.web.config.security.CustomUniversalLogoutSuccessHandler;
-
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,8 +81,9 @@ public class WebSecurityConfig {
     // private UserDetailsService userDetailsService;
 
     // @Bean
-    // public UserDetailsService userDetailsService(IUsuarioRepository usuarioRepository) {
-    //     return new CustomUserDetailsService(usuarioRepository);
+    // public UserDetailsService userDetailsService(IUsuarioRepository
+    // usuarioRepository) {
+    // return new CustomUserDetailsService(usuarioRepository);
     // }
 
     // Bean para manejar sincronización del carrito después del login
@@ -92,16 +93,13 @@ public class WebSecurityConfig {
         return new CustomAuthenticationSuccessHandler();
     }
 
-
-    //Bean para manejar el TestAuthController:
+    // Bean para manejar el TestAuthController:
     // Activar si queremos usar el TestAuthController
     // @Bean
     // public AuthenticationManager authenticationManager(
-    //         AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    //     return authenticationConfiguration.getAuthenticationManager();
+    // AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    // return authenticationConfiguration.getAuthenticationManager();
     // }
-
-    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -109,18 +107,26 @@ public class WebSecurityConfig {
                 clientRegistrationRepository);
         http
                 .csrf(csrf -> csrf
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests) -> requests
                         // Admin routes
                         .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/admin/**", "/inventario/**", "/productos/**", "/proveedor/**", "/caja/**")
+                        .requestMatchers("/admin/**", "/inventario/**", "/proveedor/**", "/caja/**")
                         .hasAnyAuthority("ROLE_ADMIN")
+
+                        // Prductos - permitir la lectura para clientes y escritura para Admin
+                        .requestMatchers(HttpMethod.GET, "/productos/listado").hasAuthority("ROLE_CLIENTE")
+                        .requestMatchers("/productos/**").hasAnyAuthority("ROLE_ADMIN")
+
+                        // Rutas de MercadoPago - acceso para clientes y admin
+                        .requestMatchers("/createAndRedirect", "/success", "/failure", "/pending")
+                        .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
+
                         // Public routes
                         .requestMatchers(
                                 "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**",
+                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/productos/listado",
                                 "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar")
                         .permitAll()
                         // Client routes
@@ -134,8 +140,7 @@ public class WebSecurityConfig {
                         .failureUrl("/inicioSesion/login?error")
                         .usernameParameter("emailOrUser")
                         .passwordParameter("password")
-                        .permitAll()
-                )
+                        .permitAll())
                 .userDetailsService(userDetailsService) // Inyectar el servicio corregido
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/inicioSesion/login")
@@ -208,7 +213,6 @@ public class WebSecurityConfig {
         }
     }
 
-    
 }
 // Anulamos los metodos de configuracion de autenticacion por jdbc, ya que no se
 // utilizan

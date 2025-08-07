@@ -277,10 +277,13 @@
         <p id="totalCarrito">Total: $0.00</p>
         <div class="carrito-botones">
             <a href="#" id="vaciar-carrito" class="btn btn-danger">Vaciar Carrito</a>
-            <form id="form-pagar" th:action="@{/createAndRedirect}" method="get" style="display: none;">
-                <input type="hidden" name="productos" id="productos">
+            <!-- Formulario de pago corregido -->
+            <form id="form-pagar" th:action="@{/createAndRedirect}" method="POST" style="display: inline;">
+                <!-- Este input se llenará dinámicamente desde carrito.js -->
+                <input type="hidden" name="cartData" id="cartData">
+                <button type="submit" id="pagar" class="btn btn-success">Pagar</button>
             </form>
-            <a href="#" id="pagar" class="btn btn-success">Pagar</a>
+            
         </div>
     </div>
 

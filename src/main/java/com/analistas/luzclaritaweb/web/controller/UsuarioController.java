@@ -1,69 +1,48 @@
 package com.analistas.luzclaritaweb.web.controller;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.analistas.luzclaritaweb.model.domain.Usuario;
-import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
-
-
-
-//Nuevo controlador para manejar las peticiones relacionadas con el usuario actual
-//Este controlador permite obtener la información del usuario autenticado en la sesión actual
-// Se espera que el usuario esté almacenado en la sesión bajo el atributo "usuario"
-// Si el usuario está autenticado, se devuelve su ID, email y nombre; de lo contrario, se indica que no está autenticado
-// En caso de error, se devuelve un mensaje de error en la respuesta
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
 
     @GetMapping("/actual")
-    public ResponseEntity<?> obtenerUsuarioActual(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        try {
-            Map<String, Object> response = new HashMap<>();
-            
-            if (userDetails != null) {
-                response.put("autenticado", true);
-                response.put("id", userDetails.getUserId());
-                response.put("email", userDetails.getUsername());
-                response.put("nombre", userDetails.getRealUsername());
-                return ResponseEntity.ok(response);
-            } else {
-                response.put("autenticado", false);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Error del servidor"));
+    public ResponseEntity<?> obtenerUsuarioActual() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("autenticado", false));
         }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Map<String, Object> response = new HashMap<>();
+        response.put("autenticado", true);
+        response.put("id", userDetails.getUserId());
+        response.put("email", userDetails.getUsername());
+        response.put("nombre", userDetails.getRealUsername());
+        
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Endpoint alternativo para verificar solo el estado de autenticación
-     */
     @GetMapping("/verificar")
-    public ResponseEntity<Map<String, Boolean>> verificarAutenticacion(
-            @AuthenticationPrincipal Usuario usuarioAutenticado) {
+    public ResponseEntity<Map<String, Boolean>> verificarAutenticacion() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean autenticado = authentication != null && authentication.isAuthenticated() && (authentication.getPrincipal() instanceof CustomUserDetails);
         
-        boolean autenticado = usuarioAutenticado != null;
         Map<String, Boolean> response = new HashMap<>();
         response.put("autenticado", autenticado);
 
-        if (autenticado) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
-
 }
 
 
