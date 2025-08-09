@@ -111,7 +111,7 @@ public class PerfilController {
             redirectAttributes.addFlashAttribute("successMessage",
                     "¡Contraseña actualizada! Serás redirigido para iniciar sesión");
 
-            return "redirect:/logout";// Redirige al usuario para iniciar sesión con la nueva contraseña
+            return "redirect:/inicioSesion/login?passwordUpdated=true"; // Redirige al usuario para iniciar sesión con la nueva contraseña
 
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

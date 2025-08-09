@@ -3,7 +3,7 @@
     * Copyright 2013-2022 Start Bootstrap
     * Licensed under SEE_LICENSE (https://github.com/StartBootstrap/sb-admin-pro/blob/master/LICENSE)
     */
-    window.addEventListener('DOMContentLoaded', event => {
+window.addEventListener('DOMContentLoaded', event => {
     // Activate feather
     feather.replace();
 
@@ -81,5 +81,23 @@
             parentNode = parentNode.parentNode;
         }
         targetAnchor.classList.add('active');
+    });
+
+
+    // Password visibility toggle
+    const passwordToggles = document.querySelectorAll('.pw_hide');
+    passwordToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const passwordField = toggle.previousElementSibling;
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggle.classList.remove('uil-eye-slash');
+                toggle.classList.add('uil-eye');
+            } else {
+                passwordField.type = 'password';
+                toggle.classList.remove('uil-eye');
+                toggle.classList.add('uil-eye-slash');
+            }
+        });
     });
 });

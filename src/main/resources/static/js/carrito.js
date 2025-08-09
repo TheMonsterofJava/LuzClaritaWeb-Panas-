@@ -159,8 +159,9 @@ async function actualizarCantidad(productoId, cantidad) {
                 if (totalProducto) totalProducto.textContent = `$${(producto.precio * cantidad).toFixed(2)}`;
             }
         }
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-        actualizarVisualizacionCarrito();
+         localStorage.setItem("carrito", JSON.stringify(carrito));
+         actualizarVisualizacionCarrito();
+        
     }
 }
 

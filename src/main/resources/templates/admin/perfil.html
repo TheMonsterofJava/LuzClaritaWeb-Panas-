@@ -97,41 +97,42 @@
                         </div>
                         <div class="card-body">
                             <p class="text-muted">Para cambiar tu contraseña, completa los siguientes campos.</p>
-
-                            <!-- Campo Contraseña Actual -->
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Contraseña Actual</label>
-                                <div class="position-relative">
-                                    <input type="password" id="currentPassword" name="currentPassword"
-                                        class="form-control" required minlength="5">
-                                    <i class="uil uil-eye-slash pw_hide position-absolute"
-                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                            <form th:action="@{/perfil/password}" method="post">
+                                <!-- Campo Contraseña Actual -->
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Contraseña Actual</label>
+                                    <div class="position-relative">
+                                        <input type="password" id="currentPassword" name="currentPassword"
+                                            class="form-control" required minlength="5">
+                                        <i class="uil uil-eye-slash pw_hide position-absolute"
+                                            style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Campo Nueva Contraseña -->
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">Nueva Contraseña</label>
-                                <div class="position-relative">
-                                    <input type="password" id="newPassword" name="newPassword" class="form-control"
-                                        required minlength="5">
-                                    <i class="uil uil-eye-slash pw_hide position-absolute"
-                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                <!-- Campo Nueva Contraseña -->
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                                    <div class="position-relative">
+                                        <input type="password" id="newPassword" name="newPassword" class="form-control"
+                                            required minlength="5">
+                                        <i class="uil uil-eye-slash pw_hide position-absolute"
+                                            style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Campo Confirmar Nueva Contraseña -->
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
-                                <div class="position-relative">
-                                    <input type="password" id="confirmPassword" name="confirmPassword"
-                                        class="form-control" required>
-                                    <i class="uil uil-eye-slash pw_hide position-absolute"
-                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                <!-- Campo Confirmar Nueva Contraseña -->
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                                    <div class="position-relative">
+                                        <input type="password" id="confirmPassword" name="confirmPassword"
+                                            class="form-control" required>
+                                        <i class="uil uil-eye-slash pw_hide position-absolute"
+                                            style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="submit" class="btn btn-secondary w-100">Actualizar Contraseña</button>
+                                <button type="submit" class="btn btn-secondary w-100">Actualizar Contraseña</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -140,7 +141,8 @@
     </div>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:inline="javascript">
+    
+    <script th:fragment="js">
         document.addEventListener('DOMContentLoaded', function () {
             // Mostrar SweetAlert para éxito en información personal
             const successMessage = /*[[${successMessage}]]*/ null;
