@@ -178,10 +178,10 @@
                         <a class="nav-link" href="/caja/movimientos">Caja</a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/recetas/cards}">Recetas en Cards</a>
+                        <a class="nav-link" th:href="@{/recetas/cards}">Recetas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/cursos/form}">Cursos</a>
+                        <a class="nav-link" th:href="@{/cursos/listado2}">Cursos</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
@@ -256,8 +256,9 @@
         </div>
     </nav>
 
-     <!-- Contenedor Global para Alertas Dinámicas del Carrito -->
-    <div id="alertas-carrito-container" style="position: fixed; top: 80px; right: 20px; z-index: 2000; width: auto; max-width: 350px;"></div>
+    <!-- Contenedor Global para Alertas Dinámicas del Carrito -->
+    <div id="alertas-carrito-container"
+        style="position: fixed; top: 80px; right: 20px; z-index: 2000; width: auto; max-width: 350px;"></div>
 
     <!-- Modal del Carrito -->
     <div id="carrito" class="carrito-contenedor" style="display: none;">
@@ -269,12 +270,13 @@
                     <th>Producto</th>
                     <th>Precio</th>
                     <th>Cantidad</th>
-                    <th>Acción</th>
+                    <th>Total</th>
+                    <th class="text-center">Acción</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
-        <p id="totalCarrito">Total: $0.00</p>
+        <!-- <p id="totalCarrito">Total: $0.00</p> -->
         <div class="carrito-botones">
             <a href="#" id="vaciar-carrito" class="btn btn-danger">Vaciar Carrito</a>
             <!-- Formulario de pago corregido -->
@@ -283,7 +285,7 @@
                 <input type="hidden" name="cartData" id="cartData">
                 <button type="submit" id="pagar" class="btn btn-success">Pagar</button>
             </form>
-            
+
         </div>
     </div>
 
@@ -361,8 +363,8 @@
     <script th:fragment="default_js"></script>
 
     <!-- Scripts generales: carrito o alertas -->
-     <!-- CSRF Global AJAX Setup -->
-      <!-- Este script se ejecuta cuando se carga la página y sirve para configurar el token CSRF en cada solicitud AJAX -->
+    <!-- CSRF Global AJAX Setup -->
+    <!-- Este script se ejecuta cuando se carga la página y sirve para configurar el token CSRF en cada solicitud AJAX -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(function () {
@@ -372,11 +374,11 @@
                 // Chequear si AjaxSend ya está adjunto
                 // Si no está adjunto, agregarlo
                 if (!$(document).data('csrf-ajaxsend-attached')) {
-                    $(document).ajaxSend(function(e, xhr, options) {
+                    $(document).ajaxSend(function (e, xhr, options) {
                         // Verificar si la solicitud es de tipo POST, PUT o DELETE
                         // y si la URL no es externa
                         if (!/^(GET|HEAD|OPTIONS)$/i.test(options.type) && options.url && !options.url.startsWith('http')) {
-                             xhr.setRequestHeader(header, token);
+                            xhr.setRequestHeader(header, token);
                         }
                     });
                     $(document).data('csrf-ajaxsend-attached', true);
@@ -466,12 +468,40 @@
 
             actualizarCantidadCarrito();
 
-            // Mostrar/ocultar carrito
-            $('#mostrar-carrito').click(function () {
-                $('#carrito').toggle();
+            const cartContainer = $('#carrito');
+            const userDropdownToggle = $('.user-dropdown .dropdown-toggle');
+            const cartButton = $('#mostrar-carrito');
+
+            // 1. Mostrar/ocultar carrito
+            cartButton.on('click', function (e) {
+                e.stopPropagation(); // Evita que el clic se propague y cierre el carrito inmediatamente
+
+                // Cierra el dropdown de usuario si está abierto
+                var dropdownInstance = bootstrap.Dropdown.getInstance(userDropdownToggle[0]);
+                if (dropdownInstance && userDropdownToggle.attr('aria-expanded') === 'true') {
+                    dropdownInstance.hide();
+                }
+
+                cartContainer.toggle();
+            });
+
+            // 2. Al abrir el dropdown de usuario, cerrar el carrito
+            userDropdownToggle.on('show.bs.dropdown', function () {
+                if (cartContainer.is(':visible')) {
+                    cartContainer.hide();
+                }
+            });
+
+            // 3. Cerrar el carrito si se hace clic fuera de él
+            $(document).on('click', function (e) {
+                // Si el clic no fue DENTRO del carrito Y no fue en el BOTÓN del carrito
+                if (!cartContainer.is(e.target) && cartContainer.has(e.target).length === 0 && !cartButton.is(e.target) && cartButton.has(e.target).length === 0) {
+                    cartContainer.hide();
+                }
             });
 
         });
+
     </script>
 
 </body>

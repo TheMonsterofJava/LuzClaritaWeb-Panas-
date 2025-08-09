@@ -130,6 +130,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handle account update success
+    const successParam = urlParams.has('accountUpdated');
+    if (successParam && isLoginPage) {
+        if (home && formContainer) {
+            home.classList.add("show");
+            formContainer.classList.remove("active");
+        }
+        Swal.fire({
+            icon: 'success',
+            title: 'Cuenta actualizada',
+            text: 'Tu información ha sido actualizada correctamente. Por favor, inicia sesión nuevamente.',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            //Esto sirve para que el usuario se redireccione a la página de inicio de sesión
+            updateUrlParams('accountUpdated', false);
+            const userInput = document.querySelector('input[name="emailOrUser"]');
+            if(userInput) userInput.focus();
+        });
+    }
+
+    const successpasswordParam = urlParams.has('passwordUpdated'); // Changed 'hast' to 'has'
+    if (successpasswordParam && isLoginPage) {
+        if (home && formContainer) {
+            home.classList.add("show");
+            formContainer.classList.remove("active");
+        }
+        Swal.fire({
+            icon: 'success',
+            title: 'Contraseña actualizada',
+            text: 'Tu contraseña ha sido actualizada correctamente. Por favor, inicia sesión nuevamente.',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            updateUrlParams('passwordUpdated', false);
+            const userInput = document.querySelector('input[name="emailOrUser"]');
+            if(userInput) userInput.focus();
+        });
+    }
+
     // --- UTILITY FUNCTIONS ---
     
     /**

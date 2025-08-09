@@ -4,16 +4,12 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
-//imports para el manejo de autenticación y autorización, para TestAuthController
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,6 +30,7 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Component;
+
 import com.analistas.luzclaritaweb.web.config.security.CustomAuthenticationSuccessHandler;
 import com.analistas.luzclaritaweb.web.config.security.CustomUniversalLogoutSuccessHandler;
 
@@ -109,9 +106,23 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests) -> requests
+
+                        // Public routes
+                        .requestMatchers(
+                                "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
+                                "/consultas/**", "/inicioSesion/**", "/registro/**",
+                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/productos/listado",
+                                "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2")
+                        .permitAll()
+
+                        //URL de carrito
+                        .requestMatchers("/api/carrito/**").hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
+                        // Profile route
+                        .requestMatchers("/perfil/**").authenticated()
+
                         // Admin routes
                         .requestMatchers("/inventario/ajax/crear-rapido").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/admin/**", "/inventario/**", "/proveedor/**", "/caja/**")
+                        .requestMatchers("/admin/**", "/inventario/**", "/proveedor/**", "/caja/**", "/cursos/**")
                         .hasAnyAuthority("ROLE_ADMIN")
 
                         // Prductos - permitir la lectura para clientes y escritura para Admin
@@ -122,13 +133,6 @@ public class WebSecurityConfig {
                         .requestMatchers("/createAndRedirect", "/success", "/failure", "/pending")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
 
-                        // Public routes
-                        .requestMatchers(
-                                "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
-                                "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/productos/listado",
-                                "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar")
-                        .permitAll()
                         // Client routes
                         .requestMatchers("/api/carrito/**")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")

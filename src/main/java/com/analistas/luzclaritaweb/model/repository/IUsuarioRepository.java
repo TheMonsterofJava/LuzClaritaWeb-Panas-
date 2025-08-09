@@ -33,6 +33,9 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
             "FROM Usuario u WHERE u.email = ?1 OR u.nomb_usu = ?1")
     boolean existsByEmailOrNombUsu(String identificador);
+
+    
+    
 }
 
 // ELIMINAR: El método findByEmailOrUSerAndPassword ya no se necesita

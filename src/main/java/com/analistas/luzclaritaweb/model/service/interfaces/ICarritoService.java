@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,6 @@ import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.repository.ICarritoRepository;
 import com.analistas.luzclaritaweb.web.controller.CarritoController.ItemCarritoLocal;
 import com.analistas.luzclaritaweb.web.excepciones.CarritoSyncException;
-import org.springframework.dao.DataAccessException;
 
 @Service
 public class ICarritoService {
@@ -60,6 +60,20 @@ public class ICarritoService {
         
         }
 
+    }
+
+    //Actualizar la cantidad del carrito 
+    //Ver si funciona cuando un usuario que no esta logueado intenta actualizar la cantidad de un producto en el carrito
+    @Transactional
+    public void actualizarCantidad(Usuario usuario, Long productoId, int cantidad) {
+        Optional<Carrito> carritoOpt = carritoRepository.findByUsuarioIdAndProductoId(usuario.getId(), productoId);
+
+        if (carritoOpt.isPresent()) {
+            Carrito item = carritoOpt.get();
+            item.setCantidad(cantidad);
+            carritoRepository.save(item);
+        }
+        // Si no existe, no hacemos nada. El frontend no debería permitir llegar a este caso.
     }
 
     @Transactional

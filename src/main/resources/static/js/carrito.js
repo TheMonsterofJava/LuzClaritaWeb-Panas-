@@ -93,6 +93,76 @@ async function vaciarCarrito() {
         }
     }
 }
+// --LOGICA DE CANTIDADES -- //
+//Incrementar la cantidad de productos que hay en el carrito desde el mismo modal. 
+function incrementarCantidad(productoId) {
+    const idNumerico = Number(productoId);
+    const producto = carrito.find(p => (p.productoId || p.id) === idNumerico);
+    if (producto) {
+        actualizarCantidad(idNumerico, producto.cantidad + 1);
+    }
+}
+
+//Decrementar la cantidad de productos que hay en el carrito desde el mismo modal.
+function decrementarCantidad(productoId) {
+    const idNumerico = Number(productoId);
+    const producto = carrito.find(p => (p.productoId || p.id) === idNumerico);
+    if (producto && producto.cantidad > 1) {
+        actualizarCantidad(idNumerico, producto.cantidad - 1);
+    } else if (producto && producto.cantidad === 1) {
+        Swal.fire({
+            title: '¿Eliminar producto?',
+            text: "Vas a quitar este producto de tu carrito.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarProducto(idNumerico);
+            }
+        });
+    }
+}
+
+async function actualizarCantidad(productoId, cantidad) {
+    const idNumerico = Number(productoId);
+    if (IS_USER_AUTHENTICATED) {
+        try {
+            const response = await authenticatedFetch(`/api/carrito/actualizar?productoId=${idNumerico}&cantidad=${cantidad}`, { method: 'POST' });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Error al actualizar la cantidad.' }));
+                throw new Error(errorData.error);
+            }
+            await obtenerCarritoDelBackend(); 
+        } catch (error) {
+            console.error("Error actualizando cantidad en el backend:", error);
+            mostrarAlerta(`No se pudo actualizar la cantidad. Razón: ${error.message}`, 'danger');
+        }
+    } else {
+        const producto = carrito.find(p => p.id === idNumerico);
+        if (producto) {
+            producto.cantidad = cantidad;
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+
+            //Actualizar solo la fila especifica en lugar de todo el carrito
+            const filaProducto = document.querySelector(`tr[data-product-id="${idNumerico}"]`);
+            if (filaProducto) {
+                //Actualizar el input de cantidad
+                const inputCantidad = filaProducto.querySelector('input.form-control');
+                if (inputCantidad) inputCantidad.value = cantidad;
+                
+                // Actualizar total del producto
+                const totalProducto = filaProducto.querySelector('td:nth-child(5)');
+                if (totalProducto) totalProducto.textContent = `$${(producto.precio * cantidad).toFixed(2)}`;
+            }
+        }
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarVisualizacionCarrito();
+    }
+}
 
 // --- SYNCHRONIZATION LOGIC ---
 
@@ -100,9 +170,18 @@ async function gestionarSincronizacionPostLogin() {
     console.log("Iniciando flujo de sincronización...");
     const carritoLocal = JSON.parse(localStorage.getItem("carrito") || '[]');
 
+    // Si el carrito esta en 0 , no hay nada que sincronizar y se muestra el Sweet Alert de inicio de sesion.
     if (carritoLocal.length === 0) {
-        console.log("No hay carrito local para sincronizar. Cargando carrito de la cuenta.");
-        await cargarCarrito();
+        console.log("No hay carrito local para sincronizar. Mostrando alerta de bienvenida.");
+        await cargarCarrito(); // Cargar el carrito del backend primero
+        Swal.fire({
+            title: '¡Sesión Iniciada!',
+            text: '¡¡Bienvenido a la web de LuzClarita!!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        });
         return;
     }
 
@@ -232,14 +311,22 @@ function actualizarVisualizacionCarrito() {
                 imagen: item.productoLinkImagen
             } : item;
             
+            //Actualizamos el html para que pueda incremenatar la cantidad en el carrito. 
             const fila = document.createElement("tr");
+            fila.setAttribute('data-product-id', p.id); // Agregar identificador
             fila.innerHTML = `
                 <td><img src="${p.imagen}" alt="${p.nombre}" width="50" onerror="this.onerror=null;this.src='/img/default.jpg';"></td>
                 <td>${p.nombre}</td>
                 <td>$${p.precio.toFixed(2)}</td>
-                <td>${item.cantidad}</td>
+                <td class="text-center">
+                    <div class="input-group input-group-sm" style="width: 100px; margin: auto;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="decrementarCantidad(${p.id})">-</button>
+                        <input type="text" class="form-control text-center" value="${item.cantidad}" readonly style="background-color: white;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="incrementarCantidad(${p.id})">+</button>
+                    </div>
+                </td>
                 <td>$${(p.precio * item.cantidad).toFixed(2)}</td>
-                <td><button class="btn btn-danger btn-sm bi bi-trash-fill" onclick="eliminarProducto(${p.id})"></button></td>
+                <td class="text-center"><button class="btn btn-danger btn-sm bi bi-trash-fill" onclick="eliminarProducto(${p.id})"></button></td>
             `;
             tablaCarrito.appendChild(fila);
         });

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <title>Mi Perfil</title>
+    <style>
+        .card-header-custom {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="contenido">
+        <div class="container mt-5">
+            <h2 class="mb-4">Mi Perfil</h2>
+
+            <!-- Mensajes de Alerta -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> [[${successMessage}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> [[${errorMessage}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <!-- Card de Información de Cuenta -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header card-header-custom">
+                            Información de la Cuenta
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small">Cambiar tu nombre de usuario o email requerirá que inicies
+                                sesión de nuevo para que los cambios se apliquen en todo el sitio.</p>
+                            <form th:action="@{/perfil/actualizar-cuenta}" method="post">
+                                <div class="mb-3">
+                                    <label for="nombUsu" class="form-label">Nombre de Usuario</label>
+                                    <input type="text" id="nombUsu" name="nombUsu" class="form-control"
+                                        th:value="${usuario.nomb_usu}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        th:value="${usuario.email}" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Actualizar Cuenta</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Card de Información Personal -->
+                    <div class="card shadow-sm">
+                        <div class="card-header card-header-custom">
+                            Información Personal Adicional
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/perfil/info}" th:object="${usuario}" method="post">
+                                <!-- Los IDs de cliente y usuario se manejan en el backend -->
+                                <div class="mb-3">
+                                    <label for="nomb_ape" class="form-label">Nombre y Apellido</label>
+                                    <input type="text" id="nomb_ape" th:field="*{cliente.nomb_ape}" class="form-control"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="celular" class="form-label">Teléfono / Celular</label>
+                                    <input type="text" id="celular" th:field="*{cliente.celular}" class="form-control"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="direccion" class="form-label">Dirección</label>
+                                    <textarea id="direccion" th:field="*{cliente.direccion}" class="form-control"
+                                        rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Guardar Información
+                                    Personal</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna de Seguridad -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header card-header-custom">
+                            Seguridad
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">Para cambiar tu contraseña, completa los siguientes campos.</p>
+
+                            <!-- Campo Contraseña Actual -->
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Contraseña Actual</label>
+                                <div class="position-relative">
+                                    <input type="password" id="currentPassword" name="currentPassword"
+                                        class="form-control" required minlength="5">
+                                    <i class="uil uil-eye-slash pw_hide position-absolute"
+                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Campo Nueva Contraseña -->
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                                <div class="position-relative">
+                                    <input type="password" id="newPassword" name="newPassword" class="form-control"
+                                        required minlength="5">
+                                    <i class="uil uil-eye-slash pw_hide position-absolute"
+                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Campo Confirmar Nueva Contraseña -->
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                                <div class="position-relative">
+                                    <input type="password" id="confirmPassword" name="confirmPassword"
+                                        class="form-control" required>
+                                    <i class="uil uil-eye-slash pw_hide position-absolute"
+                                        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-secondary w-100">Actualizar Contraseña</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mostrar SweetAlert para éxito en información personal
+            const successMessage = /*[[${successMessage}]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: successMessage,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+
+            // Mostrar SweetAlert para errores
+            const errorMessage = /*[[${errorMessage}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    confirmButtonText: 'Entendido'
+                });
+            }
+
+            // Mostrar SweetAlert específico para contraseña
+            const passwordMessage = /*[[${passwordMessage}]]*/ null;
+            if (passwordMessage) {
+                Swal.fire({
+                    icon: passwordMessage.includes('éxito') ? 'success' : 'error',
+                    title: passwordMessage.includes('éxito') ? '¡Éxito!' : 'Error',
+                    text: passwordMessage,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
