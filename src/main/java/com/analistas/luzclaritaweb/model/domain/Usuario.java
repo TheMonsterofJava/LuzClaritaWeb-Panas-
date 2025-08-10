@@ -45,6 +45,8 @@ public class Usuario {
     @Size(min = 5, max = 71, message = "La clave debe tener entre 5 y 71 caracteres.")
     private String clave; // Ahora es opcional, pero con validación condicional
 
+    private String foto;
+    
     private Date fecha_creacion;
 
     @Column(name = "activo", columnDefinition = "boolean default 1")

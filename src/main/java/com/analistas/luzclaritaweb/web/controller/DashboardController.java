@@ -20,19 +20,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.model.domain.Cliente;
 import com.analistas.luzclaritaweb.model.domain.Permiso;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.IClienteService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IFileStorageService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
+
+//Agregamos imprts para la paginacion en el Dashboard
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/admin")
-@Secured({"ROLE_ADMIN"}) // Aseguramos que solo los usuarios con rol de administrador puedan acceder a estas rutas
+@Secured({ "ROLE_ADMIN" }) // Aseguramos que solo los usuarios con rol de administrador puedan acceder a
+                           // estas rutas
 public class DashboardController {
 
     @Autowired
@@ -40,6 +48,9 @@ public class DashboardController {
 
     @Autowired
     private IClienteService clienteService;
+
+    @Autowired
+    private IFileStorageService fileStorageService;
 
     // @Autowired
     // private IUsuarioRepository usuarioRepository;
@@ -72,18 +83,26 @@ public class DashboardController {
     }
 
     @GetMapping("/user-management-list")
-    public String listprofile(Model model, CsrfToken csrfToken) {
+    // public String listprofile(Model model, CsrfToken csrfToken) {
+    public String listProfile(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model, CsrfToken csrfToken) {
         // Añadir el token CSRF al modelo
-        List<Usuario> usuarios = usuarioService.findAll();
+        // List<Usuario> usuarios = usuarioService.findAll();
 
-        // Verificar si la lista tiene al menos 5 elementos
-        int limit = Math.min(usuarios.size(), 5); // Limita a 5 usuarios o al tamaño de la lista, lo que sea menor
-        List<Usuario> usuariosLimitados = usuarios.subList(0, limit);
+        // // Verificar si la lista tiene al menos 5 elementos
+        // int limit = Math.min(usuarios.size(), 5); // Limita a 5 usuarios o al tamaño
+        // de la lista, lo que sea menor
+        // List<Usuario> usuariosLimitados = usuarios.subList(0, limit);
 
-        System.out.println("Usuarios encontrados: " + usuariosLimitados.size());
-        usuariosLimitados.forEach(u -> System.out.println("Usuario: " + u.getNomb_usu()));
+        // System.out.println("Usuarios encontrados: " + usuariosLimitados.size());
+        // usuariosLimitados.forEach(u -> System.out.println("Usuario: " +
+        // u.getNomb_usu()));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Usuario> usuariosPage = usuarioService.findAll(pageable);
 
-        model.addAttribute("usuarios", usuariosLimitados);
+        // model.addAttribute("usuarios", usuariosLimitados);
+        model.addAttribute("usuariosPage", usuariosPage);
         model.addAttribute("_csrf", csrfToken); // <-- Añadir el token CSRF al modelo
         return "admin/user-management-list";
     }
@@ -101,6 +120,7 @@ public class DashboardController {
     @PostMapping("/user-management-add-user")
     public String addUser(@ModelAttribute("usuario") Usuario usuario,
             @RequestParam(value = "crearCliente", required = false) boolean crearCliente,
+            @RequestParam(name = "foto", required = false) MultipartFile foto, // <-- Ahora es opcional
             RedirectAttributes redirectAttributes) {
         try {
             // 1. Encriptar la contraseña
@@ -114,6 +134,12 @@ public class DashboardController {
             // 3. Obtener y asignar permiso
             Permiso permiso = (Permiso) usuarioService.findPermisoById(usuario.getPermiso().getId());
             usuario.setPermiso(permiso);
+
+            // 4. Guardar la foto
+            if (foto != null && !foto.isEmpty()) {
+                String nombreFoto = fileStorageService.store(foto);
+                usuario.setFoto(nombreFoto);
+            }
 
             // 4. Guardar el usuario primero
             Usuario usuarioGuardado = usuarioService.guardarUsuario(usuario);
@@ -141,8 +167,6 @@ public class DashboardController {
         }
         return "redirect:/admin/user-management-list";
     }
-
-    
 
     // Editar usuarios desde la base de datos:
     @GetMapping("/user-management-edit-user/{id}")
@@ -176,6 +200,7 @@ public class DashboardController {
             @ModelAttribute("usuario") Usuario usuario,
             @RequestParam(value = "nuevaClave", required = false) String nuevaClave,
             @RequestParam(value = "confirmarNuevaClave", required = false) String confirmarNuevaClave,
+            @RequestParam(name = "foto", required = false) MultipartFile foto, // <-- Ahora es opcional
             RedirectAttributes redirectAttributes) {
         try {
             // Buscamos el usuario existente por ID
@@ -195,6 +220,16 @@ public class DashboardController {
                 // Si las contraseñas no coinciden, mostramos un mensaje de error
                 redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden.");
                 return "redirect:/admin/user-management-edit-user/" + id;
+            }
+
+            // Actualizamos la foto si se sube una nueva
+            if (foto != null && !foto.isEmpty()) {
+                // Opcional eliminar la foto anterior si es que existe
+                if (usuarioExistente.getFoto() != null) {
+                    fileStorageService.delete(usuarioExistente.getFoto());
+                }
+                String nombreFoto = fileStorageService.store(foto);
+                usuarioExistente.setFoto(nombreFoto);
             }
 
             // Actualizamos el permiso
@@ -221,12 +256,12 @@ public class DashboardController {
     @Transactional
     public Map<String, Object> eliminarUsuario(@PathVariable("id") Long id, Principal principal) {
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             // 1. Verificar permisos del usuario actual
             String username = principal.getName();
             Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
-            
+
             if (!usuarioActualOpt.isPresent()) {
                 response.put("success", false);
                 response.put("message", "Usuario no encontrado.");
@@ -235,8 +270,9 @@ public class DashboardController {
 
             Usuario usuarioActual = usuarioActualOpt.get();
             String permisoActual = usuarioActual.getPermiso().getNombre();
-            
-            if (!permisoActual.equals("ROLE_ADMIN")) { //&& !permisoActual.equals("ROlE_PROGRAMADOR")) por si queremos poner otro rol
+
+            if (!permisoActual.equals("ROLE_ADMIN")) { // && !permisoActual.equals("ROlE_PROGRAMADOR")) por si queremos
+                                                       // poner otro rol
                 response.put("success", false);
                 response.put("message", "No tienes permisos para eliminar usuarios.");
                 return response;
@@ -244,16 +280,18 @@ public class DashboardController {
 
             // 2. Eliminar usuario (y cliente asociado automáticamente por cascade)
             usuarioService.eliminarUsuario(id);
-            
+
             response.put("success", true);
             response.put("message", "Usuario eliminado correctamente.");
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error al eliminar el usuario: " + e.getMessage());
         }
-        
+
         return response;
     }
+
+}
 
     // @GetMapping("/user-management-add-user")
     // public String showAddUserForm(Model model) {
@@ -293,53 +331,56 @@ public class DashboardController {
     // return "redirect:/admin/user-management-list";
     // }
 
-
     // @PostMapping("/usuarios/eliminar/{id}")
     // @ResponseBody
-    // public Map<String, Object> eliminarUsuario(@PathVariable("id") Long id, Principal principal) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     System.out.println("Solicitud de eliminación recibida para el usuario con ID: " + id);
+    // public Map<String, Object> eliminarUsuario(@PathVariable("id") Long id,
+    // Principal principal) {
+    // Map<String, Object> response = new HashMap<>();
+    // System.out.println("Solicitud de eliminación recibida para el usuario con ID:
+    // " + id);
 
-    //     try {
-    //         String username = principal.getName(); // Obtener el nombre de usuario actual
-    //         System.out.println("Usuario actual: " + username);
+    // try {
+    // String username = principal.getName(); // Obtener el nombre de usuario actual
+    // System.out.println("Usuario actual: " + username);
 
-    //         // Buscar el usuario actual por nombre de usuario (nomb_usu)
-    //         Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
-    //         if (!usuarioActualOpt.isPresent()) {
-    //             System.out.println("Usuario no encontrado con nombre de usuario: " + username);
-    //             response.put("success", false);
-    //             response.put("message", "Usuario no encontrado.");
-    //             return response;
-    //         }
-
-    //         Usuario usuarioActual = usuarioActualOpt.get();
-    //         System.out.println("Permiso del usuario actual: " + usuarioActual.getPermiso().getNombre());
-
-    //         // Verificar permisos (Administrador o Programador)
-    //         if (!usuarioActual.getPermiso().getNombre().equals("Administrador") &&
-    //                 !usuarioActual.getPermiso().getNombre().equals("Programador")) {
-    //             System.out.println("El usuario no tiene permisos para eliminar.");
-    //             response.put("success", false);
-    //             response.put("message", "No tienes permisos para eliminar usuarios.");
-    //             return response;
-    //         }
-
-    //         // Eliminar el usuario
-    //         System.out.println("Eliminando usuario con ID: " + id);
-    //         usuarioService.eliminarUsuario(id);
-    //         response.put("success", true);
-    //         response.put("message", "Usuario eliminado correctamente.");
-    //     } catch (Exception e) {
-    //         System.err.println("Error al eliminar el usuario: " + e.getMessage());
-    //         response.put("success", false);
-    //         response.put("message", "Error al eliminar el usuario: " + e.getMessage());
-    //     }
-
-    //     return response;
+    // // Buscar el usuario actual por nombre de usuario (nomb_usu)
+    // Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
+    // if (!usuarioActualOpt.isPresent()) {
+    // System.out.println("Usuario no encontrado con nombre de usuario: " +
+    // username);
+    // response.put("success", false);
+    // response.put("message", "Usuario no encontrado.");
+    // return response;
     // }
 
-}
+    // Usuario usuarioActual = usuarioActualOpt.get();
+    // System.out.println("Permiso del usuario actual: " +
+    // usuarioActual.getPermiso().getNombre());
+
+    // // Verificar permisos (Administrador o Programador)
+    // if (!usuarioActual.getPermiso().getNombre().equals("Administrador") &&
+    // !usuarioActual.getPermiso().getNombre().equals("Programador")) {
+    // System.out.println("El usuario no tiene permisos para eliminar.");
+    // response.put("success", false);
+    // response.put("message", "No tienes permisos para eliminar usuarios.");
+    // return response;
+    // }
+
+    // // Eliminar el usuario
+    // System.out.println("Eliminando usuario con ID: " + id);
+    // usuarioService.eliminarUsuario(id);
+    // response.put("success", true);
+    // response.put("message", "Usuario eliminado correctamente.");
+    // } catch (Exception e) {
+    // System.err.println("Error al eliminar el usuario: " + e.getMessage());
+    // response.put("success", false);
+    // response.put("message", "Error al eliminar el usuario: " + e.getMessage());
+    // }
+
+    // return response;
+    // }
+
+
 
 // @PostMapping("/usuarios/eliminar/{id}")
 // @ResponseBody

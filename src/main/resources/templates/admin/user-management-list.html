@@ -415,10 +415,10 @@
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    <tr th:if="${usuarios.empty}">
+                                    <tr th:if="${usuariosPage.empty}">
                                         <td colspan="5">No hay usuarios registrados.</td>
                                     </tr>
-                                    <tr th:each="usuario : ${usuarios}" th:unless="${usuarios.empty}">
+                                    <tr th:each="usuario : ${usuariosPage.content}" th:unless="${usuariosPage.empty}">
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar me-2">
@@ -445,6 +445,31 @@
                                     </tr>
                                 </tbody>
                             </table>
+                             <!-- Paginación -->
+                            <nav aria-label="Page navigation" th:if="${usuariosPage.totalPages > 1}">
+                                <ul class="pagination justify-content-center">
+                                    <!-- Botón Anterior -->
+                                    <li class="page-item" th:classappend="${usuariosPage.first} ? 'disabled' : ''">
+                                        <a class="page-link"
+                                            th:href="@{/admin/user-management-list(page=${usuariosPage.number - 1}, size=${usuariosPage.size})}">Anterior</a>
+                                    </li>
+
+                                    <!-- Números de Página -->
+                                    <li class="page-item"
+                                        th:each="i : ${#numbers.sequence(0, usuariosPage.totalPages - 1)}"
+                                        th:classappend="${i == usuariosPage.number} ? 'active' : ''">
+                                        <a class="page-link"
+                                            th:href="@{/admin/user-management-list(page=${i}, size=${usuariosPage.size})}"
+                                            th:text="${i + 1}"></a>
+                                    </li>
+
+                                    <!-- Botón Siguiente -->
+                                    <li class="page-item" th:classappend="${usuariosPage.last} ? 'disabled' : ''">
+                                        <a class="page-link"
+                                            th:href="@{/admin/user-management-list(page=${usuariosPage.number + 1}, size=${usuariosPage.size})}">Siguiente</a>
+                                    </li>
+                                </ul>
+                            </nav>
                             <!-- <table id="datatablesSimple">
                                 <thead>
                                     <tr>
@@ -528,14 +553,14 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js" crossorigin="anonymous"></script>
     <script src="/js/litepicker.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script>
+    <!-- <script>
         window.addEventListener('DOMContentLoaded', event => {
             const datatablesSimple = document.getElementById('datatablesSimple');
             if (datatablesSimple) {
                 new simpleDatatables.DataTable(datatablesSimple);
             }
         });
-    </script>
+    </script> -->
 
     <!-- Función para confirmar la eliminación de un usuario con Sweet Alert y toquen de Seguridad CSRF-->
     <script>
@@ -578,6 +603,32 @@
 
     <!-- SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Script para mostrar alertas de SweetAlert -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            var successMessage = /*[[${success}]]*/ null;
+            var errorMessage = /*[[${error}]]*/ null;
+
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: successMessage,
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                });
+            }
+        });
+        /*]]>*/
+    </script>
+
 </body>
 
 </html>

@@ -14,6 +14,10 @@ import com.analistas.luzclaritaweb.model.repository.IClienteRepository;
 import com.analistas.luzclaritaweb.model.repository.IPermisoRepository;
 import com.analistas.luzclaritaweb.model.repository.IUsuarioRepository;
 
+//Agregamos imprts para la paginacion en el Dashboard
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -51,6 +55,12 @@ public class IUsuariosService {
         usuario.setNomb_usu(nomb_usu);
         usuario.setEmail(email);
         usuarioRepository.save(usuario);
+    }
+
+
+    //Paginacion en el Dashboard
+     public Page<Usuario> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
     }
 
     public Optional<Usuario> findById(Long id) {

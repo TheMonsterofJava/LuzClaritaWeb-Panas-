@@ -386,15 +386,17 @@
                         <div class="col-xl-4">
                             <!-- Profile picture card-->
                             <div class="card mb-4 mb-xl-0">
-                                <div class="card-header">Profile Picture</div>
+                                <div class="card-header">Foto de Perfil</div>
                                 <div class="card-body text-center">
                                     <!-- Profile picture image-->
-                                    <img class="img-account-profile rounded-circle mb-2"
-                                        src="/assets/img/illustrations/profiles/profile-1.png" alt="" />
+                                    <img class="img-account-profile rounded-circle mb-2" id="img-preview"
+                                        th:src="${usuario.foto != null ? '/uploads/' + usuario.foto : '/assets/img/illustrations/profiles/profile-1.png'}"
+                                        alt="Foto de perfil" />
                                     <!-- Profile picture help block-->
-                                    <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                    <div class="small font-italic text-muted mb-4">JPG o PNG no mayor a 5 MB</div>
                                     <!-- Profile picture upload button-->
-                                    <button class="btn btn-primary" type="button">Upload new image</button>
+                                    <input type="file" id="foto" name="foto" class="form-control"
+                                        onchange="previewImage(event)">
                                 </div>
                             </div>
                         </div>
@@ -403,8 +405,10 @@
                             <div class="card mb-4">
                                 <div class="card-header">Account Details</div>
                                 <div class="card-body">
-                                    <form th:action="@{/admin/user-management-edit-user/{id}(id=${usuario.id})}"
-                                        method="post" th:object="${usuario}" onsubmit="return validarFormulario()">
+                                    <form id="edit-user-form"
+                                        th:action="@{/admin/user-management-edit-user/{id}(id=${usuario.id})}"
+                                        method="post" th:object="${usuario}" onsubmit="return validarFormulario()"
+                                        enctype="multipart/form-data">
                                         <!-- Nombre de Usuario -->
                                         <div class="row gx-3 mb-3">
                                             <div class="col-md-6">
@@ -503,6 +507,45 @@
     <script src="/js/datatables/datatables-simple-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js" crossorigin="anonymous"></script>
     <script src="/js/litepicker.js"></script>
+    <!-- Script para previsualizar la imagen -->
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.getElementById('img-preview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('edit-user-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Detener el envío del formulario
+
+            // Validar el formulario primero
+            if (!validarFormulario()) {
+                return; // Si la validación falla, no continuar
+            }
+
+            Swal.fire({
+                title: '¿Estás seguro de guardar los cambios?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, guardar cambios',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si el usuario confirma, se envía el formulario
+                    event.target.submit();
+                }
+            });
+        });
+    </script>
     <!-- Script para mostrar/ocultar contraseña y validar el formulario -->
     <script>
         function togglePassword(inputId) {

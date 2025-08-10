@@ -390,11 +390,12 @@
                                 <div class="card-body text-center">
                                     <!-- Profile picture image-->
                                     <img class="img-account-profile rounded-circle mb-2"
-                                        src="/assets/img/demo/usseradd.png" alt="" />
+                                        id="img-preview" src="/assets/img/demo/usseradd.png" alt="" />
                                     <!-- Profile picture help block-->
-                                    <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                    <div class="small font-italic text-muted mb-4">La imagen JPG o PNG debe ser menor a 10MB</div>
                                     <!-- Profile picture upload button-->
-                                    <button class="btn btn-primary" type="button">Upload new image</button>
+                                    <input type="file" id="foto" name="foto" class="form-control"
+                                        onchange="previewImage(event)">
                                 </div>
                             </div>
                         </div>
@@ -404,7 +405,8 @@
                                 <div class="card-header">Account Details</div>
                                 <div class="card-body">
                                     <form th:action="@{/admin/user-management-add-user}" method="post"
-                                        th:object="${usuario}" onsubmit="return validarFormulario()">
+                                       th:object="${usuario}" onsubmit="return validarFormulario()"
+                                        enctype="multipart/form-data">
                                         <!-- Form Row-->
                                         <div class="row gx-3 mb-3">
 
@@ -495,6 +497,17 @@
 <script src="/js/datatables/datatables-simple-demo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js" crossorigin="anonymous"></script>
 <script src="/js/litepicker.js"></script>
+<!-- Script para previsualizar la imagen -->
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('img-preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 <!-- Script para mostrar/ocultar contraseña y validar el formulario -->
 <script>
     function togglePassword(inputId) {
