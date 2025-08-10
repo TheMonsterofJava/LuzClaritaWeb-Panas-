@@ -68,7 +68,9 @@ public class ComprasController {
 
         // Obtener usuario autenticado
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Usuario usuario = usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
+        // Esta linea de codigo funciona para obtener el usuario autenticado 
+        Usuario usuario = usuarioService.findByEmail(userDetails.getUsername())
+
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         compra.setUsuario(usuario);
 
@@ -95,7 +97,8 @@ public class ComprasController {
 
         // Setear usuario autenticado a la compra a proveedores:
         if (auth != null && auth.getPrincipal() instanceof UserDetails userDetails) {
-            Usuario usuario = usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
+            // Esta linea de codigo funciona para obtener el usuario autenticado 
+            Usuario usuario = usuarioService.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             compra.setUsuario(usuario);
         } else {
