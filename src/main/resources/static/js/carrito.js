@@ -4,6 +4,13 @@ let carrito = [];
 
 // --- INITIALIZATION ---
 document.addEventListener("DOMContentLoaded", async () => {
+
+    // Verificar si el carrito está presente en esta página
+    if (!document.getElementById('mostrar-carrito')) {
+        console.log("Carrito no presente en esta página. Saltando inicialización.");
+        return;
+    }
+
     console.log("DOM cargado. Iniciando script del carrito.");
     crearContenedorDeAlertasSiNoExiste();
     await checkAuthenticationStatus();

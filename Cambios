@@ -368,4 +368,44 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ; Modificamos y agregamos los estos elementos:
 ; Usuario.java, FileStorageService, FileStorageServiceImpl, IUsuarioService, DashboardController, application.properties, user-management-add-user.html el edit y el list 
 
+
+; Commit nuevo:
+; Implementación de Interceptor de Carrito:
+
+; Se creó CarritoInterceptor que determina automáticamente si mostrar el carrito
+
+; Usa listas de rutas incluidas (/home, /productos/listado, etc.) y excluidas (/admin, /productos/nuevo, etc.)
+
+; Calcula la ruta relativa para funcionar en cualquier contexto de despliegue
+
+; Registro del Interceptor:
+
+; Se creó WebConfig para registrar el interceptor en Spring MVC
+
+; Se integró con la configuración existente de seguridad
+
+; Modificaciones en layout.html:
+
+; Se envolvió el botón del carrito en th:if="${mostrarCarrito}"
+
+; Se envolvió el modal del carrito en th:if="${mostrarCarrito}"
+
+; Se hizo condicional la carga de carrito.js con th:if="${mostrarCarrito}"
+
+; Se agregó verificación en el script general para solo inicializar carrito si está presente
+
+; Modificaciones en carrito.js:
+
+; Se agregó verificación inicial para saltar toda la lógica si el carrito no está presente
+
+; Se mejoró setupEventListeners para no intentar agregar listeners si el carrito no existe
+
+; Optimización de Recursos:
+
+; El CSS/JS del carrito solo se carga cuando es necesario
+
+; Se evitan errores de JavaScript en páginas sin carrito
+
+; Se mejora el rendimiento en páginas administrativas
+
 Arbol del proyecto actulizado:

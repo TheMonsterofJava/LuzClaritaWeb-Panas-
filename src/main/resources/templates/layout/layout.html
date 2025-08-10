@@ -191,7 +191,7 @@
                 <!-- Contenedor para carrito y usuario -->
                 <div class="navbar-actions">
                     <!-- Botón del carrito -->
-                    <div class="position-relative">
+                    <!-- <div class="position-relative">
                         <button id="mostrar-carrito" class="btn btn-carrito">
                             <i class="bi bi-cart4"></i>
                             <span class="d-none d-md-inline">Carrito</span>
@@ -200,6 +200,20 @@
                                 0
                             </span>
                         </button>
+                    </div> -->
+
+                    <!-- Botón del carrito (CONDICIONAL) -->
+                    <div th:if="${mostrarCarrito}">
+                        <div class="position-relative">
+                            <button id="mostrar-carrito" class="btn btn-carrito">
+                                <i class="bi bi-cart4"></i>
+                                <span class="d-none d-md-inline">Carrito</span>
+                                <span id="carrito-cantidad"
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+                                    0
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Dropdown de usuario -->
@@ -261,31 +275,33 @@
         style="position: fixed; top: 80px; right: 20px; z-index: 2000; width: auto; max-width: 350px;"></div>
 
     <!-- Modal del Carrito -->
-    <div id="carrito" class="carrito-contenedor" style="display: none;">
-        <h4><i class="bi bi-cart4"></i> Carrito</h4>
-        <table id="lista-carrito">
-            <thead>
-                <tr>
-                    <th>Imagen</th>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th class="text-center">Acción</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <!-- <p id="totalCarrito">Total: $0.00</p> -->
-        <div class="carrito-botones">
-            <a href="#" id="vaciar-carrito" class="btn btn-danger">Vaciar Carrito</a>
-            <!-- Formulario de pago corregido -->
-            <form id="form-pagar" th:action="@{/createAndRedirect}" method="POST" style="display: inline;">
-                <!-- Este input se llenará dinámicamente desde carrito.js -->
-                <input type="hidden" name="cartData" id="cartData">
-                <button type="submit" id="pagar" class="btn btn-success">Pagar</button>
-            </form>
+    <div th:if="${mostrarCarrito}">
+        <div id="carrito" class="carrito-contenedor" style="display: none;">
+            <h4><i class="bi bi-cart4"></i> Carrito</h4>
+            <table id="lista-carrito">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                        <th class="text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- <p id="totalCarrito">Total: $0.00</p> -->
+            <div class="carrito-botones">
+                <a href="#" id="vaciar-carrito" class="btn btn-danger">Vaciar Carrito</a>
+                <!-- Formulario de pago corregido -->
+                <form id="form-pagar" th:action="@{/createAndRedirect}" method="POST" style="display: inline;">
+                    <!-- Este input se llenará dinámicamente desde carrito.js -->
+                    <input type="hidden" name="cartData" id="cartData">
+                    <button type="submit" id="pagar" class="btn btn-success">Pagar</button>
+                </form>
 
+            </div>
         </div>
     </div>
 
@@ -355,7 +371,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <!-- JS de carrito y login -->
-    <script th:src="@{/js/carrito.js}"></script>
+    <!-- <script th:src="@{/js/carrito.js}"></script> -->
+    <!-- JS de carrito y login (CONDICIONAL para carrito.js) -->
+    <script th:if="${mostrarCarrito}" th:src="@{/js/carrito.js}"></script>
     <script th:src="@{/js/login.js}"></script>
 
     <!-- Fragmento para scripts de cada página -->
@@ -465,6 +483,11 @@
 
         // Inicializar carrito al cargar la página
         document.addEventListener('DOMContentLoaded', function () {
+
+            // Solo si el carrito está habilitado en esta página
+            if (!document.getElementById('mostrar-carrito')) {
+                return; 
+            }
 
             actualizarCantidadCarrito();
 

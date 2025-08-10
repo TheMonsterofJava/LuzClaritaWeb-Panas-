@@ -269,14 +269,14 @@
                     <div class="nav accordion" id="accordionSidenav">
                         <!-- Sidenav Heading (Custom)-->
                         <div class="sidenav-menu-heading">
-                            admin panel
+                            Panel de Control
                         </div>
 
                         <!-- Sidenav Accordion (Applications)-->
                         <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                             data-bs-target="#collapseApps" aria-expanded="false" aria-controls="collapseApps">
                             <div class="nav-link-icon"><i data-feather="globe"></i></div>
-                            Management
+                            Administracion
                             <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapseApps" data-bs-parent="#accordionSidenav">
@@ -285,61 +285,105 @@
                                 <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                                     data-bs-target="#appsCollapseUserManagement" aria-expanded="false"
                                     aria-controls="appsCollapseUserManagement">
-                                    User Management
+                                    Administracion de Usuarios
                                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
                                 <div class="collapse" id="appsCollapseUserManagement"
                                     data-bs-parent="#accordionSidenavAppsMenu">
                                     <nav class="sidenav-menu-nested nav">
                                         <!--Links de las paginas-->
-                                        <a class="nav-link" href="/admin/user-management-list">Users List</a>
+                                        <a class="nav-link" href="/admin/user-management-list">Lista de Usuarios</a>
                                         <!-- <a class="nav-link" href="/admin/user-management-edit-user">Edit User</a> -->
-                                        <a class="nav-link" href="/admin/user-management-add-user">Add User</a>
-                                        <a class="nav-link" href="/admin/user-management-groups-list">Groups List</a>
+                                        <a class="nav-link" href="/admin/user-management-add-user">Añadir Usuarios</a>
+                                        <a class="nav-link" href="/admin/user-management-groups-list">Lista de
+                                            Grupos</a>
                                     </nav>
                                 </div>
                                 <!-- Nested Sidenav Accordion (Apps -> Product Management)-->
                                 <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                                     data-bs-target="#appsCollapseUserManagement1" aria-expanded="false"
                                     aria-controls="appsCollapseUserManagement1">
-                                    Product Management
+                                    Administracion de Productos
                                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
                                 <div class="collapse" id="appsCollapseUserManagement1"
                                     data-bs-parent="#accordionSidenavAppsMenu1">
                                     <nav class="sidenav-menu-nested nav">
                                         <!--Links de las paginas-->
-                                        <a class="nav-link" href="/productos/nuevo">New Product</a>
-                                        <a class="nav-link" href="/productos/listado2">Products in Database
-                                        </a>
+                                        <a class="nav-link" href="/productos/nuevo">Nuevo Producto</a>
+                                        <a class="nav-link" href="/productos/listado2">Listado de Productos</a>
                                     </nav>
                                 </div>
                                 <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                                     data-bs-target="#appsCollapseUserManagement2" aria-expanded="false"
                                     aria-controls="appsCollapseUserManagement2">
-                                    Inventory Management
+                                    Administracion de Inventario
                                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
                                 <div class="collapse" id="appsCollapseUserManagement2"
                                     data-bs-parent="#accordionSidenavAppsMenu2">
                                     <nav class="sidenav-menu-nested nav">
                                         <!--Links de las paginas-->
-                                        <a class="nav-link" href="/inventario/listado">Inventory List</a>
-                                        <a class="nav-link" href="/inventario/nuevo">New Ingredient</a>
+                                        <a class="nav-link" href="/inventario/listado">Listado de Inventario</a>
+                                        <a class="nav-link" href="/inventario/nuevo">Nuevo Ingrediente</a>
                                     </nav>
                                 </div>
                                 <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                                     data-bs-target="#appsCollapseUserManagement3" aria-expanded="false"
                                     aria-controls="appsCollapseUserManagement3">
-                                    Supplier Management
+                                    Administracion de Proveedores
                                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
                                 <div class="collapse" id="appsCollapseUserManagement3"
                                     data-bs-parent="#accordionSidenavAppsMenu3">
                                     <nav class="sidenav-menu-nested nav">
                                         <!--Links de las paginas-->
-                                        <a class="nav-link" href="/proveedor/listado">Supplier List</a>
-                                        <a class="nav-link" href="/proveedor/nuevo">New Supplier</a>
+                                        <a class="nav-link" href="/proveedor/listado">Lista de Proveedores</a>
+                                        <a class="nav-link" href="/proveedor/nuevo">Nuevo Proveedor</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
+                                    data-bs-target="#appsCollapseUserManagement4" aria-expanded="false"
+                                    aria-controls="appsCollapseUserManagement4">
+                                    Administracion de Caja
+                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="appsCollapseUserManagement4"
+                                    data-bs-parent="#accordionSidenavAppsMenu4">
+                                    <nav class="sidenav-menu-nested nav">
+                                        <!--Links de las paginas-->
+                                        <a class="nav-link" href="/caja/movimientos">Movimientos de Caja</a>
+
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
+                                    data-bs-target="#appsCollapseUserManagement5" aria-expanded="false"
+                                    aria-controls="appsCollapseUserManagement5">
+                                    Administracion de Compras a Proveedores
+                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="appsCollapseUserManagement5"
+                                    data-bs-parent="#accordionSidenavAppsMenu5">
+                                    <nav class="sidenav-menu-nested nav">
+                                        <!--Links de las paginas-->
+                                        <a class="nav-link" href="/compras/nueva">Nueva Compra a Proveedor</a>
+                                        <a class="nav-link" href="/compras/listado">Listado de Compras a Proveedores</a>
+
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
+                                    data-bs-target="#appsCollapseUserManagement6" aria-expanded="false"
+                                    aria-controls="appsCollapseUserManagement6">
+                                    Administracion de Recetas
+                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="appsCollapseUserManagement6"
+                                    data-bs-parent="#accordionSidenavAppsMenu6">
+                                    <nav class="sidenav-menu-nested nav">
+                                        <!--Links de las paginas-->
+                                        <a class="nav-link" href="/recetas/form">Nuevo Ingreso de Receta</a>
+                                        <a class="nav-link" href="/recetas/listado">Listado de Recetas</a>
+
                                     </nav>
                                 </div>
                             </nav>
@@ -349,7 +393,7 @@
                 <!-- Sidenav Footer-->
                 <div class="sidenav-footer">
                     <div class="sidenav-footer-content">
-                        <div class="sidenav-footer-subtitle">Logged in as:</div>
+                        <div class="sidenav-footer-subtitle">Logueado como:</div>
                         <div class="sidenav-footer-title" sec:authorize="isAuthenticated()" sec:authentication="name">
                             Nombre de Usuario
                         </div>
