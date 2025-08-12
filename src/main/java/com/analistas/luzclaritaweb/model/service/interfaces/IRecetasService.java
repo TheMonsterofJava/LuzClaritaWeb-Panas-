@@ -10,4 +10,5 @@ public interface IRecetasService {
     Receta buscarPorId(Long id);
     void eliminar(Long id);
     List<Receta> buscarActivas();
+    void cambiarEstado(Long id, boolean activo); 
 }

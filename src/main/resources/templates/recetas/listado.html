@@ -9,6 +9,10 @@
     <!-- jQuery DEBE ir primero -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- CSRF Tokens -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <!-- Luego DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -28,6 +32,7 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Tiempo</th>
+                        <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -36,6 +41,7 @@
                         <td th:text="${r.nombre_receta}">Nombre</td>
                         <td th:text="${r.descripcion}">Descripción</td>
                         <td th:text="${r.tiempo}">Tiempo</td>
+                        <td th:text="${r.precio}">Precio</td>
                         <td>
                             <div class="d-flex flex-wrap gap-2">
                                 <a th:href="@{/recetas/editar/{id}(id=${r.id})}"
@@ -82,8 +88,8 @@
             event.preventDefault();
 
             const url = element.getAttribute('data-url');
-            const csrfToken = /*[[${_csrf.token}]]*/ null;
-            const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
             Swal.fire({
                 title: '¿Estás seguro de eliminar esta receta?',

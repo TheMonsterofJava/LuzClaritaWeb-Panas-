@@ -18,9 +18,14 @@ public class CarritoDTO {
     private BigDecimal productoPrecio;
     private String productoLinkImagen;
 
-    //constructor vacio
-    //No borrar
-    //Sirve para deserializar el JSON de cartData
+    private Long recetaId;
+    private String recetaNombre;
+    private BigDecimal recetaPrecio;
+    private String recetaLinkImagen;
+
+    // constructor vacio
+    // No borrar
+    // Sirve para 
     public CarritoDTO() {
     }
 
@@ -71,5 +76,37 @@ public class CarritoDTO {
 
     public void setProductoLinkImagen(String productoLinkImagen) {
         this.productoLinkImagen = productoLinkImagen;
+    }
+
+    public Long getRecetaId() {
+        return recetaId;
+    }
+
+    public void setRecetaId(Long recetaId) {
+        this.recetaId = recetaId;
+    }
+
+    public String getRecetaNombre() {
+        return recetaNombre;
+    }
+
+    public void setRecetaNombre(String recetaNombre) {
+        this.recetaNombre = recetaNombre;
+    }
+
+    public BigDecimal getRecetaPrecio() {
+        return recetaPrecio;
+    }
+
+    public void setRecetaPrecio(BigDecimal recetaPrecio) {
+        this.recetaPrecio = recetaPrecio;
+    }
+
+    public String getRecetaLinkImagen() {
+        return recetaLinkImagen;
+    }
+
+    public void setRecetaLinkImagen(String recetaLinkImagen) {
+        this.recetaLinkImagen = recetaLinkImagen;
     }
 }

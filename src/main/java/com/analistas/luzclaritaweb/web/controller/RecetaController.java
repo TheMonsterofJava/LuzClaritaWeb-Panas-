@@ -92,6 +92,7 @@ public class RecetaController {
                 recetaExistente.setDescripcion(receta.getDescripcion());
                 recetaExistente.setIngredientes(receta.getIngredientes());
                 recetaExistente.setPasos(receta.getPasos());
+                recetaExistente.setTiempo(receta.getTiempo());
                 recetaExistente.setImagen_link(receta.getImagen_link());
                 recetaExistente.setPrecio(receta.getPrecio());
                 recetaService.guardar(recetaExistente);
@@ -124,10 +125,12 @@ public class RecetaController {
     public String cambiarEstado(@PathVariable Long id, RedirectAttributes flash) {
 
         Receta receta = recetaService.buscarPorId(id);
+        boolean nuevoEstado = !receta.isActivo();
+        recetaService.cambiarEstado(id, nuevoEstado);
         receta.setActivo(!receta.isActivo()); // Si está activo, lo desactivo y viceversa
         recetaService.guardar(receta);
 
-        String mensaje = receta.isActivo() ? "registro de  " + receta.getNombre_receta() + "  habilitado"
+        String mensaje = nuevoEstado ? "registro de  " + receta.getNombre_receta() + "  habilitado"
                 : "registro de  " + receta.getNombre_receta() + "  Deshabilitado";
         flash.addFlashAttribute("info", mensaje);
 

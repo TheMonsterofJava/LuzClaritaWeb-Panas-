@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Carrito;
 import com.analistas.luzclaritaweb.model.domain.Producto;
+import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.repository.ICarritoRepository;
 import com.analistas.luzclaritaweb.web.controller.CarritoController.ItemCarritoLocal;
@@ -99,5 +100,34 @@ public class ICarritoService {
     public void vaciarCarrito(Long usuarioId) {
         List<Carrito> carrito = carritoRepository.findByUsuarioId(usuarioId);
         carritoRepository.deleteAll(carrito);
+    }
+
+    @Transactional
+    public void agregarReceta(Usuario usuario, Long recetaId, int cantidad) {
+        try {
+            Optional<Carrito> carritoExistente = carritoRepository.findByUsuarioIdAndRecetaId(usuario.getId(),
+                    recetaId);
+
+            if (carritoExistente.isPresent()) {
+                // Si ya existe, sumamos la cantidad
+                Carrito item = carritoExistente.get();
+                item.setCantidad(item.getCantidad() + cantidad);
+                carritoRepository.save(item);
+            } else {
+                // Si no existe, lo creamos
+                Carrito item = new Carrito();
+                item.setUsuario(usuario); // Usar la entidad de usuario gestionada
+                Receta recetaRef = new Receta();
+                recetaRef.setId(recetaId);
+                item.setReceta(recetaRef); // Establecer la referencia de la receta
+                item.setCantidad(cantidad);
+                carritoRepository.save(item);
+            }
+
+        } catch (DataAccessException e) {
+            // Envolver la excepción de base de datos en una excepción personalizada
+            throw new CarritoSyncException("Error de base de datos al agregar la receta al carrito.", e);
+
+        }
     }
 }

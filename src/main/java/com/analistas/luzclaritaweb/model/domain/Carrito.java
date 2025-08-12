@@ -1,4 +1,5 @@
 package com.analistas.luzclaritaweb.model.domain;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "carrito")  // La tabla se llama "carrito" en singular
+@Table(name = "carrito") // La tabla se llama "carrito" en singular
 public class Carrito {
 
     @Id
@@ -25,6 +26,10 @@ public class Carrito {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     private Usuario usuario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_receta", referencedColumnName = "id")
+    private Receta receta;
+
     @NotNull(message = "El Producto es requerido")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto", referencedColumnName = "id")
@@ -35,21 +40,21 @@ public class Carrito {
     private int cantidad;
 }
 
-//CODIGO VIEJO: ()
+// CODIGO VIEJO: ()
 // private final List<Producto> productos = new ArrayList<>();
 
 // public void agregarProducto(Producto producto) {
-//     productos.add(producto);
+// productos.add(producto);
 // }
 
 // public void quitarProducto(Long id) {
-//     productos.removeIf(product -> product.getId().equals(id));
+// productos.removeIf(product -> product.getId().equals(id));
 // }
 
 // public void vaciar() {
-//     productos.clear();
+// productos.clear();
 // }
 
 // public List<Producto> getProductos() {
-//     return productos;
+// return productos;
 // }

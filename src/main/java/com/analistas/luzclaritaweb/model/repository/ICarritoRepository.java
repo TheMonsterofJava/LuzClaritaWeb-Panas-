@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import com.analistas.luzclaritaweb.model.domain.Carrito;
 
+
 @Repository
 public interface ICarritoRepository extends JpaRepository<Carrito, Long> {
     List<Carrito> findByUsuarioId(Long usuarioId);
     Optional<Carrito> findByUsuarioIdAndProductoId(Long usuarioId, Long productoId);
+    Optional<Carrito> findByUsuarioIdAndRecetaId(Long usuarioId, Long recetaId);
 }

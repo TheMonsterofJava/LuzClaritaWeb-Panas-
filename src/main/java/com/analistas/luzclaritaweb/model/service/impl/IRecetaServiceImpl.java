@@ -9,6 +9,8 @@ import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.repository.IRecetaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.IRecetasService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class IRecetaServiceImpl implements IRecetasService {
 
@@ -38,5 +40,11 @@ public Receta guardar(Receta receta) {
     @Override
     public List<Receta> buscarActivas() {
         return recetaRepository.findByActivoTrue();
+    }
+
+    @Override
+    @Transactional
+    public void cambiarEstado(Long id, boolean activo) {
+        recetaRepository.setActivo(id, activo);
     }
 }

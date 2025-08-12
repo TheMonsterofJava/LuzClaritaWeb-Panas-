@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -29,11 +32,6 @@ import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.IClienteService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFileStorageService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
-
-//Agregamos imprts para la paginacion en el Dashboard
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
 
@@ -120,7 +118,7 @@ public class DashboardController {
     @PostMapping("/user-management-add-user")
     public String addUser(@ModelAttribute("usuario") Usuario usuario,
             @RequestParam(value = "crearCliente", required = false) boolean crearCliente,
-            @RequestParam(name = "foto", required = false) MultipartFile foto, // <-- Ahora es opcional
+            @RequestParam(name = "fotoFile", required = false) MultipartFile fotoFile, // <-- Ahora es opcional
             RedirectAttributes redirectAttributes) {
         try {
             // 1. Encriptar la contraseña
@@ -136,8 +134,8 @@ public class DashboardController {
             usuario.setPermiso(permiso);
 
             // 4. Guardar la foto
-            if (foto != null && !foto.isEmpty()) {
-                String nombreFoto = fileStorageService.store(foto);
+            if (fotoFile != null && !fotoFile.isEmpty()) {
+                String nombreFoto = fileStorageService.store(fotoFile);
                 usuario.setFoto(nombreFoto);
             }
 
@@ -260,7 +258,7 @@ public class DashboardController {
         try {
             // 1. Verificar permisos del usuario actual
             String username = principal.getName();
-            Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
+            Optional<Usuario> usuarioActualOpt = usuarioService.findByEmail(username);
 
             if (!usuarioActualOpt.isPresent()) {
                 response.put("success", false);

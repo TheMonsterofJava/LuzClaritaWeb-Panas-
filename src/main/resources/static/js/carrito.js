@@ -70,6 +70,36 @@ async function agregarAlCarrito(productoId, nombre, precio, imagen) {
     }
 }
 
+async function agregarRecetaAlCarrito(recetaId, nombre, precio, imagen) {
+    if (IS_USER_AUTHENTICATED) {
+        try {
+            const response = await authenticatedFetch(`/api/carrito/agregarReceta?recetaId=${recetaId}&cantidad=1`, { method: 'POST' });
+            if (!response.ok) {
+                // Si la respuesta no es OK, intentamos leer el cuerpo del error
+                const errorData = await response.json();
+                throw new Error(errorData.error || `El servidor respondió con error: ${response.status}`);
+            }
+            await obtenerCarritoDelBackend();
+            mostrarAlerta(`"${nombre}" se agregó a tu carrito.`, 'success');
+        } catch (error) {
+            console.error("Error agregando receta al backend:", error);
+            mostrarAlerta(`No se pudo agregar "${nombre}". Razón: ${error.message}`, 'danger');
+        }
+    } else {
+        // Logic for unauthenticated user (LocalStorage)
+        const idNumerico = Number(recetaId);
+        let existe = carrito.find(p => p.id === idNumerico);
+        if (existe) {
+            existe.cantidad++;
+        } else {
+            carrito.push({ id: idNumerico, nombre, precio, cantidad: 1, imagen, tipo: 'receta' });
+        }
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarVisualizacionCarrito();
+        mostrarAlerta(`"${nombre}" se agregó. ¡Inicia sesión para guardarlo!`);
+    }
+}
+
 async function eliminarProducto(productoId) {
     const idNumerico = Number(productoId);
     if (!IS_USER_AUTHENTICATED) {
@@ -316,9 +346,16 @@ function actualizarVisualizacionCarrito() {
                 id: item.productoId,
                 nombre: item.productoNombre,
                 precio: item.productoPrecio,
-                imagen: item.productoLinkImagen
-            } : item;
-            
+                magen: item.productoLinkImagen,
+                tipo: 'producto'
+            } : (item.recetaId ? {
+                id: item.recetaId,
+                nombre: item.recetaNombre,
+                precio: item.recetaPrecio,
+                imagen: item.recetaLinkImagen,
+                tipo: 'receta'
+            } : item);
+
             //Actualizamos el html para que pueda incremenatar la cantidad en el carrito. 
             const fila = document.createElement("tr");
             fila.setAttribute('data-product-id', p.id); // Agregar identificador
@@ -389,11 +426,17 @@ function setupEventListeners() {
     document.querySelectorAll(".agregar-carrito").forEach(boton => {
         boton.addEventListener("click", (event) => {
             event.preventDefault();
-            const productoId = boton.getAttribute("data-id");
+            const id = boton.getAttribute("data-id");
             const nombre = boton.getAttribute("data-nombre");
             const precio = parseFloat(boton.getAttribute("data-precio"));
             const imagen = boton.getAttribute("data-imagen");
-            agregarAlCarrito(productoId, nombre, precio, imagen);
+            const tipo = boton.getAttribute("data-type");
+
+            if (tipo === 'receta') {
+                agregarRecetaAlCarrito(id, nombre, precio, imagen);
+            } else {
+                agregarAlCarrito(id, nombre, precio, imagen);
+            }
         });
     });
 
@@ -438,13 +481,25 @@ async function obtenerCarritoDelBackend() {
         }
         const data = await response.json();
         // El DTO anida los detalles del producto, necesitamos mapearlos.
-        carrito = data.map(item => ({
-            cantidad: item.cantidad,
-            productoId: item.productoId,
-            productoNombre: item.productoNombre,
-            productoPrecio: item.productoPrecio,
-            productoLinkImagen: item.productoLinkImagen
-        }));
+        carrito = data.map(item => {
+            if (item.productoId) {
+                return {
+                    cantidad: item.cantidad,
+                    productoId: item.productoId,
+                    productoNombre: item.productoNombre,
+                    productoPrecio: item.productoPrecio,
+                    productoLinkImagen: item.productoLinkImagen
+                };
+            } else {
+                return {
+                    cantidad: item.cantidad,
+                    recetaId: item.recetaId,
+                    recetaNombre: item.recetaNombre,
+                    recetaPrecio: item.recetaPrecio,
+                    recetaLinkImagen: item.recetaLinkImagen
+                };
+            }
+        });
         actualizarVisualizacionCarrito();
     } catch (error) {
         console.error("Error obteniendo carrito del backend:", error);
