@@ -8,9 +8,11 @@ import com.analistas.luzclaritaweb.model.domain.Producto;
 
 public interface IProductoService {
 
-    public List<Producto> buscarTodo();
+    // public List<Producto> buscarTodo();
 
-    public List<Producto> buscarPor(String criterio);
+    // public List<Producto> buscarPor(String criterio);
+
+    public List<Producto> buscar(Long categoriaId, String sortBy);
 
     public Producto buscarPorId(Long id);
 

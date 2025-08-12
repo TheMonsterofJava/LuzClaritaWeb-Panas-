@@ -79,11 +79,15 @@
         </div>
 
         <main>
-            <aside class="mb-5">
+           <aside class="mb-5">
                 <h2 class="text-center">Categorías</h2>
-                <ul class="list-group" th:field="*{categoria}">
-                    <li class="list-group-item" th:each="c : ${categorias}" th:value="${c.id}"><a th:text="${c.nombre}"
-                            th:href="${c.id}"></a></li>
+                <ul class="list-group">
+                    <li class="list-group-item" th:classappend="${categoriaId == null} ? 'active'">
+                        <a th:href="@{/productos/listado(sort=${sort})}">Ver Todas</a>
+                    </li>
+                    <li class="list-group-item" th:each="c : ${categorias}" th:value="${c.id}" th:classappend="${c.id == categoriaId} ? 'active'">
+                        <a th:text="${c.nombre}" th:href="@{/productos/listado(categoriaId=${c.id}, sort=${sort})}"></a>
+                    </li>
                 </ul>
             </aside>
 
@@ -130,6 +134,13 @@
             const sort = this.value;
             const params = new URLSearchParams(window.location.search);
             params.set('sort', sort);
+
+            // Mantener el filtro de categoría si existe
+            const categoriaId = params.get('categoriaId');
+            if (categoriaId) {
+                params.set('categoriaId', categoriaId);
+            }
+
             window.location.search = params.toString();
         });
     </script>

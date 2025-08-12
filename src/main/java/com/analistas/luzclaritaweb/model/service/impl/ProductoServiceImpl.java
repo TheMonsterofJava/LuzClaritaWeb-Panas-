@@ -3,6 +3,7 @@ package com.analistas.luzclaritaweb.model.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,17 +30,24 @@ public class ProductoServiceImpl implements IProductoService {
     ICategoriaRepository categoriaRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Producto> buscarTodo() {
-        return (List<Producto>) productoRepository.findAll();
+     public List<Producto> buscar(Long categoriaId, String sortBy) {
+        
+        Sort sort;
+        switch (sortBy) {
+            case "precio_asc" -> sort = Sort.by("precio").ascending();
+            case "precio_desc" -> sort = Sort.by("precio").descending();
+            case "nombre_asc" -> sort = Sort.by("descripcion").ascending();
+            case "nombre_desc" -> sort = Sort.by("descripcion").descending();
+            default -> sort = Sort.by("precio").ascending();
+        }
+
+        if (categoriaId != null && categoriaId > 0) {
+            return productoRepository.findByCategoriaId(categoriaId, sort);
+        } else {
+            return productoRepository.findAll(sort);
+        }
     }
-
-    @Override
-    public List<Producto> buscarPor(String criterio) {
-
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPor'");
-    }
-
+    
     @Override
     @Transactional(readOnly = true)
     public Producto buscarPorId(Long id) {

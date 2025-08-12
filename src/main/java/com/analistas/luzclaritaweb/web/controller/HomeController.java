@@ -22,24 +22,13 @@ public class HomeController {
     
     @Autowired
     private IProductoService productoService;
-    //ICategoriaRepository categoriaRepository;
 
-    @GetMapping("/home")  
-    public String home(Model model) {  
-        // Obtiene la lista de productos desde la base de datos
-        Iterable<Producto> productos = productoService.buscarTodo(); 
-        
-        // Agrega los productos al modelo
-        model.addAttribute("productos", productos);
-        
-        model.addAttribute("urlcontacto", "/contacto"); 
-        return "index"; 
-    }
-
-    @GetMapping("/")
-    public String mostrarProductosDespuesDeSalir(Model model) {  
-        // Obtiene la lista de productos desde la base de datos
-        Iterable<Producto> productos = productoService.buscarTodo(); 
+    // He combinado tus dos métodos en uno solo que responde a "/", "/home" e "/index".
+    @GetMapping({"/", "/home", "/index"})  
+    public String mostrarHomePage(Model model) {  
+        // Llama al nuevo método 'buscar' sin filtro de categoría (null) 
+        // y con un orden por defecto ("precio_asc").
+        List<Producto> productos = productoService.buscar(null, "precio_asc"); 
         
         // Agrega los productos al modelo
         model.addAttribute("productos", productos);
@@ -50,13 +39,14 @@ public class HomeController {
     
     @ModelAttribute("categorias")
     public List<Categoria> listarCategorias() {
+        // Esto sigue funcionando igual, ya que no tocamos el servicio de categorías.
         return productoService.getCategorias();
     }
     
     //Controlar la vista de error 403
     @GetMapping("/accessDenied")
     public String accessDenied() {
-        return "accessDenied"; // Nombre de la vista HTML que creamos
+        return "accessDenied";
     }
 
 }

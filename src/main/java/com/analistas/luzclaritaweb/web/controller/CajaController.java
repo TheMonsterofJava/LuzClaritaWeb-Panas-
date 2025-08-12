@@ -109,7 +109,7 @@ public class CajaController {
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             // Asumiendo que buscarPorNombreUsuario devuelve Optional<Usuario>
-            Usuario usuarioLogueado = usuarioService.findByEmail(userDetails.getUsername()).orElse(null);
+            Usuario usuarioLogueado = usuarioService.buscarPorNombreUsuario(userDetails.getUsername()).orElse(null);
 
             if (usuarioLogueado != null) {
                 caja.setUsuario(usuarioLogueado);

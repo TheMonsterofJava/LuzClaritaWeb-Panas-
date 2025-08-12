@@ -1,6 +1,4 @@
 package com.analistas.luzclaritaweb.web.controller;
-
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,31 +40,18 @@ public class ProductoController {
     // Implementar el controlador de producto
     @GetMapping("/listado")
     public String listar(
+            @RequestParam(name = "categoriaId", required = false) Long categoriaId,
             @RequestParam(value = "sort", required = false, defaultValue = "precio_asc") String sort,
             Model model) {
-        System.out.println(">>> ORDEN: " + sort);
-        List<Producto> productos = productoService.buscarTodo();
 
-        System.out.println(">>> ORDEN: " + sort);
-        System.out.println("ANTES:");
-        productos.forEach(p -> System.out.println(p.getDescripcion() + " - " + p.getPrecio()));
-
-        switch (sort) {
-            case "precio_asc" -> productos.sort(Comparator.comparing(Producto::getPrecio));
-            case "precio_desc" -> productos.sort(Comparator.comparing(Producto::getPrecio).reversed());
-            case "nombre_asc" -> productos.sort(Comparator.comparing(p -> p.getDescripcion().toLowerCase()));
-            case "nombre_desc" ->
-                productos.sort(Comparator.comparing((Producto p) -> p.getDescripcion().toLowerCase()).reversed());
-            default -> productos.sort(Comparator.comparing(Producto::getPrecio));
-        }
-
-        System.out.println("DESPUÉS:");
-        productos.forEach(p -> System.out.println(p.getDescripcion() + " - " + p.getPrecio()));
+        List<Producto> productos = productoService.buscar(categoriaId, sort);
 
         model.addAttribute("titulo", "Productos");
         model.addAttribute("productos", productos);
         model.addAttribute("categoria", new Categoria());
         model.addAttribute("sort", sort);
+        model.addAttribute("categoriaId", categoriaId);
+
 
         return "productos/list";
     }
@@ -74,7 +59,7 @@ public class ProductoController {
     @GetMapping("/listado2")
     public String listado2(Model model) {
         model.addAttribute("titulo", "Listado de productos");
-        model.addAttribute("productos", productoService.buscarTodo());
+        model.addAttribute("productos", productoService.buscar(null, "precio_asc"));
         model.addAttribute("categoria", new Categoria());
         return "productos/list2";
     }
