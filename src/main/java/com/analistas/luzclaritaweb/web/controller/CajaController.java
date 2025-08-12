@@ -439,8 +439,9 @@ public class CajaController {
             @RequestParam("password") String password, Authentication authentication) {
         Map<String, Object> response = new HashMap<>();
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Usuario adminUsuario = usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
+       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // Corrected: Find user by email, which is what Spring Security's getUsername() returns here.
+        Usuario adminUsuario = usuarioService.findByEmail(userDetails.getUsername())
                 .orElse(null);
 
         if (adminUsuario == null) {

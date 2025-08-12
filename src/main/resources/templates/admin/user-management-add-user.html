@@ -430,7 +430,7 @@
                         <div class="col-xl-4">
                             <!-- Profile picture card-->
                             <div class="card mb-4 mb-xl-0">
-                                <div class="card-header">Profile Picture</div>
+                                <div class="card-header">Foto de Perfil</div>
                                 <div class="card-body text-center">
                                     <!-- Profile picture image-->
                                     <img class="img-account-profile rounded-circle mb-2" id="img-preview"
@@ -438,20 +438,26 @@
                                     <!-- Profile picture help block-->
                                     <div class="small font-italic text-muted mb-4">La imagen JPG o PNG debe ser menor a
                                         10MB</div>
-                                    <!-- Profile picture upload button-->
-                                    <input type="file" id="foto" name="foto" class="form-control"
-                                        onchange="previewImage(event)">
+                                    <!-- El input de la foto fue movido al formulario -->
                                 </div>
                             </div>
                         </div>
                         <div class="col-xl-8">
                             <!-- Account details card-->
                             <div class="card mb-4">
-                                <div class="card-header">Account Details</div>
+                                <div class="card-header">Detalles de la Cuenta</div>
                                 <div class="card-body">
                                     <form th:action="@{/admin/user-management-add-user}" method="post"
                                         th:object="${usuario}" onsubmit="return validarFormulario()"
                                         enctype="multipart/form-data">
+                                        
+                                        <!-- Profile picture upload button -->
+                                        <div class="mb-3">
+                                            <label class="small mb-1" for="foto">Foto de Perfil</label>
+                                            <input type="file" id="foto" name="foto" class="form-control"
+                                                onchange="previewImage(event)">
+                                        </div>
+
                                         <!-- Form Row-->
                                         <div class="row gx-3 mb-3">
 
@@ -501,6 +507,15 @@
                                                     th:text="${permiso.nombre}"></option>
                                             </select>
                                         </div>
+                                        
+                                        <!-- Checkbox para crear cliente -->
+                                        <div class="form-check mb-3" id="crear-cliente-container" style="display: none;">
+                                            <input class="form-check-input" type="checkbox" id="crearCliente" name="crearCliente" value="true">
+                                            <label class="form-check-label" for="crearCliente">
+                                                Crear registro de Cliente asociado
+                                            </label>
+                                        </div>
+
                                         <!-- Mensaje de error -->
                                         <div id="error-message" class="text-danger mb-3" style="display: none;">
                                             Las contraseñas no coinciden.
@@ -553,7 +568,7 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>
-<!-- Script para mostrar/ocultar contraseña y validar el formulario -->
+<!-- Script para mostrar/ocultar contraseña, validar formulario y manejar checkbox de cliente -->
 <script>
     function togglePassword(inputId) {
         const input = document.getElementById(inputId);
@@ -580,6 +595,25 @@
             return true; // Permite que el formulario se envíe
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const permisoSelect = document.getElementById('permiso');
+        const crearClienteContainer = document.getElementById('crear-cliente-container');
+
+        function toggleCrearClienteCheckbox() {
+            const selectedOption = permisoSelect.options[permisoSelect.selectedIndex];
+            if (selectedOption && selectedOption.text === 'ROLE_CLIENTE') {
+                crearClienteContainer.style.display = 'block';
+            } else {
+                crearClienteContainer.style.display = 'none';
+                document.getElementById('crearCliente').checked = false;
+            }
+        }
+
+        toggleCrearClienteCheckbox();
+
+        permisoSelect.addEventListener('change', toggleCrearClienteCheckbox);
+    });
 </script>
 
 </html>

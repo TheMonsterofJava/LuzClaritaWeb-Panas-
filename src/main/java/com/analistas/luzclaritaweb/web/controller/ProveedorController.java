@@ -1,6 +1,7 @@
 package com.analistas.luzclaritaweb.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -90,16 +91,18 @@ public class ProveedorController {
     // return "redirect:/proveedor/listado";
     // }
 
-    @GetMapping("/eliminar/{id}")
+   @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes flash) {
-        // Busca el proveedor en la base de datos
-        Proveedor proveedor = proveedorService.buscarPorId(id);
+        
+        try {
+            proveedorService.borrarPorId(id);
+            flash.addFlashAttribute("success", "Proveedor eliminado correctamente.");
 
-        if (proveedor != null) {
-            proveedorService.borrarPorId(id); // Llama al servicio para eliminar el registro
-            flash.addFlashAttribute("success", "Proveedor " + proveedor.getNombre() + " eliminado correctamente.");
-        } else {
-            flash.addFlashAttribute("error", "El proveedor no existe en la base de datos.");
+        } catch (DataIntegrityViolationException e) {
+            flash.addFlashAttribute("error", "No se puede eliminar el proveedor, ya que tiene registros de compras o inventario asociados.");
+        
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al eliminar el proveedor: " + e.getMessage());
         }
 
         return "redirect:/proveedor/listado";

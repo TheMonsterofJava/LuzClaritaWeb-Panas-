@@ -219,9 +219,16 @@
                         <div class="receta-body">
                             <h3 class="receta-title" th:text="${r.nombre_receta}"></h3>
                             <p class="receta-desc" th:text="${r.descripcion}"></p>
-                            <a th:href="@{/recetas/detalle/{id}(id=${r.id})}" class="receta-btn">
-                                Ver receta <i class="bi bi-arrow-right"></i>
-                            </a>
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/recetas/detalle/{id}(id=${r.id})}" class="receta-btn">
+                                    Ver receta <i class="bi bi-arrow-right"></i>
+                                </a>
+                                <a href="#" class="receta-btn agregar-carrito" th:data-id="${r.id}"
+                                    th:data-nombre="${r.nombre_receta}" th:data-precio="${r.precio}"
+                                    th:data-imagen="${r.imagen_link}">
+                                    Añadir al Carrito <i class="bi bi-cart4"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

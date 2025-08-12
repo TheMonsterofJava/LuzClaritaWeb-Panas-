@@ -408,4 +408,42 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 
 ; Se mejora el rendimiento en páginas administrativas
 
+
+; Commit de Arreglo de errores generales: 
+
+; Resumen de Tareas Completadas:
+
+; Carrito de Compras (Usuarios no autenticados):
+
+; Modal Persistente: Solucioné el error que causaba que el modal del carrito se cerrara cada vez que un usuario no autenticado actualizaba la cantidad de un producto.
+; Gestión de Cajas:
+
+; Error "Administrador no encontrado": Corregí el error que impedía desactivar una caja con movimientos, ajustando la forma en que se buscaba al administrador.
+; Gestión de Proveedores:
+
+; Eliminación Segura: Impedí que el sistema arrojara un error al intentar eliminar un proveedor con compras asociadas. Ahora se te muestra un mensaje claro.
+; Listado de Productos:
+
+; Funcionalidad de Ordenamiento: Arreglé la funcionalidad de "Ordenar por" que no estaba aplicando los filtros correctamente.
+; Gestión de Recetas (Múltiples mejoras):
+
+; Error de Duplicación: Solucioné el bug que duplicaba las recetas al editarlas.
+; Deshabilitar Recetas: Corregí la lógica para que las recetas deshabilitadas no se muestren a los clientes.
+; Nuevas Funciones: Añadí botones para "Añadir al Carrito" y para "Eliminar" recetas.
+; Entorno de Pruebas:
+
+; Realicé múltiples ajustes en la configuración para que las pruebas automáticas se puedan ejecutar correctamente sin depender de la base de datos de producción, lo que asegura la calidad del código a futuro.
+
+; Elemento que se tocaron:
+;       modified:   src/main/java/com/analistas/luzclaritaweb/model/domain/Receta.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/CajaController.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/ProveedorController.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/RecetaController.java
+;         modified:   src/main/resources/static/js/carrito.js
+;         modified:   src/main/resources/templates/admin/user-management-add-user.html
+;         modified:   src/main/resources/templates/admin/user-management-list.html
+;         modified:   src/main/resources/templates/productos/list.html
+;         modified:   src/main/resources/templates/recetas/cards.html
+;         modified:   src/main/resources/templates/recetas/listado.html
+
 Arbol del proyecto actulizado:

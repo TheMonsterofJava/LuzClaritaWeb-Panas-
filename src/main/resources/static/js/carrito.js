@@ -154,10 +154,10 @@ async function actualizarCantidad(productoId, cantidad) {
             producto.cantidad = cantidad;
             localStorage.setItem("carrito", JSON.stringify(carrito));
 
-            //Actualizar solo la fila especifica en lugar de todo el carrito
+            // Actualizar solo la fila específica en lugar de todo el carrito
             const filaProducto = document.querySelector(`tr[data-product-id="${idNumerico}"]`);
             if (filaProducto) {
-                //Actualizar el input de cantidad
+                // Actualizar el input de cantidad
                 const inputCantidad = filaProducto.querySelector('input.form-control');
                 if (inputCantidad) inputCantidad.value = cantidad;
                 
@@ -165,10 +165,10 @@ async function actualizarCantidad(productoId, cantidad) {
                 const totalProducto = filaProducto.querySelector('td:nth-child(5)');
                 if (totalProducto) totalProducto.textContent = `$${(producto.precio * cantidad).toFixed(2)}`;
             }
+            
+            // Actualizar los totales generales y el contador del ícono
+            actualizarTotalesYContador();
         }
-         localStorage.setItem("carrito", JSON.stringify(carrito));
-         actualizarVisualizacionCarrito();
-        
     }
 }
 

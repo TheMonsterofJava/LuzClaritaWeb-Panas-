@@ -4,6 +4,10 @@
  */
 package com.analistas.luzclaritaweb.model.domain;
 
+import java.math.BigDecimal;
+
+import org.springframework.format.annotation.NumberFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -19,7 +25,6 @@ import lombok.Data;
  *
  * @author osval
  */
-
 
 @Data
 @Entity
@@ -42,30 +47,35 @@ public class Receta {
 
     @Column(name = "ingredientes")
     @NotEmpty(message = "El ingrediente es requerido...")
-    @Size(max =250, message = "Los Ingredientes deben tener hasta 250 caracteres...")
+    @Size(max = 250, message = "Los Ingredientes deben tener hasta 250 caracteres...")
     private String ingredientes;
 
     @Column(name = "pasos")
     @NotEmpty(message = "Los Pasos de la Receta son requeridos...")
-    @Size(max =500, message = "Los Pasos de la Rectea deben tener hasta 500 caracteres...")
+    @Size(max = 500, message = "Los Pasos de la Rectea deben tener hasta 500 caracteres...")
     private String pasos;
 
     @Column(name = "tiempo")
     @NotEmpty(message = "El Tiempo de duracion de la receta es requerido...")
-    @Size(max =50, message = "El Tiempo de duracion de la receta debe tener hasta 50 caracteres...")
+    @Size(max = 50, message = "El Tiempo de duracion de la receta debe tener hasta 50 caracteres...")
     private String tiempo;
 
     @Column(name = "imagen_link")
     @NotEmpty(message = "El Link de la Imagen es requerido...")
-    @Size(max =500, message = "El Link de la Imagen debe tener hasta 500 caracteres...")
+    @Size(max = 500, message = "El Link de la Imagen debe tener hasta 500 caracteres...")
     private String imagen_link;
 
     @Column(name = "activo", columnDefinition = "boolean default 1")
     private boolean activo;
 
-   @PrePersist
+    @Column(columnDefinition = "decimal(10, 2) default 0.00")
+    @NotNull(message = "El precio es requerido...")
+    @Positive(message = "El precio debe ser mayor que cero")
+    @NumberFormat(pattern = "#,##0.00", style = NumberFormat.Style.CURRENCY)
+    private BigDecimal precio;
+
+    @PrePersist
     public void PrePersist() {
         activo = true;
     }
 }
-
