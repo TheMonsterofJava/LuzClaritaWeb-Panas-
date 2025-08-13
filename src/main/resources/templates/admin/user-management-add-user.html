@@ -509,11 +509,26 @@
                                         </div>
                                         
                                         <!-- Checkbox para crear cliente -->
+                                         <!--Sirve para crear un cliente y Usuario en la base de datos-->
                                         <div class="form-check mb-3" id="crear-cliente-container" style="display: none;">
                                             <input class="form-check-input" type="checkbox" id="crearCliente" name="crearCliente" value="true">
                                             <label class="form-check-label" for="crearCliente">
                                                 Crear registro de Cliente asociado
                                             </label>
+                                        </div>
+
+                                        <!-- Campos adicionales para el cliente -->
+                                        <div id="cliente-fields" style="display: none;">
+                                            <div class="row gx-3 mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="small mb-1" for="celular">Celular</label>
+                                                    <input class="form-control" id="celular" name="celular" type="text" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="small mb-1" for="direccion">Dirección</label>
+                                                    <input class="form-control" id="direccion" name="direccion" type="text" />
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <!-- Mensaje de error -->
@@ -599,20 +614,35 @@
     document.addEventListener('DOMContentLoaded', function () {
         const permisoSelect = document.getElementById('permiso');
         const crearClienteContainer = document.getElementById('crear-cliente-container');
+        const crearClienteCheckbox = document.getElementById('crearCliente');
+        const clienteFields = document.getElementById('cliente-fields');
 
-        function toggleCrearClienteCheckbox() {
+        function toggleClienteFields() {
             const selectedOption = permisoSelect.options[permisoSelect.selectedIndex];
-            if (selectedOption && selectedOption.text === 'ROLE_CLIENTE') {
+            const isClienteRole = selectedOption && selectedOption.text === 'ROLE_CLIENTE';
+            
+            // Muestra el contenedor del checkbox si el rol es cliente
+            if (isClienteRole) {
                 crearClienteContainer.style.display = 'block';
             } else {
                 crearClienteContainer.style.display = 'none';
-                document.getElementById('crearCliente').checked = false;
+                crearClienteCheckbox.checked = false;
+            }
+
+            // Muestra los campos adicionales si el rol es cliente y el checkbox está marcado
+            if (isClienteRole && crearClienteCheckbox.checked) {
+                clienteFields.style.display = 'block';
+            } else {
+                clienteFields.style.display = 'none';
             }
         }
 
-        toggleCrearClienteCheckbox();
+        // Llama a la función al cargar la página
+        toggleClienteFields();
 
-        permisoSelect.addEventListener('change', toggleCrearClienteCheckbox);
+        // Agrega listeners para cambios
+        permisoSelect.addEventListener('change', toggleClienteFields);
+        crearClienteCheckbox.addEventListener('change', toggleClienteFields);
     });
 </script>
 

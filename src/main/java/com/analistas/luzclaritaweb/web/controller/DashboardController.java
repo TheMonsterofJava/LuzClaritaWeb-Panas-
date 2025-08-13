@@ -118,7 +118,9 @@ public class DashboardController {
     @PostMapping("/user-management-add-user")
     public String addUser(@ModelAttribute("usuario") Usuario usuario,
             @RequestParam(value = "crearCliente", required = false) boolean crearCliente,
-            @RequestParam(name = "fotoFile", required = false) MultipartFile fotoFile, // <-- Ahora es opcional
+            @RequestParam(name = "fotoFile", required = false) MultipartFile fotoFile,
+            @RequestParam(name = "celular", required = false) String celular,
+            @RequestParam(name = "direccion", required = false) String direccion,  // <-- Ahora es opcional
             RedirectAttributes redirectAttributes) {
         try {
             // 1. Encriptar la contraseña
@@ -150,6 +152,8 @@ public class DashboardController {
                 cliente.setCorreo(usuario.getEmail());
                 cliente.setContrasena(contraseñaEncriptada); // Misma contraseña encriptada
                 cliente.setUsuario(usuarioGuardado);
+                cliente.setCelular(celular);
+                cliente.setDireccion(direccion);
 
                 // Establecer relación bidireccional
                 usuarioGuardado.setCliente(cliente);

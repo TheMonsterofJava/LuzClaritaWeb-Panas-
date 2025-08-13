@@ -16,6 +16,7 @@ public class CarritoInterceptor implements HandlerInterceptor {
 
     // Rutas donde SI debe aparecer el carrito
     private final List<String> rutasConCarrito = Arrays.asList(
+        "/",
         "/home",
         "/productos/listado",
         "/recetas/cards",

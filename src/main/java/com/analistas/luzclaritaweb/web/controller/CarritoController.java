@@ -68,6 +68,21 @@ public class CarritoController {
         }
     }
 
+     @PostMapping("/agregarReceta")
+    public ResponseEntity<?> agregarReceta(@RequestParam Long recetaId, @RequestParam int cantidad) {
+        Usuario usuario = getUsuarioAutenticado();
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Usuario no autenticado"));
+        }
+        try {
+            carritoService.agregarReceta(usuario, recetaId, cantidad);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "No se pudo agregar la receta al carrito. Causa: " + e.getMessage()));
+        }
+    }
+
     // Actualizar la cantidad de los productos en el carrito de compras:
     @PostMapping("/actualizar")
     public ResponseEntity<?> actualizarCantidad(@RequestParam Long productoId, @RequestParam int cantidad) {

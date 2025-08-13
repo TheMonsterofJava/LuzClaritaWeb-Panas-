@@ -346,7 +346,7 @@ function actualizarVisualizacionCarrito() {
                 id: item.productoId,
                 nombre: item.productoNombre,
                 precio: item.productoPrecio,
-                magen: item.productoLinkImagen,
+                imagen: item.productoLinkImagen,
                 tipo: 'producto'
             } : (item.recetaId ? {
                 id: item.recetaId,
@@ -360,7 +360,7 @@ function actualizarVisualizacionCarrito() {
             const fila = document.createElement("tr");
             fila.setAttribute('data-product-id', p.id); // Agregar identificador
             fila.innerHTML = `
-                <td><img src="${p.imagen}" alt="${p.nombre}" width="50" onerror="this.onerror=null;this.src='/img/default.jpg';"></td>
+                <td><img src="${p.imagen}" alt="${p.nombre}" width="50" onerror="this.onerror=null;this.src='/img/logo.png';"></td>
                 <td>${p.nombre}</td>
                 <td>$${p.precio.toFixed(2)}</td>
                 <td class="text-center">

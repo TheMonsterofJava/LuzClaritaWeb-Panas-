@@ -199,6 +199,8 @@ public class ComprasController {
         model.addAttribute("compra", compra);
         model.addAttribute("proveedores", proveedorService.buscarTodo());
         model.addAttribute("cajasAbiertas", cajaService.listarCajasAbiertas());
+        model.addAttribute("ingredientes", inventarioService.buscarTodo()); // <-- Añadido
+
         return "compras/form";
     }
 

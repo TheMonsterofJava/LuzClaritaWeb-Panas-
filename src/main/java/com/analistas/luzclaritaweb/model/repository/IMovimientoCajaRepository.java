@@ -23,6 +23,6 @@ public interface IMovimientoCajaRepository extends JpaRepository<MovimientoCaja,
     // Buscar movimientos de caja realizados por un usuario
     List<MovimientoCaja> findByOperadorId(Long operadorId);
 
-    
+    public void deleteByCompraId(Long compraId);
 
 }
