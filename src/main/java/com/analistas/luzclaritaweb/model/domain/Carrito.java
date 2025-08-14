@@ -27,14 +27,12 @@ public class Carrito {
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_receta", referencedColumnName = "id")
+    @JoinColumn(name = "id_receta", referencedColumnName = "id", nullable = true)
     private Receta receta;
 
-    @NotNull(message = "El Producto es requerido")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_producto", referencedColumnName = "id")
+    @JoinColumn(name = "id_producto", referencedColumnName = "id", nullable = true)
     private Producto producto;
-
     @NotNull
     @Column(columnDefinition = "INT NOT NULL DEFAULT 1")
     private int cantidad;

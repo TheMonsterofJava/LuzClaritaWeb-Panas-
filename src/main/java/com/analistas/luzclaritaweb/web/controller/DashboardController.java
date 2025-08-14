@@ -109,7 +109,9 @@ public class DashboardController {
     // Método para mostrar formulario de añadir usuario
     @GetMapping("/user-management-add-user")
     public String showAddUserForm(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        if (!model.containsAttribute("usuario")) {
+            model.addAttribute("usuario", new Usuario());
+        }
         model.addAttribute("permisos", usuarioService.findAllPermisos());
         return "admin/user-management-add-user";
     }
@@ -120,20 +122,42 @@ public class DashboardController {
             @RequestParam(value = "crearCliente", required = false) boolean crearCliente,
             @RequestParam(name = "fotoFile", required = false) MultipartFile fotoFile,
             @RequestParam(name = "celular", required = false) String celular,
-            @RequestParam(name = "direccion", required = false) String direccion,  // <-- Ahora es opcional
+            @RequestParam(name = "direccion", required = false) String direccion, // <-- Ahora es opcional
             RedirectAttributes redirectAttributes) {
         try {
-            // 1. Encriptar la contraseña
+            // Validar que el permiso no sea nulo antes de verificar el nombre
+            if (usuario.getPermiso() == null || usuario.getPermiso().getId() == null) {
+                redirectAttributes.addFlashAttribute("error", "Debe seleccionar un rol para el usuario.");
+                redirectAttributes.addFlashAttribute("usuario", usuario);
+                return "redirect:/admin/user-management-add-user";
+            }
+
+            // Cargar el permiso completo desde la base de datos
+            Permiso permiso = (Permiso) usuarioService.findPermisoById(usuario.getPermiso().getId());
+            usuario.setPermiso(permiso); // Asignar el permiso completo al usuario
+
+            // 1. Validación para cliente asociado
+            if (crearCliente && "ROLE_CLIENTE".equals(permiso.getNombre())) {
+                if (!org.springframework.util.StringUtils.hasText(celular)
+                        || !org.springframework.util.StringUtils.hasText(direccion)) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "Para crear un cliente asociado, el celular y la dirección son obligatorios.");
+                    redirectAttributes.addFlashAttribute("usuario", usuario);
+                    // También es útil devolver los valores de celular y dirección para que no se
+                    // pierdan
+                    redirectAttributes.addFlashAttribute("celular", celular);
+                    redirectAttributes.addFlashAttribute("direccion", direccion);
+                    return "redirect:/admin/user-management-add-user";
+                }
+            }
+
+            // 2. Encriptar la contraseña
             String contraseñaEncriptada = passwordEncoder.encode(usuario.getClave());
             usuario.setClave(contraseñaEncriptada);
 
-            // 2. Configurar datos básicos del usuario
+            // 3. Configurar datos básicos del usuario
             usuario.setFecha_creacion(new Date());
             usuario.setActivo(true);
-
-            // 3. Obtener y asignar permiso
-            Permiso permiso = (Permiso) usuarioService.findPermisoById(usuario.getPermiso().getId());
-            usuario.setPermiso(permiso);
 
             // 4. Guardar la foto
             if (fotoFile != null && !fotoFile.isEmpty()) {
@@ -141,24 +165,21 @@ public class DashboardController {
                 usuario.setFoto(nombreFoto);
             }
 
-            // 4. Guardar el usuario primero
+            // 5. Guardar el usuario primero
             Usuario usuarioGuardado = usuarioService.guardarUsuario(usuario);
 
-            // 5. Si es cliente, crear registro correspondiente
-            if (crearCliente && "ROLE_CLIENTE".equals(usuario.getPermiso().getNombre())) {
+            // 6. Si es cliente, crear registro correspondiente
+            if (crearCliente && "ROLE_CLIENTE".equals(permiso.getNombre())) {
                 Cliente cliente = new Cliente();
                 cliente.setNomb_ape(usuario.getNomb_usu());
                 cliente.setNomb_usu(usuario.getNomb_usu());
                 cliente.setCorreo(usuario.getEmail());
-                cliente.setContrasena(contraseñaEncriptada); // Misma contraseña encriptada
+                cliente.setContrasena(contraseñaEncriptada);
                 cliente.setUsuario(usuarioGuardado);
                 cliente.setCelular(celular);
                 cliente.setDireccion(direccion);
 
-                // Establecer relación bidireccional
                 usuarioGuardado.setCliente(cliente);
-
-                // Guardar ambos
                 clienteService.guardarCliente(cliente);
                 usuarioService.guardarUsuario(usuarioGuardado);
             }
@@ -295,94 +316,92 @@ public class DashboardController {
 
 }
 
-    // @GetMapping("/user-management-add-user")
-    // public String showAddUserForm(Model model) {
-    // model.addAttribute("usuario", new Usuario());
-    // model.addAttribute("permisos", usuarioService.findAllPermisos());
-    // return "admin/user-management-add-user";
-    // }
+// @GetMapping("/user-management-add-user")
+// public String showAddUserForm(Model model) {
+// model.addAttribute("usuario", new Usuario());
+// model.addAttribute("permisos", usuarioService.findAllPermisos());
+// return "admin/user-management-add-user";
+// }
 
-    // @PostMapping("/user-management-add-user")
-    // public String addUser(@ModelAttribute("usuario") Usuario usuario,
-    // RedirectAttributes redirectAttributes) {
-    // try {
-    // // Hashear la contraseña
-    // String contraseñaHasheada = passwordEncoder.encode(usuario.getClave());
-    // usuario.setClave(contraseñaHasheada);
+// @PostMapping("/user-management-add-user")
+// public String addUser(@ModelAttribute("usuario") Usuario usuario,
+// RedirectAttributes redirectAttributes) {
+// try {
+// // Hashear la contraseña
+// String contraseñaHasheada = passwordEncoder.encode(usuario.getClave());
+// usuario.setClave(contraseñaHasheada);
 
-    // // Obtener el permiso seleccionado
-    // Permiso permiso = (Permiso)
-    // usuarioService.findPermisoById(usuario.getPermiso().getId());
-    // usuario.setPermiso(permiso);
+// // Obtener el permiso seleccionado
+// Permiso permiso = (Permiso)
+// usuarioService.findPermisoById(usuario.getPermiso().getId());
+// usuario.setPermiso(permiso);
 
-    // // Establecer la fecha de creación y activar el usuario
-    // usuario.setFecha_creacion(new Date());
-    // usuario.setActivo(true);
+// // Establecer la fecha de creación y activar el usuario
+// usuario.setFecha_creacion(new Date());
+// usuario.setActivo(true);
 
-    // // Guardar el usuario en la base de datos
-    // usuarioService.guardarUsuario(usuario);
+// // Guardar el usuario en la base de datos
+// usuarioService.guardarUsuario(usuario);
 
-    // // Agregar mensaje de éxito
-    // redirectAttributes.addFlashAttribute("success", "Usuario agregado
-    // correctamente.");
-    // } catch (Exception e) {
-    // // Agregar mensaje de error
-    // redirectAttributes.addFlashAttribute("error", "Error al agregar el usuario: "
-    // + e.getMessage());
-    // }
-    // return "redirect:/admin/user-management-list";
-    // }
+// // Agregar mensaje de éxito
+// redirectAttributes.addFlashAttribute("success", "Usuario agregado
+// correctamente.");
+// } catch (Exception e) {
+// // Agregar mensaje de error
+// redirectAttributes.addFlashAttribute("error", "Error al agregar el usuario: "
+// + e.getMessage());
+// }
+// return "redirect:/admin/user-management-list";
+// }
 
-    // @PostMapping("/usuarios/eliminar/{id}")
-    // @ResponseBody
-    // public Map<String, Object> eliminarUsuario(@PathVariable("id") Long id,
-    // Principal principal) {
-    // Map<String, Object> response = new HashMap<>();
-    // System.out.println("Solicitud de eliminación recibida para el usuario con ID:
-    // " + id);
+// @PostMapping("/usuarios/eliminar/{id}")
+// @ResponseBody
+// public Map<String, Object> eliminarUsuario(@PathVariable("id") Long id,
+// Principal principal) {
+// Map<String, Object> response = new HashMap<>();
+// System.out.println("Solicitud de eliminación recibida para el usuario con ID:
+// " + id);
 
-    // try {
-    // String username = principal.getName(); // Obtener el nombre de usuario actual
-    // System.out.println("Usuario actual: " + username);
+// try {
+// String username = principal.getName(); // Obtener el nombre de usuario actual
+// System.out.println("Usuario actual: " + username);
 
-    // // Buscar el usuario actual por nombre de usuario (nomb_usu)
-    // Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
-    // if (!usuarioActualOpt.isPresent()) {
-    // System.out.println("Usuario no encontrado con nombre de usuario: " +
-    // username);
-    // response.put("success", false);
-    // response.put("message", "Usuario no encontrado.");
-    // return response;
-    // }
+// // Buscar el usuario actual por nombre de usuario (nomb_usu)
+// Optional<Usuario> usuarioActualOpt = usuarioService.findByNombUsu(username);
+// if (!usuarioActualOpt.isPresent()) {
+// System.out.println("Usuario no encontrado con nombre de usuario: " +
+// username);
+// response.put("success", false);
+// response.put("message", "Usuario no encontrado.");
+// return response;
+// }
 
-    // Usuario usuarioActual = usuarioActualOpt.get();
-    // System.out.println("Permiso del usuario actual: " +
-    // usuarioActual.getPermiso().getNombre());
+// Usuario usuarioActual = usuarioActualOpt.get();
+// System.out.println("Permiso del usuario actual: " +
+// usuarioActual.getPermiso().getNombre());
 
-    // // Verificar permisos (Administrador o Programador)
-    // if (!usuarioActual.getPermiso().getNombre().equals("Administrador") &&
-    // !usuarioActual.getPermiso().getNombre().equals("Programador")) {
-    // System.out.println("El usuario no tiene permisos para eliminar.");
-    // response.put("success", false);
-    // response.put("message", "No tienes permisos para eliminar usuarios.");
-    // return response;
-    // }
+// // Verificar permisos (Administrador o Programador)
+// if (!usuarioActual.getPermiso().getNombre().equals("Administrador") &&
+// !usuarioActual.getPermiso().getNombre().equals("Programador")) {
+// System.out.println("El usuario no tiene permisos para eliminar.");
+// response.put("success", false);
+// response.put("message", "No tienes permisos para eliminar usuarios.");
+// return response;
+// }
 
-    // // Eliminar el usuario
-    // System.out.println("Eliminando usuario con ID: " + id);
-    // usuarioService.eliminarUsuario(id);
-    // response.put("success", true);
-    // response.put("message", "Usuario eliminado correctamente.");
-    // } catch (Exception e) {
-    // System.err.println("Error al eliminar el usuario: " + e.getMessage());
-    // response.put("success", false);
-    // response.put("message", "Error al eliminar el usuario: " + e.getMessage());
-    // }
+// // Eliminar el usuario
+// System.out.println("Eliminando usuario con ID: " + id);
+// usuarioService.eliminarUsuario(id);
+// response.put("success", true);
+// response.put("message", "Usuario eliminado correctamente.");
+// } catch (Exception e) {
+// System.err.println("Error al eliminar el usuario: " + e.getMessage());
+// response.put("success", false);
+// response.put("message", "Error al eliminar el usuario: " + e.getMessage());
+// }
 
-    // return response;
-    // }
-
-
+// return response;
+// }
 
 // @PostMapping("/usuarios/eliminar/{id}")
 // @ResponseBody

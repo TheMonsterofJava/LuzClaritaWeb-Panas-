@@ -215,7 +215,7 @@ public class CajaController {
         BigDecimal totalEgresos = BigDecimal.ZERO;
 
         for (MovimientoCaja mov : movimientosFiltrados) {
-            if (mov.getMonto() != null) { // Asegurarse que el monto no sea nulo
+            if (mov.getEstado() == MovimientoCaja.EstadoMovimiento.ACTIVO && mov.getMonto() != null) {
                 if (MovimientoCaja.TipoOperacion.INGRESO.equals(mov.getTipoOperacion())) {
                     totalIngresos = totalIngresos.add(mov.getMonto());
                 } else if (MovimientoCaja.TipoOperacion.EGRESO.equals(mov.getTipoOperacion())) {
@@ -439,8 +439,9 @@ public class CajaController {
             @RequestParam("password") String password, Authentication authentication) {
         Map<String, Object> response = new HashMap<>();
 
-       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        // Corrected: Find user by email, which is what Spring Security's getUsername() returns here.
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // Corrected: Find user by email, which is what Spring Security's getUsername()
+        // returns here.
         Usuario adminUsuario = usuarioService.findByEmail(userDetails.getUsername())
                 .orElse(null);
 

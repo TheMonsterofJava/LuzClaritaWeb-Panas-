@@ -52,7 +52,7 @@
 
                                 <!-- BOTÓN NUEVO PARA ELIMINAR -->
                                 <a href="#" th:data-url="@{/recetas/eliminar/{id}(id=${r.id})}"
-                                    onclick="confirmarEliminacionReceta(event, this)" class="btn btn-danger btn-sm">
+                                    class="btn btn-danger btn-sm btn-eliminar-receta">
                                     Eliminar
                                 </a>
                             </div>
@@ -71,68 +71,65 @@
     </div>
 
     <!-- Fragmento de JavaScript específico para esta página -->
-    <script th:fragment="js">
-        // DataTable para las recetas
+    <script th:fragment="js" th:inline="javascript">
+        /*<![CDATA[*/
         $(document).ready(function () {
             $('#tabla-recetas').DataTable({
                 "language": {
                     "url": "/js/datatables/i18n/es-ES.json"
                 }
             });
-        });
-    </script>
-    <!-- SweetAlert2 JS -->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        function confirmarEliminacionReceta(event, element) {
-            event.preventDefault();
 
-            const url = element.getAttribute('data-url');
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            // Adjuntar evento de clic para eliminar receta
+            $('#tabla-recetas').on('click', '.btn-eliminar-receta', function (event) {
+                event.preventDefault();
+                const element = this;
+                const url = element.getAttribute('data-url');
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-            Swal.fire({
-                title: '¿Estás seguro de eliminar esta receta?',
-                text: "¡Esta acción es permanente y no se puede revertir!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, ¡eliminar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let headers = {
-                        'Content-Type': 'application/json'
-                    };
-                    headers[csrfHeader] = csrfToken;
+                Swal.fire({
+                    title: '¿Estás seguro de eliminar esta receta?',
+                    text: "¡Esta acción es permanente y no se puede revertir!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, ¡eliminar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let headers = {
+                            'Content-Type': 'application/json'
+                        };
+                        headers[csrfHeader] = csrfToken;
 
-                    fetch(url, {
-                        method: 'POST',
-                        headers: headers
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire(
-                                    '¡Eliminada!',
-                                    data.message,
-                                    'success'
-                                ).then(() => {
-                                    // Recarga la página para ver la lista actualizada
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
-                            }
+                        fetch(url, {
+                            method: 'POST',
+                            headers: headers
                         })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
-                        });
-                }
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire(
+                                        '¡Eliminada!',
+                                        data.message,
+                                        'success'
+                                    ).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+                            });
+                    }
+                });
             });
-        }
+        });
         /*]]>*/
     </script>
 

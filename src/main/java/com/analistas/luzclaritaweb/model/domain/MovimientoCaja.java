@@ -68,6 +68,10 @@ public class MovimientoCaja {
     @JoinColumn(name = "id_compra", referencedColumnName = "id")
     private Compra compra;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private EstadoMovimiento estado = EstadoMovimiento.ACTIVO;
+
     @PrePersist
     public void prePersist() {
         this.fecha = LocalDateTime.now();
@@ -75,5 +79,9 @@ public class MovimientoCaja {
     
     public enum TipoOperacion {
         INGRESO, EGRESO
+    }
+
+    public enum EstadoMovimiento {
+        ACTIVO, ANULADO
     }
 }

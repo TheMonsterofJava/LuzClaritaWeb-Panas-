@@ -25,6 +25,8 @@ import com.analistas.luzclaritaweb.model.domain.Inventario;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
 import com.analistas.luzclaritaweb.model.domain.Proveedor;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
+import com.analistas.luzclaritaweb.model.repository.ICompraRepository;
+import com.analistas.luzclaritaweb.model.repository.IMovimientoCajaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICompraService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IInventarioService;
@@ -54,6 +56,12 @@ public class ComprasController {
     @Autowired
     private IInventarioService inventarioService;
 
+    @Autowired
+    private ICompraRepository compraRepository;
+
+    @Autowired
+    private IMovimientoCajaRepository movimientoCajaRepository;
+
     @GetMapping("/listado")
     public String listar(Model model) {
         model.addAttribute("titulo", "Listado de Compras");
@@ -68,7 +76,7 @@ public class ComprasController {
 
         // Obtener usuario autenticado
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        // Esta linea de codigo funciona para obtener el usuario autenticado 
+        // Esta linea de codigo funciona para obtener el usuario autenticado
         Usuario usuario = usuarioService.findByEmail(userDetails.getUsername())
 
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -95,101 +103,102 @@ public class ComprasController {
             RedirectAttributes redirect,
             Authentication auth) {
 
-        // Setear usuario autenticado a la compra a proveedores:
-        if (auth != null && auth.getPrincipal() instanceof UserDetails userDetails) {
-            // Esta linea de codigo funciona para obtener el usuario autenticado 
-            Usuario usuario = usuarioService.findByEmail(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            compra.setUsuario(usuario);
-        } else {
-            redirect.addFlashAttribute("error", "No se pudo obtener el usuario autenticado.");
-            return "redirect:/compras/nueva";
-        }
-
-        // 1. Validar y asignar detalles
-        for (DetalleCompra detalle : compra.getDetalles()) {
-            detalle.setCompra(compra);
-
-            // Solucion al error de producto nulo:
-            detalle.setProducto(null); // Aseguramos que el producto sea nulo, ya que estamos trabajando con
-                                       // ingredientes
-
-            // 2. Actualizar stock del ingrediente
-            Inventario ingrediente = inventarioService.buscarPorId(detalle.getIngrediente().getId());
-            ingrediente.setCantidad(ingrediente.getCantidad() + detalle.getCantidad()); // Usar int
-            inventarioService.guardar(ingrediente);
-        }
-
-        // 3. Calcular total (opcional)
-        BigDecimal total = compra.getDetalles().stream()
-                .map(d -> d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        compra.setTotal(total);
+        // Setear usuario autenticado
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        Usuario usuario = usuarioService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        compra.setUsuario(usuario);
 
         // Validar que la compra tenga detalles
-        // Si no tiene detalles, redirigir con mensaje de error
         if (compra.getDetalles() == null || compra.getDetalles().isEmpty()) {
             redirect.addFlashAttribute("error", "No puedes guardar una compra sin detalles.");
             return "redirect:/compras/nueva";
         }
 
-        // Guardar la compra y obtener la instancia persistida (con ID)
-        Compra compraGuardada = compraService.guardarCompra(compra);
+        // Calcular nuevo total
+        BigDecimal nuevoTotal = compra.getDetalles().stream()
+                .map(d -> d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        compra.setTotal(nuevoTotal);
 
-        // 4. Registramos el movimiento de caja tipo (EGRESO),
-        MovimientoCaja egreso = new MovimientoCaja();
-        egreso.setFecha(LocalDateTime.now());
-        egreso.setMonto(total); // total ya es BigDecimal
-        // egreso.setMontoDouble(total.doubleValue()); // Eliminado
-        egreso.setTipo("EGRESO");
-        egreso.setTipoOperacion(MovimientoCaja.TipoOperacion.EGRESO);
-        // Obtener el nombre del proveedor de forma segura
-        String nombreProveedor = "Desconocido";
-        if (compra.getProveedor() != null && compra.getProveedor().getId() != null) {
-            Proveedor proveedorRecargado = proveedorService.buscarPorId(compra.getProveedor().getId());
-            if (proveedorRecargado != null) {
-                if (proveedorRecargado.getNombre() != null && !proveedorRecargado.getNombre().isEmpty()) {
-                    nombreProveedor = proveedorRecargado.getNombre();
-                }
+        // Lógica para EDITAR una compra existente
+        if (compra.getId() != null) {
+            // 1. Obtener estado anterior de la compra
+            Compra compraAnterior = compraRepository.findById(compra.getId())
+                    .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+            BigDecimal totalAnterior = compraAnterior.getTotal();
+
+            // 2. Revertir stock anterior
+            for (DetalleCompra detalleAnterior : compraAnterior.getDetalles()) {
+                Inventario ingrediente = detalleAnterior.getIngrediente();
+                ingrediente.setCantidad(ingrediente.getCantidad() - detalleAnterior.getCantidad());
+                inventarioService.guardar(ingrediente);
             }
+
+            // 3. Actualizar stock con lo nuevo
+            for (DetalleCompra detalleNuevo : compra.getDetalles()) {
+                Inventario ingrediente = inventarioService.buscarPorId(detalleNuevo.getIngrediente().getId());
+                ingrediente.setCantidad(ingrediente.getCantidad() + detalleNuevo.getCantidad());
+                inventarioService.guardar(ingrediente);
+                detalleNuevo.setCompra(compra);
+            }
+
+            // 4. Guardar la compra actualizada
+            compra.setFechaHora(compraAnterior.getFechaHora()); // Mantener fecha original
+            compraService.guardarCompra(compra); // Sin asignar a variable
+
+            // 5. Actualizar movimiento de caja
+            MovimientoCaja movimiento = movimientoCajaRepository.findByCompraId(compra.getId());
+            if (movimiento != null) {
+                movimiento.setMonto(nuevoTotal);
+                movimiento.setFecha(LocalDateTime.now()); // Actualizar fecha del movimiento
+                movimientoCajaService.guardarMovimiento(movimiento);
+
+                // 6. Actualizar saldo de la caja
+                Caja caja = cajaService.obtenerCajaPorId(compra.getCaja().getId())
+                        .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
+                // Ajustar saldo: sumar lo de antes, restar lo nuevo
+                BigDecimal saldoAjustado = caja.getSaldoFinal().add(totalAnterior).subtract(nuevoTotal);
+                caja.setSaldoFinal(saldoAjustado);
+                cajaService.guardarCaja(caja);
+            }
+
+            redirect.addFlashAttribute("success", "Compra modificada correctamente!");
+
+        } else { // Lógica para CREAR una nueva compra
+            // 1. Asignar detalles y actualizar stock
+            for (DetalleCompra detalle : compra.getDetalles()) {
+                detalle.setCompra(compra);
+                Inventario ingrediente = inventarioService.buscarPorId(detalle.getIngrediente().getId());
+                ingrediente.setCantidad(ingrediente.getCantidad() + detalle.getCantidad());
+                inventarioService.guardar(ingrediente);
+            }
+
+            // 2. Guardar la compra
+            Compra compraGuardada = compraService.guardarCompra(compra);
+
+            // 3. Crear movimiento de caja
+            MovimientoCaja egreso = new MovimientoCaja();
+            egreso.setFecha(LocalDateTime.now());
+            egreso.setMonto(nuevoTotal);
+            egreso.setTipo("EGRESO");
+            egreso.setTipoOperacion(MovimientoCaja.TipoOperacion.EGRESO);
+            Proveedor proveedor = proveedorService.buscarPorId(compra.getProveedor().getId());
+            egreso.setDescripcion("Compra a Proveedor: " + (proveedor != null ? proveedor.getNombre() : "Desconocido"));
+            egreso.setCaja(compraGuardada.getCaja());
+            egreso.setOperador(usuario);
+            egreso.setCompra(compraGuardada);
+            movimientoCajaService.guardarMovimiento(egreso);
+
+            // 4. Actualizar saldo de la caja
+            Caja caja = cajaService.obtenerCajaPorId(compraGuardada.getCaja().getId())
+                    .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
+            caja.setSaldoFinal(caja.getSaldoFinal().subtract(nuevoTotal));
+            cajaService.guardarCaja(caja);
+
+            redirect.addFlashAttribute("success", "Compra registrada!");
         }
-        egreso.setDescripcion("Compra a Proveedor: " + nombreProveedor);
 
-        // Asignar la caja de la compra al movimiento de egreso
-        // Es importante que compra.getCaja() no sea nulo aquí.
-        // Se asume que se valida o se asigna una caja a la compra antes de este punto.
-        if (compraGuardada.getCaja() == null || compraGuardada.getCaja().getId() == null) {
-            redirect.addFlashAttribute("error", "La compra guardada no tiene una caja asignada.");
-            // Esto podría indicar un problema si la caja es obligatoria para la compra.
-            // Considerar si se debe deshacer la compra o manejar de otra forma.
-            return "redirect:/compras/nueva";
-        }
-        egreso.setCaja(compraGuardada.getCaja());
-        egreso.setOperador(compraGuardada.getUsuario());
-        egreso.setCompra(compraGuardada); // Asociar la compra al movimiento de caja
-        movimientoCajaService.guardarMovimiento(egreso);
-
-        // 5. Actualizar caja
-        // Recargar la entidad Caja para asegurar que operamos sobre el estado más
-        // reciente
-        Caja cajaParaActualizar = cajaService.obtenerCajaPorId(compraGuardada.getCaja().getId())
-                .orElseThrow(() -> new RuntimeException(
-                        "Caja con ID " + compraGuardada.getCaja().getId() + " no encontrada para actualizar."));
-
-        // Asegurar que el saldo final no sea nulo antes de operar
-        BigDecimal saldoFinalActual = cajaParaActualizar.getSaldoFinal() != null ? cajaParaActualizar.getSaldoFinal()
-                : BigDecimal.ZERO;
-
-        BigDecimal nuevoSaldoFinal = saldoFinalActual.subtract(total);
-        cajaParaActualizar.setSaldoFinal(nuevoSaldoFinal);
-        // El estado de la caja debería manejarse consistentemente. Si una compra
-        // implica que la caja está abierta,
-        // este estado ya debería estar así o ser validado. Forzarlo aquí podría no ser
-        // siempre correcto.
-        // cajaParaActualizar.setEstado(Caja.EstadoCaja.ABIERTA);
-        cajaService.guardarCaja(cajaParaActualizar);
-
-        redirect.addFlashAttribute("success", "Compra registrada!");
         return "redirect:/compras/listado";
     }
 
@@ -206,8 +215,45 @@ public class ComprasController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarCompra(@PathVariable("id") Long id, RedirectAttributes redirect) {
-        compraService.eliminarCompra(id);
-        redirect.addFlashAttribute("warning", "Compra eliminada correctamente");
+        try {
+            Compra compra = compraService.buscarPorId(id).orElse(null);
+            if (compra == null) {
+                redirect.addFlashAttribute("error", "La compra no existe.");
+                return "redirect:/compras/listado";
+            }
+
+            // Marcar la compra como inactiva (soft delete)
+            compra.setActivo(false);
+            compraService.guardarCompra(compra);
+
+            // Anular el movimiento de caja asociado
+            MovimientoCaja movimiento = movimientoCajaRepository.findByCompraId(id);
+            if (movimiento != null) {
+                movimiento.setEstado(MovimientoCaja.EstadoMovimiento.ANULADO);
+                movimientoCajaService.guardarMovimiento(movimiento);
+
+                // Revertir el saldo en la caja
+                Caja caja = movimiento.getCaja();
+                // Si fue un egreso, se suma de nuevo al saldo (reversión)
+                if (movimiento.getTipoOperacion() == MovimientoCaja.TipoOperacion.EGRESO) {
+                    caja.setSaldoFinal(caja.getSaldoFinal().add(movimiento.getMonto()));
+                }
+                cajaService.guardarCaja(caja);
+            }
+
+            // Revertir el stock de los ingredientes
+            for (DetalleCompra detalle : compra.getDetalles()) {
+                Inventario ingrediente = detalle.getIngrediente();
+                ingrediente.setCantidad(ingrediente.getCantidad() - detalle.getCantidad());
+                inventarioService.guardar(ingrediente);
+            }
+
+            redirect.addFlashAttribute("success", "Compra anulada correctamente y stock revertido.");
+
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Error al anular la compra: " + e.getMessage());
+        }
+
         return "redirect:/compras/listado";
     }
 
@@ -221,82 +267,3 @@ public class ComprasController {
         return "compras/listado";
     }
 }
-
-// @GetMapping("/nueva")
-// public String nuevaCompra(Model model) {
-// Compra compra = new Compra();
-// compra.setDetalles(new ArrayList<>()); // Inicializar lista
-// model.addAttribute("compra", compra);
-// model.addAttribute("proveedores", proveedorService.buscarTodo());
-// model.addAttribute("cajasAbiertas", cajaService.listarCajasAbiertas());
-
-// return "compras/form";
-// }
-
-// @PostMapping("/guardar")
-// public String guardarCompra(
-// @ModelAttribute Compra compra,
-// RedirectAttributes redirect,
-// Authentication authentication) { // Obtiene la autenticación actual
-
-// // Obtener el usuario autenticado
-// UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-// Usuario usuario =
-// usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
-// .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " +
-// userDetails.getUsername()));
-
-// // Asignar el usuario a la compra
-// compra.setUsuario(usuario);
-
-// // Calcular el total si es necesario
-// if (compra.getTotal() == null) {
-// compra.setTotal(compra.getDetalles().stream()
-// .map(d -> d.getPrecioActual().multiply(BigDecimal.valueOf(d.getCantidad())))
-// .reduce(BigDecimal.ZERO, BigDecimal::add));
-// }
-
-// compraService.guardarCompra(compra);
-
-// redirect.addFlashAttribute("success", "Compra registrada correctamente");
-// return "redirect:/compras/listado";
-// }
-
-// @PostMapping("/guardar")
-// public String guardarCompra(
-// @ModelAttribute("compra") Compra compra,
-// RedirectAttributes redirect,
-// Authentication authentication) {
-
-// // Obtener usuario autenticado
-// UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-// Usuario usuario =
-// usuarioService.buscarPorNombreUsuario(userDetails.getUsername())
-// .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-// compra.setUsuario(usuario);
-
-// // Asignar la compra a cada detalle y validar productos
-// for (DetalleCompra detalle : compra.getDetalles()) {
-// detalle.setCompra(compra);
-
-// // Si el producto es nuevo (sin ID), buscarlo o crearlo
-// if (detalle.getProducto() != null && detalle.getProducto().getId() == null) {
-// // Buscar producto existente por nombre o crear uno nuevo
-// Producto productoExistente =
-// productoService.buscarPorNombre(detalle.getProducto().getDescripcion()); //En
-// la descripcion se almacena el nombre del producto
-// detalle.setProducto(productoExistente != null ? productoExistente :
-// productoService.guardar(detalle.getProducto()));
-// }
-// }
-
-// // Calcular el total
-// compra.setTotal(compra.getDetalles().stream()
-// .map(d -> d.getPrecioActual().multiply(BigDecimal.valueOf(d.getCantidad())))
-// .reduce(BigDecimal.ZERO, BigDecimal::add));
-
-// compraService.guardarCompra(compra);
-
-// redirect.addFlashAttribute("success", "Compra registrada correctamente");
-// return "redirect:/compras/listado";
-// }

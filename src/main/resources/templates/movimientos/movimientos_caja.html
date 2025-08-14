@@ -31,15 +31,15 @@
             --danger: #dc3545;
             --info: #17a2b8;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #fdf8f5;
             color: #5a3929;
-            background-image: linear-gradient(to bottom, rgba(253, 248, 245, 0.95), rgba(253, 248, 245, 0.95)), 
+            background-image: linear-gradient(to bottom, rgba(253, 248, 245, 0.95), rgba(253, 248, 245, 0.95)),
                 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="%23f8d0c0" opacity="0.3"/><circle cx="50" cy="50" r="2" fill="%23f8d0c0" opacity="0.3"/><circle cx="80" cy="70" r="4" fill="%23f8d0c0" opacity="0.3"/></svg>');
         }
-        
+
         .caja-header {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
@@ -48,7 +48,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .caja-header::before {
             content: "";
             position: absolute;
@@ -59,25 +59,25 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,20 Q40,15 50,30 T80,20" fill="none" stroke="white" stroke-opacity="0.1" stroke-width="2"/></svg>');
             background-size: cover;
         }
-        
+
         .header-content {
             position: relative;
             z-index: 1;
         }
-        
+
         .header-title {
             font-family: 'Dancing Script', cursive;
             font-size: 3.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
-        
+
         .header-subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
         }
-        
+
         .summary-card {
             background: white;
             border-radius: 15px;
@@ -87,42 +87,42 @@
             margin-bottom: 1.5rem;
             border: none;
         }
-        
+
         .summary-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .card-ingresos {
             border-top: 5px solid var(--success);
         }
-        
+
         .card-egresos {
             border-top: 5px solid var(--danger);
         }
-        
+
         .card-saldo {
             border-top: 5px solid var(--info);
         }
-        
+
         .summary-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .summary-title {
             font-size: 1.1rem;
             color: var(--dark);
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-        
+
         .summary-value {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 0;
         }
-        
+
         .filters-card {
             background: white;
             border-radius: 15px;
@@ -130,13 +130,13 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
         }
-        
+
         .filter-label {
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 0.5rem;
         }
-        
+
         .filter-btn {
             background: var(--primary);
             color: white;
@@ -146,54 +146,54 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .filter-btn:hover {
             background: var(--accent);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(255, 111, 97, 0.3);
         }
-        
+
         .movements-table {
             background: white;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-        
+
         .table-header {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
         }
-        
+
         .movement-row {
             transition: all 0.3s ease;
         }
-        
+
         .movement-row:hover {
             background-color: rgba(255, 111, 97, 0.05);
         }
-        
+
         .movement-type {
             padding: 0.4rem 0.8rem;
             border-radius: 50px;
             font-weight: 600;
             font-size: 0.9rem;
         }
-        
+
         .type-ingreso {
             background-color: rgba(40, 167, 69, 0.15);
             color: var(--success);
         }
-        
+
         .type-egreso {
             background-color: rgba(220, 53, 69, 0.15);
             color: var(--danger);
         }
-        
+
         .movement-amount {
             font-weight: 700;
         }
-        
+
         .export-btn {
             background: var(--dark);
             color: white;
@@ -206,45 +206,45 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .export-btn:hover {
             background: #5a3929;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(90, 57, 41, 0.3);
             color: white;
         }
-        
+
         .footer-caja {
             background: linear-gradient(135deg, var(--dark), #5a3929);
             color: white;
             padding: 3rem 0;
             margin-top: 3rem;
         }
-        
+
         .footer-logo {
             max-width: 80px;
             margin-bottom: 1rem;
         }
-        
+
         .footer-title {
             font-family: 'Dancing Script', cursive;
             font-size: 2rem;
             margin-bottom: 1rem;
         }
-        
+
         .footer-contact {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .footer-social {
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
         }
-        
+
         .social-icon {
             width: 40px;
             height: 40px;
@@ -255,17 +255,17 @@
             justify-content: center;
             transition: all 0.3s ease;
         }
-        
+
         .social-icon:hover {
             background: var(--primary);
             transform: translateY(-3px);
         }
-        
+
         @media (max-width: 768px) {
             .header-title {
                 font-size: 2.5rem;
             }
-            
+
             .summary-value {
                 font-size: 1.5rem;
             }
@@ -323,8 +323,8 @@
                             <i class="bi bi-arrow-down-circle"></i>
                         </div>
                         <h3 class="summary-title">Total Ingresos</h3>
-                        <p class="summary-value text-success" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                        <p class="summary-value text-success"
+                            th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
                             $0.00
                         </p>
                     </div>
@@ -337,8 +337,8 @@
                             <i class="bi bi-arrow-up-circle"></i>
                         </div>
                         <h3 class="summary-title">Total Egresos</h3>
-                        <p class="summary-value text-danger" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                        <p class="summary-value text-danger"
+                            th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
                             $0.00
                         </p>
                     </div>
@@ -351,8 +351,8 @@
                             <i class="bi bi-wallet2"></i>
                         </div>
                         <h3 class="summary-title">Saldo Actual</h3>
-                        <p class="summary-value text-info" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
+                        <p class="summary-value text-info"
+                            th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
                             $0.00
                         </p>
                     </div>
@@ -366,15 +366,13 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="filter-label">Fecha Inicio</label>
-                        <input type="date" class="form-control" 
-                               th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" 
-                               name="fechaInicio" required>
+                        <input type="date" class="form-control"
+                            th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" name="fechaInicio" required>
                     </div>
                     <div class="col-md-4">
                         <label class="filter-label">Fecha Fin</label>
-                        <input type="date" class="form-control" 
-                               th:value="${#temporals.format(fechaFin, 'yyyy-MM-dd')}" 
-                               name="fechaFin" required>
+                        <input type="date" class="form-control" th:value="${#temporals.format(fechaFin, 'yyyy-MM-dd')}"
+                            name="fechaFin" required>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="filter-btn w-100">
@@ -405,14 +403,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="movement-row" th:each="mov : ${movimientos}">
+                        <tr class="movement-row" th:each="mov : ${movimientos}"
+                            th:classappend="${mov.estado.name() == 'ANULADO'} ? 'text-muted' : ''"
+                            th:styleappend="${mov.estado.name() == 'ANULADO'} ? 'opacity: 0.6; text-decoration: line-through;' : ''">
                             <td class="text-center" th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
                             <td>
-                                <span class="movement-type" 
-                                      th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'type-ingreso' : 'type-egreso'"
-                                      th:text="${mov.tipoOperacion.name()}"></span>
+                                <span class="movement-type"
+                                    th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'type-ingreso' : 'type-egreso'"
+                                    th:text="${mov.tipoOperacion.name()}"></span>
                             </td>
-                            <td class="text-end movement-amount" 
+                            <td class="text-end movement-amount"
                                 th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'text-success' : 'text-danger'"
                                 th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 2, 'COMMA')}"></td>
                             <td th:text="${mov.descripcion != null ? mov.descripcion : '-'}"></td>
@@ -519,26 +519,26 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Inicializar tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-            
+
             // Animación de las tarjetas
             const cards = document.querySelectorAll('.summary-card');
             cards.forEach((card, index) => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'all 0.5s ease';
-                
+
                 setTimeout(() => {
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
                 }, index * 150);
             });
-            
+
             // Verificar si hay mensajes flash
             const successMessage = /*[[${success}]]*/ null;
             if (successMessage) {
@@ -551,7 +551,7 @@
                     timerProgressBar: true
                 });
             }
-            
+
             const errorMessage = /*[[${error}]]*/ null;
             if (errorMessage) {
                 Swal.fire({
@@ -564,6 +564,7 @@
         });
     </script>
 </body>
+
 </html>
 
 <!-- Fix: Corregir asignación de usuario a caja y origen de movimiento.

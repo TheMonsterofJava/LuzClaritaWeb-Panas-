@@ -87,7 +87,7 @@
                                             <input type="number" class="form-control precio" min="0.01" step="0.01"
                                                 th:field="*{detalles[__${stat.index}__].precioUnitario}" />
                                         </td>
-                                        <td
+                                        <td class ="subtotal"
                                             th:text="${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2)}">
                                             0.00</td>
                                         <td>

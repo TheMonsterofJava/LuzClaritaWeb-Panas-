@@ -447,10 +447,15 @@
                             <div class="card mb-4">
                                 <div class="card-header">Detalles de la Cuenta</div>
                                 <div class="card-body">
+                                    <!-- Display success and error messages -->
+                                    <div th:if="${success}" class="alert alert-success" role="alert"
+                                        th:text="${success}"></div>
+                                    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+                                    </div>
                                     <form th:action="@{/admin/user-management-add-user}" method="post"
                                         th:object="${usuario}" onsubmit="return validarFormulario()"
                                         enctype="multipart/form-data">
-                                        
+
                                         <!-- Profile picture upload button -->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="foto">Foto de Perfil</label>
@@ -507,11 +512,13 @@
                                                     th:text="${permiso.nombre}"></option>
                                             </select>
                                         </div>
-                                        
+
                                         <!-- Checkbox para crear cliente -->
-                                         <!--Sirve para crear un cliente y Usuario en la base de datos-->
-                                        <div class="form-check mb-3" id="crear-cliente-container" style="display: none;">
-                                            <input class="form-check-input" type="checkbox" id="crearCliente" name="crearCliente" value="true">
+                                        <!--Sirve para crear un cliente y Usuario en la base de datos-->
+                                        <div class="form-check mb-3" id="crear-cliente-container"
+                                            style="display: none;">
+                                            <input class="form-check-input" type="checkbox" id="crearCliente"
+                                                name="crearCliente" value="true">
                                             <label class="form-check-label" for="crearCliente">
                                                 Crear registro de Cliente asociado
                                             </label>
@@ -522,11 +529,13 @@
                                             <div class="row gx-3 mb-3">
                                                 <div class="col-md-6">
                                                     <label class="small mb-1" for="celular">Celular</label>
-                                                    <input class="form-control" id="celular" name="celular" type="text" />
+                                                    <input class="form-control" id="celular" name="celular"
+                                                        type="text" />
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="small mb-1" for="direccion">Dirección</label>
-                                                    <input class="form-control" id="direccion" name="direccion" type="text" />
+                                                    <input class="form-control" id="direccion" name="direccion"
+                                                        type="text" />
                                                 </div>
                                             </div>
                                         </div>
@@ -620,7 +629,7 @@
         function toggleClienteFields() {
             const selectedOption = permisoSelect.options[permisoSelect.selectedIndex];
             const isClienteRole = selectedOption && selectedOption.text === 'ROLE_CLIENTE';
-            
+
             // Muestra el contenedor del checkbox si el rol es cliente
             if (isClienteRole) {
                 crearClienteContainer.style.display = 'block';
