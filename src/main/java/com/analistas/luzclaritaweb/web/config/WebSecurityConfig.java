@@ -111,7 +111,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/productos/listado",
+                                "/recetas/cards", "/productos/**", "/productos/listado",
                                 "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2")
                         .permitAll()
 

@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analistas.luzclaritaweb.model.domain.Compra;
 import com.analistas.luzclaritaweb.model.repository.ICompraRepository;
-import com.analistas.luzclaritaweb.model.repository.IMovimientoCajaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICompraService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -20,9 +18,6 @@ import jakarta.transaction.Transactional;
 public class CompraServiceImpl implements ICompraService {
 
     private final ICompraRepository compraRepository;
-
-    @Autowired
-    private IMovimientoCajaRepository movimientoCajaRepository;
 
     public CompraServiceImpl(ICompraRepository compraRepository) {
         this.compraRepository = compraRepository;
@@ -90,13 +85,12 @@ public class CompraServiceImpl implements ICompraService {
                 .orElseThrow(() -> new EntityNotFoundException("Compra no encontrada"));
     }
 
-    @Override
+     @Override
     @Transactional
     public void eliminarCompra(Long id) {
-        // Primero, eliminar los movimientos de caja asociados a la compra
-        movimientoCajaRepository.deleteByCompraId(id);
-        
-        // Luego, eliminar la compra
+        // El movimiento de caja se anula en el controlador.
+        // Aquí solo eliminamos la compra.
+        // Gracias a CascadeType.ALL y orphanRemoval=true, los detalles se eliminan automáticamente.
         compraRepository.deleteById(id);
     }
 

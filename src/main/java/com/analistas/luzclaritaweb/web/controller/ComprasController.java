@@ -152,6 +152,11 @@ public class ComprasController {
             if (movimiento != null) {
                 movimiento.setMonto(nuevoTotal);
                 movimiento.setFecha(LocalDateTime.now()); // Actualizar fecha del movimiento
+                // Añadir prefijo "MODIFICADO" si no existe ya un prefijo de estado
+                if (!movimiento.getDescripcion().startsWith("MODIFICADO - ")
+                        && !movimiento.getDescripcion().startsWith("ANULADO - ")) {
+                    movimiento.setDescripcion("MODIFICADO - " + movimiento.getDescripcion());
+                }
                 movimientoCajaService.guardarMovimiento(movimiento);
 
                 // 6. Actualizar saldo de la caja
@@ -216,42 +221,46 @@ public class ComprasController {
     @GetMapping("/eliminar/{id}")
     public String eliminarCompra(@PathVariable("id") Long id, RedirectAttributes redirect) {
         try {
-            Compra compra = compraService.buscarPorId(id).orElse(null);
+            // Buscar la compra y sus detalles para que todo este cargado:
+            Compra compra = compraService.buscarPorIdConDetalles(id);
             if (compra == null) {
                 redirect.addFlashAttribute("error", "La compra no existe.");
                 return "redirect:/compras/listado";
             }
 
-            // Marcar la compra como inactiva (soft delete)
-            compra.setActivo(false);
-            compraService.guardarCompra(compra);
-
-            // Anular el movimiento de caja asociado
-            MovimientoCaja movimiento = movimientoCajaRepository.findByCompraId(id);
-            if (movimiento != null) {
-                movimiento.setEstado(MovimientoCaja.EstadoMovimiento.ANULADO);
-                movimientoCajaService.guardarMovimiento(movimiento);
-
-                // Revertir el saldo en la caja
-                Caja caja = movimiento.getCaja();
-                // Si fue un egreso, se suma de nuevo al saldo (reversión)
-                if (movimiento.getTipoOperacion() == MovimientoCaja.TipoOperacion.EGRESO) {
-                    caja.setSaldoFinal(caja.getSaldoFinal().add(movimiento.getMonto()));
-                }
-                cajaService.guardarCaja(caja);
-            }
-
-            // Revertir el stock de los ingredientes
+            // 2. Revertir el stock de los ingredientes antes de eliminar
             for (DetalleCompra detalle : compra.getDetalles()) {
                 Inventario ingrediente = detalle.getIngrediente();
-                ingrediente.setCantidad(ingrediente.getCantidad() - detalle.getCantidad());
-                inventarioService.guardar(ingrediente);
+                if (ingrediente != null) {
+                    ingrediente.setCantidad(ingrediente.getCantidad() - detalle.getCantidad());
+                    inventarioService.guardar(ingrediente);
+                }
             }
 
-            redirect.addFlashAttribute("success", "Compra anulada correctamente y stock revertido.");
+            // 3. Anular el movimiento de caja y revertir el saldo
+            MovimientoCaja movimiento = movimientoCajaRepository.findByCompraId(id);
+            if (movimiento != null) {
+                // Revertir saldo
+                Caja caja = movimiento.getCaja();
+                if (caja != null && movimiento.getTipoOperacion() == MovimientoCaja.TipoOperacion.EGRESO) {
+                    caja.setSaldoFinal(caja.getSaldoFinal().add(movimiento.getMonto()));
+                    cajaService.guardarCaja(caja);
+                }
+
+                // Anular el movimiento en lugar de eliminarlo
+                movimiento.setEstado(MovimientoCaja.EstadoMovimiento.ANULADO);
+                movimiento.setDescripcion("ANULADO - " + movimiento.getDescripcion());
+                movimiento.setCompra(null); // Desvincular de la compra que se va a eliminar
+                movimientoCajaService.guardarMovimiento(movimiento);
+            }
+
+            // 4. Eliminar la compra (los detalles se van en cascada)
+            compraService.eliminarCompra(id);
+
+            redirect.addFlashAttribute("success", "Compra eliminada permanentemente y stock revertido.");
 
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Error al anular la compra: " + e.getMessage());
+            redirect.addFlashAttribute("error", "Error al eliminar la compra: " + e.getMessage());
         }
 
         return "redirect:/compras/listado";
