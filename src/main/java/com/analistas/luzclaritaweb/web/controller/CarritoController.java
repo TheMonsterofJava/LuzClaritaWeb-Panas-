@@ -68,7 +68,7 @@ public class CarritoController {
         }
     }
 
-     @PostMapping("/agregarReceta")
+    @PostMapping("/agregarReceta")
     public ResponseEntity<?> agregarReceta(@RequestParam Long recetaId, @RequestParam int cantidad) {
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null) {
@@ -109,12 +109,23 @@ public class CarritoController {
     }
 
     @DeleteMapping("/eliminar")
-    public ResponseEntity<Void> eliminarProducto(@RequestParam Long productoId) {
+    public ResponseEntity<Void> eliminarItem(
+            @RequestParam(required = false) Long productoId,
+            @RequestParam(required = false) Long recetaId) {
+
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        carritoService.eliminarProducto(usuario.getId(), productoId);
+
+        if (productoId != null) {
+            carritoService.eliminarProducto(usuario.getId(), productoId);
+        } else if (recetaId != null) {
+            carritoService.eliminarReceta(usuario.getId(), recetaId);
+        } else {
+            return ResponseEntity.badRequest().build(); // No ID provided
+        }
+
         return ResponseEntity.ok().build();
     }
 
@@ -175,6 +186,7 @@ public class CarritoController {
         private Double precio;
         private Integer cantidad;
         private String imagen;
+        private String tipo;
 
         public ItemCarritoLocal() {
         }
@@ -218,7 +230,16 @@ public class CarritoController {
         public void setImagen(String imagen) {
             this.imagen = imagen;
         }
+
+        public String getTipo() {
+            return tipo;
+        }
+
+        public void setTipo(String tipo) {
+            this.tipo = tipo;
+        }
     }
+
 }
 // @GetMapping("/api/usuario/actual")
 // @ResponseBody

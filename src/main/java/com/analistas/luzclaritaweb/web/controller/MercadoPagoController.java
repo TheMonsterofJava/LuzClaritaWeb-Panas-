@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Producto;
+import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
@@ -46,6 +47,9 @@ public class MercadoPagoController {
 
     @Autowired
     private ICarritoService carritoService;
+
+    @Autowired
+    private com.analistas.luzclaritaweb.model.service.interfaces.IRecetasService recetaService;
 
     // @Autowired
     // private ICajaRepository cajaRepository;
@@ -112,15 +116,18 @@ public class MercadoPagoController {
 
             // Verificar stock antes de proceder
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
-                if (producto == null) {
-                    model.addAttribute("error", "Producto no encontrado: " + item.getProductoId());
-                    return "redirect:/home?error=producto_no_encontrado";
+                if (item.getProductoId() != null) {
+                    Producto producto = productoService.buscarPorId(item.getProductoId());
+                    if (producto == null) {
+                        model.addAttribute("error", "Producto no encontrado: " + item.getProductoId());
+                        return "redirect:/home?error=producto_no_encontrado";
+                    }
+                    if (producto.getStock() < item.getCantidad()) {
+                        model.addAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
+                        return "redirect:/home?error=sin_stock";
+                    }
                 }
-                if (producto.getStock() < item.getCantidad()) {
-                    model.addAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
-                    return "redirect:/home?error=sin_stock";
-                }
+                // Nota: La verificación de stock para recetas no está implementada, ya que las recetas no tienen stock.
             }
 
             // Crear la preferencia de MercadoPago
@@ -130,17 +137,27 @@ public class MercadoPagoController {
                     .setPending("http://localhost:8081/pending")
                     .setSuccess("http://localhost:8081/success"));
 
-            // Procesar los productos para la preferencia de pago
+            // Procesar los items del carrito para la preferencia de pago
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
-                if (producto != null) {
-                    Item mpItem = new Item();
-                    mpItem.setTitle(producto.getDescripcion())
-                            .setQuantity(item.getCantidad())
-                            .setUnitPrice(producto.getPrecio().floatValue());
-
-                    preference.appendItem(mpItem);
-                    System.out.println("Added item: " + producto.getDescripcion() + " x" + item.getCantidad());
+                Item mpItem = new Item();
+                if (item.getProductoId() != null) {
+                    // Es un producto
+                    Producto producto = productoService.buscarPorId(item.getProductoId());
+                    if (producto != null) {
+                        mpItem.setTitle(producto.getDescripcion())
+                                .setQuantity(item.getCantidad())
+                                .setUnitPrice(producto.getPrecio().floatValue());
+                        preference.appendItem(mpItem);
+                    }
+                } else if (item.getRecetaId() != null) {
+                    // Es una receta
+                    Receta receta = recetaService.buscarPorId(item.getRecetaId());
+                    if (receta != null) {
+                        mpItem.setTitle(receta.getNombre_receta())
+                                .setQuantity(item.getCantidad())
+                                .setUnitPrice(receta.getPrecio().floatValue());
+                        preference.appendItem(mpItem);
+                    }
                 }
             }
 

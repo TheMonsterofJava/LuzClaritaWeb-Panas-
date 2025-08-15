@@ -5,6 +5,10 @@ package com.analistas.luzclaritaweb.web.excepciones;
 //Esta excepción se utiliza para indicar problemas específicos durante la sincronización del carrito, como errores de
 public class CarritoSyncException extends RuntimeException{
 
+     public CarritoSyncException(String message) {
+        super(message);
+    }
+
     public CarritoSyncException(String message, Throwable cause) {
         super(message, cause);
     }

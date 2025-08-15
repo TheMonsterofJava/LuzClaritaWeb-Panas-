@@ -33,6 +33,11 @@ public class ICarritoService {
     }
 
     @Transactional
+    public void eliminarReceta(Long usuarioId, Long recetaId) {
+        carritoRepository.deleteByUsuarioIdAndRecetaId(usuarioId, recetaId);
+    }
+
+    @Transactional
     public void agregarProducto(Usuario usuario, Long productoId, int cantidad) {
         try {
 
@@ -58,13 +63,14 @@ public class ICarritoService {
         } catch (DataAccessException e) {
             // Envolver la excepción de base de datos en una excepción personalizada
             throw new CarritoSyncException("Error de base de datos al agregar el producto al carrito.", e);
-        
+
         }
 
     }
 
-    //Actualizar la cantidad del carrito 
-    //Ver si funciona cuando un usuario que no esta logueado intenta actualizar la cantidad de un producto en el carrito
+    // Actualizar la cantidad del carrito
+    // Ver si funciona cuando un usuario que no esta logueado intenta actualizar la
+    // cantidad de un producto en el carrito
     @Transactional
     public void actualizarCantidad(Usuario usuario, Long productoId, int cantidad) {
         Optional<Carrito> carritoOpt = carritoRepository.findByUsuarioIdAndProductoId(usuario.getId(), productoId);
@@ -74,17 +80,28 @@ public class ICarritoService {
             item.setCantidad(cantidad);
             carritoRepository.save(item);
         }
-        // Si no existe, no hacemos nada. El frontend no debería permitir llegar a este caso.
+        // Si no existe, no hacemos nada. El frontend no debería permitir llegar a este
+        // caso.
     }
 
     @Transactional
     public void sincronizarDesdeLocalStorage(Usuario usuario, List<ItemCarritoLocal> itemsLocal) {
         try {
             for (ItemCarritoLocal item : itemsLocal) {
-                agregarProducto(usuario, item.getId(), item.getCantidad());
+                try {
+                    if ("receta".equals(item.getTipo())) {
+                        agregarReceta(usuario, item.getId(), item.getCantidad());
+                    } else {
+                        agregarProducto(usuario, item.getId(), item.getCantidad());
+                    }
+                } catch (CarritoSyncException e) {
+                    // Si el item ya existe, simplemente lo ignoramos y continuamos con el
+                    // siguiente.
+                    System.out.println("Item ya sincronizado, ignorando: " + e.getMessage());
+                }
             }
         } catch (DataAccessException e) {
-            // Envolver la excepción de base de datos en una excepción personalizada
+            // Captura otros errores de base de datos que no sean duplicados.
             throw new CarritoSyncException("Error de base de datos durante la sincronización del carrito.", e);
         }
     }
@@ -109,25 +126,21 @@ public class ICarritoService {
                     recetaId);
 
             if (carritoExistente.isPresent()) {
-                // Si ya existe, sumamos la cantidad
-                Carrito item = carritoExistente.get();
-                item.setCantidad(item.getCantidad() + cantidad);
-                carritoRepository.save(item);
+                // This is the fix: prevent duplicates instead of increasing quantity.
+                throw new CarritoSyncException("La receta ya se encuentra en el carrito.");
             } else {
-                // Si no existe, lo creamos
+                // If it doesn't exist, create it with quantity 1.
                 Carrito item = new Carrito();
-                item.setUsuario(usuario); // Usar la entidad de usuario gestionada
+                item.setUsuario(usuario);
                 Receta recetaRef = new Receta();
                 recetaRef.setId(recetaId);
-                item.setReceta(recetaRef); // Establecer la referencia de la receta
-                item.setCantidad(cantidad);
+                item.setReceta(recetaRef);
+                item.setCantidad(1); // Recipes should always have a quantity of 1.
                 carritoRepository.save(item);
             }
 
         } catch (DataAccessException e) {
-            // Envolver la excepción de base de datos en una excepción personalizada
             throw new CarritoSyncException("Error de base de datos al agregar la receta al carrito.", e);
-
         }
     }
 }

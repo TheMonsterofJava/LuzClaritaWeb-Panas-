@@ -58,11 +58,12 @@ async function agregarAlCarrito(productoId, nombre, precio, imagen) {
     } else {
         // Logic for unauthenticated user (LocalStorage)
         const idNumerico = Number(productoId);
-        let existe = carrito.find(p => p.id === idNumerico);
+        // Buscamos un producto existente del mismo tipo y con el mismo id.
+        let existe = carrito.find(p => p.id === idNumerico && p.tipo === 'producto');
         if (existe) {
             existe.cantidad++;
         } else {
-            carrito.push({ id: idNumerico, nombre, precio, cantidad: 1, imagen });
+            carrito.push({ id: idNumerico, nombre, precio, cantidad: 1, imagen, tipo: 'producto' });
         }
         localStorage.setItem("carrito", JSON.stringify(carrito));
         actualizarVisualizacionCarrito();
@@ -71,11 +72,18 @@ async function agregarAlCarrito(productoId, nombre, precio, imagen) {
 }
 
 async function agregarRecetaAlCarrito(recetaId, nombre, precio, imagen) {
+    const idNumerico = Number(recetaId);
+    // Verificar si la receta ya está en el carrito
+    const yaExiste = carrito.some(item => (item.recetaId === idNumerico) || (item.id === idNumerico && item.tipo === 'receta'));
+    if (yaExiste) {
+        mostrarAlerta(`La receta "${nombre}" ya está en tu carrito.`, 'warning');
+        return;
+    }
+
     if (IS_USER_AUTHENTICATED) {
         try {
             const response = await authenticatedFetch(`/api/carrito/agregarReceta?recetaId=${recetaId}&cantidad=1`, { method: 'POST' });
             if (!response.ok) {
-                // Si la respuesta no es OK, intentamos leer el cuerpo del error
                 const errorData = await response.json();
                 throw new Error(errorData.error || `El servidor respondió con error: ${response.status}`);
             }
@@ -86,34 +94,40 @@ async function agregarRecetaAlCarrito(recetaId, nombre, precio, imagen) {
             mostrarAlerta(`No se pudo agregar "${nombre}". Razón: ${error.message}`, 'danger');
         }
     } else {
-        // Logic for unauthenticated user (LocalStorage)
-        const idNumerico = Number(recetaId);
-        let existe = carrito.find(p => p.id === idNumerico);
-        if (existe) {
-            existe.cantidad++;
-        } else {
-            carrito.push({ id: idNumerico, nombre, precio, cantidad: 1, imagen, tipo: 'receta' });
-        }
+        carrito.push({ id: idNumerico, nombre, precio, cantidad: 1, imagen, tipo: 'receta' });
         localStorage.setItem("carrito", JSON.stringify(carrito));
         actualizarVisualizacionCarrito();
         mostrarAlerta(`"${nombre}" se agregó. ¡Inicia sesión para guardarlo!`);
     }
 }
 
-async function eliminarProducto(productoId) {
-    const idNumerico = Number(productoId);
+async function eliminarItem(itemId, tipo) {
+    const idNumerico = Number(itemId);
     if (!IS_USER_AUTHENTICATED) {
-        carrito = carrito.filter(p => p.id !== idNumerico);
+        // Lógica para LocalStorage
+        carrito = carrito.filter(p => !(p.id === idNumerico && p.tipo === tipo));
         localStorage.setItem("carrito", JSON.stringify(carrito));
         actualizarVisualizacionCarrito();
     } else {
+        // Lógica para Backend
         try {
-            await authenticatedFetch(`/api/carrito/eliminar?productoId=${idNumerico}`, { method: 'DELETE' });
+            let url = '';
+            if (tipo === 'receta') {
+                url = `/api/carrito/eliminar?recetaId=${idNumerico}`;
+            } else {
+                url = `/api/carrito/eliminar?productoId=${idNumerico}`;
+            }
+            await authenticatedFetch(url, { method: 'DELETE' });
             await obtenerCarritoDelBackend();
         } catch (error) {
-            console.error("Error eliminando producto del backend:", error);
+            console.error(`Error eliminando ${tipo} del backend:`, error);
         }
     }
+}
+
+// Se mantiene para compatibilidad con el botón de decrementar que puede llegar a 0
+async function eliminarProducto(productoId) {
+    await eliminarItem(productoId, 'producto');
 }
 
 async function vaciarCarrito() {
@@ -131,18 +145,18 @@ async function vaciarCarrito() {
     }
 }
 // --LOGICA DE CANTIDADES -- //
-//Incrementar la cantidad de productos que hay en el carrito desde el mismo modal. 
-function incrementarCantidad(productoId) {
-    const idNumerico = Number(productoId);
+function incrementarCantidad(itemId, tipo) {
+    if (tipo === 'receta') return; // No se puede incrementar la cantidad de recetas
+    const idNumerico = Number(itemId);
     const producto = carrito.find(p => (p.productoId || p.id) === idNumerico);
     if (producto) {
         actualizarCantidad(idNumerico, producto.cantidad + 1);
     }
 }
 
-//Decrementar la cantidad de productos que hay en el carrito desde el mismo modal.
-function decrementarCantidad(productoId) {
-    const idNumerico = Number(productoId);
+function decrementarCantidad(itemId, tipo) {
+    if (tipo === 'receta') return; // No se puede decrementar la cantidad de recetas
+    const idNumerico = Number(itemId);
     const producto = carrito.find(p => (p.productoId || p.id) === idNumerico);
     if (producto && producto.cantidad > 1) {
         actualizarCantidad(idNumerico, producto.cantidad - 1);
@@ -158,7 +172,7 @@ function decrementarCantidad(productoId) {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                eliminarProducto(idNumerico);
+                eliminarItem(idNumerico, 'producto');
             }
         });
     }
@@ -208,10 +222,9 @@ async function gestionarSincronizacionPostLogin() {
     console.log("Iniciando flujo de sincronización...");
     const carritoLocal = JSON.parse(localStorage.getItem("carrito") || '[]');
 
-    // Si el carrito esta en 0 , no hay nada que sincronizar y se muestra el Sweet Alert de inicio de sesion.
     if (carritoLocal.length === 0) {
         console.log("No hay carrito local para sincronizar. Mostrando alerta de bienvenida.");
-        await cargarCarrito(); // Cargar el carrito del backend primero
+        await cargarCarrito();
         Swal.fire({
             title: '¡Sesión Iniciada!',
             text: '¡¡Bienvenido a la web de LuzClarita!!',
@@ -223,69 +236,71 @@ async function gestionarSincronizacionPostLogin() {
         return;
     }
 
-    let timerInterval;
     Swal.fire({
         title: '¡Sesión Iniciada!',
         text: 'Sincronizando tu carrito...',
         icon: 'info',
         allowOutsideClick: false,
         showConfirmButton: false,
-        timer: 2000, // Tiempo inicial por si algo falla
+        timer: 2000,
         timerProgressBar: true,
         willOpen: () => { Swal.showLoading(); }
-    }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) {
-            console.log('Alerta cerrada por el temporizador');
-        }
     });
 
-    try {
-        await migrarCarritoLocalStorageAlBackend();
-        await obtenerCarritoDelBackend(); // Carga el carrito final y fusionado
-        
-        Swal.close(); // Cierra la alerta de "sincronizando"
+    const migracionExitosa = await migrarCarritoLocalStorageAlBackend();
+
+    if (migracionExitosa) {
+        console.log("Migración exitosa. Limpiando carrito local y actualizando desde el backend.");
+        localStorage.removeItem("carrito");
+        await obtenerCarritoDelBackend();
+
+        Swal.close();
         Swal.fire({
             title: '¡Sincronización Completa!',
             text: 'Tus productos se han guardado en tu cuenta.',
             icon: 'success',
-            showConfirmButton: true,
             timer: 2500,
             timerProgressBar: true
         });
-
-    } catch (error) {
-        console.error("La sincronización falló:", error);
+    } else {
+        console.error("La migración del carrito falló. El carrito local no será eliminado.");
         Swal.fire({
             title: 'Error de Sincronización',
-            text: `No pudimos guardar tu carrito en tu cuenta. Tus productos siguen guardados en este navegador. Razón: ${error.message}`,
+            text: 'No pudimos guardar tu carrito en tu cuenta. Tus productos siguen guardados en este navegador.',
             icon: 'error',
             confirmButtonText: 'Entendido'
         });
-    } finally {
-        console.log("Flujo de sincronización finalizado.");
     }
+
+    console.log("Flujo de sincronización finalizado.");
 }
+
 
 async function migrarCarritoLocalStorageAlBackend() {
     const carritoLocal = JSON.parse(localStorage.getItem("carrito") || '[]');
     if (carritoLocal.length === 0) {
-        return;
+        return true; 
     }
 
-    console.log("Enviando carrito local al backend para sincronizar:", carritoLocal);
-    const response = await authenticatedFetch('/api/carrito/sincronizar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(carritoLocal)
-    });
+    try {
+        console.log("Enviando carrito local al backend para sincronizar:", carritoLocal);
+        const response = await authenticatedFetch('/api/carrito/sincronizar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carritoLocal)
+        });
 
-    if (response.ok) {
-        console.log("El backend confirmó la sincronización.");
-        localStorage.removeItem("carrito"); // Limpiar solo en caso de éxito
-    } else {
-        // Si el backend devuelve un error, lo propagamos para que sea manejado por la función que llama.
-        const errorData = await response.json().catch(() => ({ error: 'Error desconocido del servidor.' }));
-        throw new Error(errorData.error || `El servidor respondió con error: ${response.status}`);
+        if (response.ok) {
+            console.log("El backend confirmó la sincronización.");
+            return true; // Éxito
+        } else {
+            const errorData = await response.json().catch(() => ({ error: 'Error desconocido del servidor.' }));
+            console.error("Error de sincronización desde el backend:", errorData.error);
+            return false; // Falla
+        }
+    } catch (error) {
+        console.error("Error de red o de fetch durante la migración del carrito:", error);
+        return false; // Falla
     }
 }
 
@@ -356,22 +371,24 @@ function actualizarVisualizacionCarrito() {
                 tipo: 'receta'
             } : item);
 
-            //Actualizamos el html para que pueda incremenatar la cantidad en el carrito. 
+            const esReceta = p.tipo === 'receta';
             const fila = document.createElement("tr");
-            fila.setAttribute('data-product-id', p.id); // Agregar identificador
+            fila.setAttribute('data-item-id', p.id);
+            fila.setAttribute('data-item-type', p.tipo);
+
             fila.innerHTML = `
                 <td><img src="${p.imagen}" alt="${p.nombre}" width="50" onerror="this.onerror=null;this.src='/img/logo.png';"></td>
-                <td>${p.nombre}</td>
+                <td>${p.nombre} ${esReceta ? '<span class="badge bg-success" style="font-size: 0.7em;">Receta</span>' : ''}</td>
                 <td>$${p.precio.toFixed(2)}</td>
                 <td class="text-center">
                     <div class="input-group input-group-sm" style="width: 100px; margin: auto;">
-                        <button class="btn btn-outline-secondary" type="button" onclick="decrementarCantidad(${p.id})">-</button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="decrementarCantidad(${p.id}, '${p.tipo}')" ${esReceta ? 'disabled' : ''}>-</button>
                         <input type="text" class="form-control text-center" value="${item.cantidad}" readonly style="background-color: white;">
-                        <button class="btn btn-outline-secondary" type="button" onclick="incrementarCantidad(${p.id})">+</button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="incrementarCantidad(${p.id}, '${p.tipo}')" ${esReceta ? 'disabled' : ''}>+</button>
                     </div>
                 </td>
                 <td>$${(p.precio * item.cantidad).toFixed(2)}</td>
-                <td class="text-center"><button class="btn btn-danger btn-sm bi bi-trash-fill" onclick="eliminarProducto(${p.id})"></button></td>
+                <td class="text-center"><button class="btn btn-danger btn-sm bi bi-trash-fill" onclick="eliminarItem(${p.id}, '${p.tipo}')"></button></td>
             `;
             tablaCarrito.appendChild(fila);
         });

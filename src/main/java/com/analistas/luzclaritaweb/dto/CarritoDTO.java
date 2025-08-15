@@ -25,16 +25,23 @@ public class CarritoDTO {
 
     // constructor vacio
     // No borrar
-    // Sirve para 
+    // Sirve para
     public CarritoDTO() {
     }
 
-    public CarritoDTO(Carrito carrito) {
+   public CarritoDTO(Carrito carrito) {
         this.cantidad = carrito.getCantidad();
-        this.productoId = carrito.getProducto().getId();
-        this.productoNombre = carrito.getProducto().getDescripcion();
-        this.productoPrecio = carrito.getProducto().getPrecio();
-        this.productoLinkImagen = carrito.getProducto().getLinkImagen();
+        if (carrito.getProducto() != null) {
+            this.productoId = carrito.getProducto().getId();
+            this.productoNombre = carrito.getProducto().getDescripcion();
+            this.productoPrecio = carrito.getProducto().getPrecio();
+            this.productoLinkImagen = carrito.getProducto().getLinkImagen();
+        } else if (carrito.getReceta() != null) {
+            this.recetaId = carrito.getReceta().getId();
+            this.recetaNombre = carrito.getReceta().getNombre_receta();
+            this.recetaPrecio = carrito.getReceta().getPrecio();
+            this.recetaLinkImagen = carrito.getReceta().getImagen_link();
+        }
     }
 
     // Getters y Setters

@@ -13,4 +13,6 @@ public interface ICarritoRepository extends JpaRepository<Carrito, Long> {
     List<Carrito> findByUsuarioId(Long usuarioId);
     Optional<Carrito> findByUsuarioIdAndProductoId(Long usuarioId, Long productoId);
     Optional<Carrito> findByUsuarioIdAndRecetaId(Long usuarioId, Long recetaId);
+    void deleteByUsuarioIdAndRecetaId(Long usuarioId, Long recetaId);
+
 }

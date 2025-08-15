@@ -446,4 +446,64 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ;         modified:   src/main/resources/templates/recetas/cards.html
 ;         modified:   src/main/resources/templates/recetas/listado.html
 
+; Cambios implementados:
+; - Se agregó un botón para eliminar recetas en la lista de recetas.
+; - Se agregó un botón para agregar recetas al carrito en la lista de recetas
+; - Se corrigió el error de duplicación de recetas al editarlas.
+; - Se corrigió la lógica para que las recetas deshabilitadas no s
+; e muestren a los clientes.
+; - Se realizó la configuración para que las pruebas automáticas se puedan ejecutar correctament
+; e sin depender de la base de datos de producción.
+; - Se corrigió el error que impedía desactivar una caja con movimientos.
+; - Se corrigió el error que causaba que el modal del carrito se cerrara cada
+; veces que un usuario no autenticado actualizaba la cantidad de un producto.
+; - Se corrigió el error que impedía eliminar un proveedor con compras asociadas.
+; - Se corrigió la funcionalidad de "Ordenar por" que no estaba aplicando
+; los filtros correctamente.
+; - Se agregó un mensaje claro cuando se intenta eliminar un proveedor con compras asociadas
+; - Se agregó un mensaje claro cuando se intenta desactivar una caja con movimientos
+; - Añadir Usuario: Anda correctamente (Con o sin fotos) (hay que arreglar la vista de las fotos) (ahora se pueden cargar clientes-usuarios o solo clientes)
+; - Listado de Usuarios Anda correctamente
+; - Eliminar usuarios Anda correctamente
+; - Modifica usuarios Anda correctamente
+; - Anda la gestion de compras, eliminar y modificar 
+; - Todas la modificaciones se registran en movimientos de caja.
+; - Al modificar la compra se actualizan los precios y demás.
+; - Crear Nueva caja anda sin errores.
+; - En la gestion de recetas ahora se modifica, deshabilitan y    eliminan correctamente.
+; - En el carrito de compras ahora se pueden agregar las recetas, se arreglaron la visualización de imágenes, también no se pueden agregar mas de 2 recetas con un mismo id para un usuario.
+; - Las recetas se eliminan correctamente
+; - El flujo de compra a una receta anda correctamente.
+; - El flujo de compra a un producto anda correctamente.
+
+
+; Elementos que se tocaron:
+; CarritoDTO
+; Carrito.java
+; ICarritoService
+; ICarritoRepository
+; IRecetaRepository
+; IRecetaServiceImpl
+; CarritoController
+; RecetaController
+; user-management-add-user
+; user-management-edit-user
+; user-management-delete-user
+; recetas:
+; cards.html
+; form.html
+; listado.html
+; compras:
+; form
+; movimientos:
+; movimientos_caja.html
+; IMovimientoCajaRepository
+; MovimientoCaja
+; ComprasServiceImpl
+; ComprasController
+; DashboardController
+; MercadoPagoController
+; CarritoSyncException
+
+
 Arbol del proyecto actulizado:
