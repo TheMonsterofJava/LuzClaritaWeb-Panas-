@@ -235,9 +235,11 @@ public class CajaController {
 
         // 5. Pasa los datos a la vista
         Map<String, Object> resumen = new HashMap<>();
-        resumen.put("ingresos", totalIngresos); // Mantener como BigDecimal
-        resumen.put("egresos", totalEgresos); // Mantener como BigDecimal
-        resumen.put("saldo", saldoActual); // Mantener como BigDecimal
+        // La visualización de 'ingresos' se ha movido al nuevo reporte de ventas online.
+        // Se mantiene el cálculo para la lógica del saldo, pero no se pasa a la vista.
+        // resumen.put("ingresos", totalIngresos); 
+        resumen.put("egresos", totalEgresos); 
+        resumen.put("saldo", saldoActual); 
         model.addAttribute("resumen", resumen);
 
         return "movimientos/movimientos_caja";

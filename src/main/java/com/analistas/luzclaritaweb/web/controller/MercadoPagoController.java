@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//Imports para los logs activar si los necesitamos 
-// import org.springframework.security.core.userdetails.UserDetails;
-// import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
@@ -19,18 +18,14 @@ import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MercadoPagoController {
@@ -136,6 +131,7 @@ public class MercadoPagoController {
                     .setFailure("http://localhost:8081/failure")
                     .setPending("http://localhost:8081/pending")
                     .setSuccess("http://localhost:8081/success"));
+            preference.setAutoReturn(Preference.AutoReturn.approved);
 
             // Procesar los items del carrito para la preferencia de pago
             for (CarritoDTO item : carritoItems) {
@@ -208,14 +204,15 @@ public class MercadoPagoController {
         // Obtener items del carrito
         List<CarritoDTO> itemsCarrito = carritoService.obtenerCarritoPorUsuario(usuario.getId());
 
-        // Crear factura
+        // Crear factura y actualizar stock en una sola transaccion 
         Factura factura = facturaService.crearFacturaDesdeCarrito(itemsCarrito, usuario, "MercadoPago");
 
-        // Registrar movimiento de caja (ingreso)
-        // movimientoCajaService.registrarMovimiento(factura, usuario);
+         // La lógica de 'actualizarInventario' ha sido movida a 'crearFacturaDesdeCarrito'.
+        // La siguiente línea ya no es necesaria.
+        // facturaService.actualizarInventario(itemsCarrito);
 
-        // Actualizar inventario (restar stock)
-        facturaService.actualizarInventario(itemsCarrito);
+        // Registrar movimiento de caja (ingreso) - Descomentar si se implementa en el futuro
+        // movimientoCajaService.registrarMovimiento(factura, usuario);
 
         // Vaciar carrito
         carritoService.vaciarCarrito(usuario.getId());

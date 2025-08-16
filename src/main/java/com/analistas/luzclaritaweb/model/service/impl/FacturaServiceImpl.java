@@ -9,8 +9,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Caja;
-// import com.analistas.luzclaritaweb.model.domain.Carrito;
 import com.analistas.luzclaritaweb.model.domain.Detalle_factura;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Producto;
@@ -20,7 +21,7 @@ import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
 import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
-import com.analistas.luzclaritaweb.dto.CarritoDTO;
+import com.analistas.luzclaritaweb.model.service.interfaces.IRegistroVentaService;
 
 import jakarta.transaction.Transactional;
 
@@ -39,6 +40,9 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Autowired
     private ICajaService cajaService;
+
+    @Autowired 
+    private IRegistroVentaService registroVentaService; 
 
     @Override
     public Factura guardar(Factura factura) {
@@ -70,6 +74,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    @Transactional
     public Factura crearFacturaDesdeCarrito(List<CarritoDTO> itemsCarrito, Usuario usuario, String metodoPago) {
         if (usuario.getCliente() == null) {
             throw new IllegalStateException("El usuario no tiene un cliente asociado");
@@ -89,24 +94,37 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setActivo(true);
         factura.setCaja(cajaActiva); // Asignamos la Caja Activa a la factura.
 
-        // Esta linea de codigo es para que la factura se guarde con el estado de la
-        // caja activa.
         List<Detalle_factura> detalles = new ArrayList<>();
 
         for (CarritoDTO item : itemsCarrito) {
             Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + item.getProductoId()));
+
+            // Verificar y Actualizar Stock:
+            // Verificar y actualizar el stock
+            if (producto.getStock() < item.getCantidad()) {
+                // Lanzamos una excepción específica que podría ser manejada en el controlador
+                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getDescripcion());
+            }
+            producto.setStock(producto.getStock() - item.getCantidad());
+            productoRepository.save(producto); // Guardamos el producto con el stock actualizado
+
+            // Registrar la venta en el nuevo sistema de reportes
+            registroVentaService.registrarVenta(producto.getDescripcion(), item.getCantidad(), producto.getPrecio());
+
+            // Crear el detalle de la factura
+
             Detalle_factura detalle = new Detalle_factura();
 
             detalle.setProducto(producto);
             detalle.setCantidad(item.getCantidad());
-            // detalle.setPrecio_unitario(item.getProducto().getPrecio());
+
             detalle.setPrecio_unitario(producto.getPrecio());
             detalle.setFactura(factura);
             detalles.add(detalle);
         }
         factura.setDetalles(detalles);
-        return guardar(factura); // El método guardar ya es transaccional
+        return guardar(factura);
     }
 
     @Override
@@ -121,16 +139,8 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public void actualizarInventario(List<CarritoDTO> itemsCarrito) {
-        for (CarritoDTO item : itemsCarrito) {
-            Producto producto = productoRepository.findById(item.getProductoId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-            if (producto.getStock() < item.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para " + producto.getDescripcion());
-            }
-
-            producto.setStock(producto.getStock() - item.getCantidad());
-            productoRepository.save(producto);
-        }
+        // Esta lógica ha sido movida a crearFacturaDesdeCarrito para asegurar la atomicidad.
+        // Se mantiene el método por si es usado en otro lugar, pero su cuerpo está vacío.
+        // Idealmente, se eliminaría si no hay otras referencias.
     }
 }

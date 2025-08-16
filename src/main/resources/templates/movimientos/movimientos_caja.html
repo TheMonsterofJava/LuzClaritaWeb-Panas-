@@ -315,28 +315,14 @@
 
     <div class="container py-4">
         <!-- Tarjetas de resumen -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="summary-card card-ingresos">
-                    <div class="card-body text-center">
-                        <div class="summary-icon text-success">
-                            <i class="bi bi-arrow-down-circle"></i>
-                        </div>
-                        <h3 class="summary-title">Total Ingresos</h3>
-                        <p class="summary-value text-success"
-                            th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
-                            $0.00
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
                 <div class="summary-card card-egresos">
                     <div class="card-body text-center">
                         <div class="summary-icon text-danger">
                             <i class="bi bi-arrow-up-circle"></i>
                         </div>
-                        <h3 class="summary-title">Total Egresos</h3>
+                        <h3 class="summary-title">Total Egresos (Compras a Proveedores)</h3>
                         <p class="summary-value text-danger"
                             th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
                             $0.00
@@ -344,13 +330,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="summary-card card-saldo">
                     <div class="card-body text-center">
                         <div class="summary-icon text-info">
                             <i class="bi bi-wallet2"></i>
                         </div>
-                        <h3 class="summary-title">Saldo Actual</h3>
+                        <h3 class="summary-title">Saldo Actual en Caja</h3>
                         <p class="summary-value text-info"
                             th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
                             $0.00

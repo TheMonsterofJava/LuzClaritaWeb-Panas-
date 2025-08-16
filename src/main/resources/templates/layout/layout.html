@@ -183,6 +183,15 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/cursos/listado2}">Cursos</a>
                     </li>
+                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownReportes" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Reportes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownReportes">
+                            <li><a class="dropdown-item" th:href="@{/reportes/ventas}">Reporte de Ventas</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
                     </li>

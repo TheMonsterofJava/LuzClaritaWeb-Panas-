@@ -506,4 +506,66 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ; CarritoSyncException
 
 
+; Ultima implementacion:
+
+; Resumen de Nuevos Componentes y sus Funciones
+; Para construir el nuevo sistema de reporte de ventas y asegurar la persistencia de los datos, creamos los siguientes archivos:
+
+; 1. Backend - Capa de Datos y Lógica de Negocio:
+
+; RegistroVenta.java (Entidad/Modelo):
+
+; Ubicación: src/main/java/com/analistas/luzclaritaweb/model/domain/
+; Función: Es el molde para la nueva tabla en tu base de datos (registros_ventas). Cada objeto de esta clase representa una línea de venta individual (ej. "Venta de 2 donas glaseadas"). Almacena de forma permanente la descripción del producto, cantidad, precio y fecha.
+; IRegistroVentaRepository.java (Repositorio):
+
+; Ubicación: src/main/java/com/analistas/luzclaritaweb/model/repository/
+; Función: Es la interfaz que le permite a Spring Boot comunicarse con la tabla registros_ventas. Proporciona los métodos básicos para guardar, buscar y eliminar registros de ventas.
+; IRegistroVentaService.java (Interfaz de Servicio):
+
+; Ubicación: src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/
+; Función: Define el "contrato" de lo que nuestro servicio de registro de ventas debe ser capaz de hacer (ej. registrarVenta, buscarTodos).
+; RegistroVentaServiceImpl.java (Implementación del Servicio):
+
+; Ubicación: src/main/java/com/analistas/luzclaritaweb/model/service/impl/
+; Función: Es la implementación real de la interfaz anterior. Contiene la lógica para crear un nuevo objeto RegistroVenta con los datos correctos y usar el repositorio para guardarlo en la base de datos.
+; 2. Frontend - Capa de Presentación (Vista y Controlador):
+
+; ReporteController.java (Controlador):
+
+; Ubicación: src/main/java/com/analistas/luzclaritaweb/web/controller/
+; Función: Actúa como el intermediario para la nueva página de reportes. Cuando un administrador visita la URL /reportes/ventas, este controlador usa el RegistroVentaServiceImpl para obtener todas las ventas de la base de datos, calcula el total y pasa toda esa información a la página HTML.
+; ventas.html (Plantilla de Vista):
+
+; Ubicación: src/main/resources/templates/reportes/
+; Función: Es la nueva página HTML que diseñé para ti. Usa Thymeleaf para recibir los datos del ReporteController y mostrarlos en una tabla ordenada, incluyendo el total de ingresos. Esta es la página que ves como administrador.
+; Archivos Clave que Modificamos
+; Además de los nuevos archivos, modificamos los siguientes de manera significativa:
+
+; FacturaServiceImpl.java: Aquí integramos la reducción de stock y la llamada al nuevo RegistroVentaServiceImpl. Ahora, este servicio es el corazón de la lógica post-venta.
+; layout/layout.html: Añadimos el enlace al nuevo "Reporte de Ventas" en el menú de navegación para que los administradores puedan acceder a él.
+; movimientos_caja.html: Limpiamos esta vista, eliminando la tarjeta de "Total Ingresos" para que la sección de "Caja" se enfoque únicamente en los gastos a proveedores y el saldo manual.
+
+; Archivos que se tocaron o crearon:
+; modified:   Cambios
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/service/impl/FacturaServiceImpl.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/CajaController.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/MercadoPagoController.java
+;         modified:   src/main/resources/application.properties
+;         deleted:    src/main/resources/static/font/Yakuza Lobster.ttf
+;         modified:   src/main/resources/templates/layout/layout.html
+;         modified:   src/main/resources/templates/movimientos/movimientos_caja.html
+
+; Untracked files:
+;   (use "git add <file>..." to include in what will be committed)
+;         .gitattributes
+;         src/main/java/com/analistas/luzclaritaweb/model/domain/RegistroVenta.java
+;         src/main/java/com/analistas/luzclaritaweb/model/repository/IRegistroVentaRepository.java
+;         src/main/java/com/analistas/luzclaritaweb/model/service/impl/RegistroVentaServiceImpl.java
+;         src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/IRegistroVentaService.java
+;         src/main/java/com/analistas/luzclaritaweb/web/controller/ReporteController.java
+;         src/main/resources/META-INF/
+;         src/main/resources/static/font/YakuzaLobster.ttf
+;         src/main/resources/templates/reportes/
+
 Arbol del proyecto actulizado:

@@ -10,6 +10,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 
 import com.analistas.luzclaritaweb.model.service.interfaces.IFileStorageService;
 import com.mercadopago.MercadoPago;
+import com.mercadopago.exceptions.MPConfException;
 
 
 @SpringBootApplication
@@ -25,21 +26,21 @@ public class LuzClaritaWebApplication implements CommandLineRunner {
     }
 
     @Override
+    @SuppressWarnings("CallToPrintStackTrace")
 	public void run(String... args) throws Exception {
 
         //Iniciamos el almacenamiento de archivos
         fileStorageService.init();
 
 
-		//Credenciales de prueba (las pruebas sólo funcionan en un navegador que NO ESTÉ logueado en MP):
-		// MercadoPago.SDK.setAccessToken(System.getenv("APP_USR-1758590432023103-030711-b15a87044d281636f9e29a2ab28fd8f3-144433383"));
-        // MercadoPago.SDK.setClientId("1758590432023103");
-        // MercadoPago.SDK.setClientSecret("fUggj57yyTmzQd4DOgdccx07hym6WkYh");
-
-        //Credenciales de producción Franco:
-        MercadoPago.SDK.setAccessToken(System.getenv("APP_USR-1477346058343548-032009-60ac3523a2a29e97e32f939ec16a947f-210899344"));
-        MercadoPago.SDK.setClientId("1477346058343548");
-        MercadoPago.SDK.setClientSecret("cNElGoSaOL3oTVvUPT1uoajyAGNMF54Z");
+        // Configuración del SDK de Mercado Pago
+        try {
+            MercadoPago.SDK.setAccessToken("APP_USR-1477346058343548-032009-60ac3523a2a29e97e32f939ec16a947f-210899344");
+            System.out.println("Mercado Pago SDK configured successfully.");
+        } catch (MPConfException e) {
+            System.err.println("Error configuring Mercado Pago SDK: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Bean
