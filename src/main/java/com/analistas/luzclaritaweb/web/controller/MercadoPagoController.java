@@ -3,6 +3,7 @@ package com.analistas.luzclaritaweb.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,15 +16,23 @@ import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
+import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
-import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IProcesamientoPagoService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
+import com.analistas.luzclaritaweb.web.excepciones.MontoDelPagoNoCoincideException;
+import com.analistas.luzclaritaweb.web.excepciones.OrdenYaProcesadaException;
+import com.analistas.luzclaritaweb.web.excepciones.PagoNoAprobadoException;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.mercadopago.resources.Payment;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
+import com.mercadopago.resources.datastructures.preference.Payer;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -33,12 +42,8 @@ public class MercadoPagoController {
     @Autowired
     private IProductoService productoService;
 
-    // Registros de Movimientos:
     @Autowired
-    private IFacturaService facturaService; // Inyección añadida
-
-    // @Autowired
-    // private IMovimientoCajaService movimientoCajaService;
+    private IProcesamientoPagoService procesamientoPagoService;
 
     @Autowired
     private ICarritoService carritoService;
@@ -53,16 +58,27 @@ public class MercadoPagoController {
     @SuppressWarnings("CallToPrintStackTrace")
     public String createAndRedirect(@RequestParam("cartData") String cartDataJson,
             Model model,
-            // Authentication authentication,
-            // HttpServletRequest request
-            @AuthenticationPrincipal Usuario usuario ) throws MPException {
+            Authentication authentication) throws MPException {
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            model.addAttribute("error", "Error de autenticación. Por favor, inicie sesión nuevamente.");
+            return "redirect:/inicioSesion/login";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Usuario usuario = userDetails.getUsuario();
+
+        if (usuario == null) {
+            model.addAttribute("error", "Error de autenticación. No se pudieron cargar los datos de usuario.");
+            return "redirect:/inicioSesion/login";
+        }
 
         try {
-            // // Debug: Imprimir información de autenticación
             // System.out.println("=== DEBUG AUTHENTICATION ===");
             // System.out.println("Authentication: " + authentication);
             // System.out.println("Principal: " + authentication.getPrincipal());
-            // System.out.println("Principal class: " + authentication.getPrincipal().getClass());
+            // System.out.println("Principal class: " +
+            // authentication.getPrincipal().getClass());
             // System.out.println("Authorities: " + authentication.getAuthorities());
 
             // // Obtener el usuario de manera más robusta
@@ -70,25 +86,31 @@ public class MercadoPagoController {
             // Object principal = authentication.getPrincipal();
 
             // if (principal instanceof UserDetails) {
-            //     UserDetails userDetails = (UserDetails) principal;
-            //     System.out.println("Username from UserDetails: " + userDetails.getUsername());
+            // UserDetails userDetails = (UserDetails) principal;
+            // System.out.println("Username from UserDetails: " +
+            // userDetails.getUsername());
 
-            //     // Tu CustomUserDetails SÍ tiene el método getUsuario()
-            //     if (principal instanceof com.analistas.luzclaritaweb.web.config.security.CustomUserDetails) {
-            //         com.analistas.luzclaritaweb.web.config.security.CustomUserDetails customUserDetails = (com.analistas.luzclaritaweb.web.config.security.CustomUserDetails) principal;
-            //         usuario = customUserDetails.getUsuario();
-            //         System.out.println("Usuario from CustomUserDetails: " + usuario);
-            //     }
+            // // Tu CustomUserDetails SÍ tiene el método getUsuario()
+            // if (principal instanceof
+            // com.analistas.luzclaritaweb.web.config.security.CustomUserDetails) {
+            // com.analistas.luzclaritaweb.web.config.security.CustomUserDetails
+            // customUserDetails =
+            // (com.analistas.luzclaritaweb.web.config.security.CustomUserDetails)
+            // principal;
+            // usuario = customUserDetails.getUsuario();
+            // System.out.println("Usuario from CustomUserDetails: " + usuario);
+            // }
 
             // } else if (principal instanceof Usuario) {
-            //     usuario = (Usuario) principal;
-            //     System.out.println("Usuario direct cast: " + usuario);
+            // usuario = (Usuario) principal;
+            // System.out.println("Usuario direct cast: " + usuario);
             // }
 
             // if (usuario == null) {
-            //     System.err.println("ERROR: No se pudo obtener el usuario autenticado");
-            //     model.addAttribute("error", "Error de autenticación. Por favor, inicie sesión nuevamente.");
-            //     return "redirect:/inicioSesion/login";
+            // System.err.println("ERROR: No se pudo obtener el usuario autenticado");
+            // model.addAttribute("error", "Error de autenticación. Por favor, inicie sesión
+            // nuevamente.");
+            // return "redirect:/inicioSesion/login";
             // }
 
             // System.out.println("Usuario ID: " + usuario.getId());
@@ -122,16 +144,24 @@ public class MercadoPagoController {
                         return "redirect:/home?error=sin_stock";
                     }
                 }
-                // Nota: La verificación de stock para recetas no está implementada, ya que las recetas no tienen stock.
+                // Nota: La verificación de stock para recetas no está implementada, ya que las
+                // recetas no tienen stock.
             }
 
             // Crear la preferencia de MercadoPago
             Preference preference = new Preference();
             preference.setBackUrls(new BackUrls()
-                    .setFailure("http://localhost:8081/failure")
-                    .setPending("http://localhost:8081/pending")
-                    .setSuccess("http://localhost:8081/success"));
-            preference.setAutoReturn(Preference.AutoReturn.approved);
+                    // .setFailure("http://localhost:8081/failure")
+                    // .setPending("http://localhost:8081/pending")
+                    // .setSuccess("http://localhost:8081/success"));
+                    .setFailure("https://fe8484098da6.ngrok-free.app/failure")
+                    .setPending("https://fe8484098da6.ngrok-free.app/pending")
+                    .setSuccess("https://fe8484098da6.ngrok-free.app/success"));
+
+            // Añadir el pagador (Payer) a la preferencia
+            Payer payer = new Payer();
+            payer.setEmail(usuario.getEmail());
+            preference.setPayer(payer);
 
             // Procesar los items del carrito para la preferencia de pago
             for (CarritoDTO item : carritoItems) {
@@ -140,6 +170,14 @@ public class MercadoPagoController {
                     // Es un producto
                     Producto producto = productoService.buscarPorId(item.getProductoId());
                     if (producto != null) {
+                        if (producto.getPrecio() == null || producto.getPrecio().floatValue() <= 0) {
+                            System.err.println("ERROR DE DIAGNÓSTICO: El producto '" + producto.getDescripcion()
+                                    + "' (ID: " + producto.getId() + ") tiene un precio inválido de "
+                                    + producto.getPrecio());
+                            model.addAttribute("error", "El producto en el carrito '" + producto.getDescripcion()
+                                    + "' tiene un precio inválido y no se puede procesar.");
+                            return "redirect:/home";
+                        }
                         mpItem.setTitle(producto.getDescripcion())
                                 .setQuantity(item.getCantidad())
                                 .setUnitPrice(producto.getPrecio().floatValue());
@@ -157,16 +195,54 @@ public class MercadoPagoController {
                 }
             }
 
-            var result = preference.save();
-            System.out.println("MercadoPago preference created. Redirect URL: " + result.getInitPoint());
+            System.out.println("--- DIAGNOSTICO: PREFERENCIA A ENVIAR ---");
+            System.out.println(new Gson().toJson(preference));
+            System.out.println("------------------------------------------");
 
-            return "redirect:" + result.getInitPoint();
+            try {
+                var result = preference.save();
 
-        } catch (MPException e) {
-            System.err.println("Error de MercadoPago: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error al procesar el pago con MercadoPago.");
-            return "redirect:/home?error=error_mercadopago";
+                System.out.println("--- DIAGNOSTICO: RESPUESTA COMPLETA DE MP ---");
+                System.out.println(new Gson().toJson(result));
+                System.out.println("---------------------------------------------");
+
+                if (result.getInitPoint() == null) {
+                    System.err.println(
+                            "ERROR CRÍTICO: El init_point de MercadoPago es nulo incluso después de una respuesta aparentemente exitosa.");
+                    System.err.println(
+                            "Esto casi siempre indica un problema con el Access Token (inválido, o de un entorno incorrecto - ej. PROD en vez de SANDBOX).");
+                    if (result.getLastApiResponse() != null) {
+                        System.err.println(
+                                "Respuesta cruda de la API: " + result.getLastApiResponse().getStringResponse());
+                    }
+                    model.addAttribute("error",
+                            "Error de configuración con la pasarela de pago. Por favor, contacte al soporte.");
+                    return "redirect:/home";
+                }
+
+                // System.out.println("MercadoPago preference created. Redirect URL: " + result.getInitPoint());
+                // return "redirect:" + result.getInitPoint();
+                System.out.println("MercadoPago preference created. Redirect URL: " + result.getSandboxInitPoint());
+                return "redirect:" + result.getSandboxInitPoint();
+
+            } catch (MPException e) {
+                System.err.println("--- EXCEPCIÓN DE MERCADOPAGO CAPTURADA ---");
+                System.err.println("Status Code: " + e.getStatusCode());
+
+                // Corrección: Usar e.toString() para obtener detalles del error
+                String errorDetails = e.toString();
+                System.err.println("Detalles del error: " + errorDetails);
+
+                // Corrección: Obtener causa del error
+                Throwable cause = e.getCause();
+                System.err.println("Causa: " + (cause != null ? cause.getMessage() : "N/A"));
+
+                System.err.println("Mensaje: " + e.getMessage());
+                e.printStackTrace();
+                model.addAttribute("error", "Error al procesar el pago con MercadoPago: " + e.getMessage());
+                return "redirect:/home?error=error_mercadopago";
+            }
+
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
             System.err.println("Error al procesar JSON del carrito: " + e.getMessage());
             e.printStackTrace();
@@ -192,37 +268,53 @@ public class MercadoPagoController {
             @RequestParam("processing_mode") String processingMode,
             @RequestParam("merchant_account_id") String merchantAccountId,
             @AuthenticationPrincipal Usuario usuario,
-            Model model) throws MPException {
+            Model model) {
 
-        // Verificar el pago con MercadoPago
-        var payment = com.mercadopago.resources.Payment.findById(collectionId);
+        try {
+            // 1. Verificar el pago con MercadoPago
+            Payment payment = Payment.findById(collectionId);
+            if (payment == null) {
+                model.addAttribute("error", "No se encontró la información del pago en MercadoPago.");
+                return "ventas/failure";
+            }
 
-        if (!"approved".equals(collectionStatus)) {
-            return "redirect:/failure";
+            // 2. Obtener los items del carrito desde la base de datos
+            List<CarritoDTO> itemsCarrito = carritoService.obtenerCarritoPorUsuario(usuario.getId());
+            if (itemsCarrito.isEmpty()) {
+                model.addAttribute("error", "El carrito está vacío o ya fue procesado.");
+                return "ventas/failure";
+            }
+
+            // 3. Delegar toda la lógica de negocio al servicio de procesamiento
+            Factura factura = procesamientoPagoService.procesarPagoExitosoMP(
+                    itemsCarrito,
+                    usuario,
+                    payment.getPaymentMethodId(),
+                    collectionId,
+                    externalReference,
+                    java.math.BigDecimal.valueOf(payment.getTransactionAmount()),
+                    payment.getStatus().toString());
+
+            // 4. Preparar datos para la vista de éxito
+            model.addAttribute("payment", payment);
+            model.addAttribute("factura", factura);
+            model.addAttribute("titulo", "¡Compra Exitosa!");
+            return "ventas/success";
+
+        } catch (MPException e) {
+            model.addAttribute("error", "Error al comunicarse con MercadoPago: " + e.getMessage());
+            return "ventas/failure";
+        } catch (MontoDelPagoNoCoincideException | StockInsuficienteException | OrdenYaProcesadaException
+                | PagoNoAprobadoException e) {
+            // Capturamos nuestras excepciones de negocio y mostramos un error claro
+            model.addAttribute("error", e.getMessage());
+            return "ventas/failure";
+        } catch (Exception e) {
+            // Captura de cualquier otro error inesperado
+            model.addAttribute("error", "Ocurrió un error inesperado al procesar su compra.");
+            e.printStackTrace(); // Loguear el error para depuración
+            return "ventas/failure";
         }
-
-        // Obtener items del carrito
-        List<CarritoDTO> itemsCarrito = carritoService.obtenerCarritoPorUsuario(usuario.getId());
-
-        // Crear factura y actualizar stock en una sola transaccion 
-        Factura factura = facturaService.crearFacturaDesdeCarrito(itemsCarrito, usuario, "MercadoPago");
-
-         // La lógica de 'actualizarInventario' ha sido movida a 'crearFacturaDesdeCarrito'.
-        // La siguiente línea ya no es necesaria.
-        // facturaService.actualizarInventario(itemsCarrito);
-
-        // Registrar movimiento de caja (ingreso) - Descomentar si se implementa en el futuro
-        // movimientoCajaService.registrarMovimiento(factura, usuario);
-
-        // Vaciar carrito
-        carritoService.vaciarCarrito(usuario.getId());
-
-        // Preparar datos para la vista
-        model.addAttribute("payment", payment);
-        model.addAttribute("factura", factura);
-        model.addAttribute("titulo", "¡Compra Exitosa!");
-
-        return "ventas/success";
     }
 
     @GetMapping("/failure")

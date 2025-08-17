@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Venta;
 
 // Importante: Este servicio es una interfaz que define los métodos para manejar las operaciones de venta en la aplicación.
 // La implementación de esta interfaz se encargará de la lógica de negocio y de interactuar con el repositorio correspondiente.
 public interface IVentaService {
+
+    void crearVentaDesdeFactura(Factura factura);
+
     List<Venta> listarVentas();
     Optional<Venta> obtenerVentaPorId(Long id);
     Venta guardarVenta(Venta venta);

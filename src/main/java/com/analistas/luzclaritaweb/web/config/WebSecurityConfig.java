@@ -133,6 +133,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/createAndRedirect", "/success", "/failure", "/pending")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
 
+                        // Rutas de MercadoPago
+                        .requestMatchers("/createAndRedirect").hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN") // Creación de pago requiere usuario logueado
+                        .requestMatchers("/success", "/failure", "/pending").permitAll() // Callbacks de MP deben ser públicos
+
                         // Client routes
                         .requestMatchers("/api/carrito/**")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
