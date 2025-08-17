@@ -5,22 +5,23 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import com.analistas.luzclaritaweb.model.domain.Categoria;
-import com.analistas.luzclaritaweb.model.repository.ICategoriaRepository; // Asegúrate de que esta clase exista y sea un repositorio adecuado
+import com.analistas.luzclaritaweb.model.repository.ICategoriaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICategoriaService;
 
 @Service
 public class CategoriaServiceImpl implements ICategoriaService {
 
+    
     // Inyección del repositorio
     @Autowired
     private ICategoriaRepository categoriaRepository;
 
     @Override
     public List<Categoria> buscarTodo() {
-        // Retorna todas las categorías desde la base de datos
-        return categoriaRepository.findAll();
+        return (List<Categoria>) categoriaRepository.findAll();
     }
 
     @Override
@@ -40,5 +41,10 @@ public class CategoriaServiceImpl implements ICategoriaService {
     public void eliminar(Long id) {
         // Elimina una categoría por su ID
         categoriaRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Categoria> buscarTopCategorias(Pageable pageable) {
+        return categoriaRepository.findTopByProductos(pageable);
     }
 }

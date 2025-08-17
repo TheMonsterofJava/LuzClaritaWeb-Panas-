@@ -1,6 +1,7 @@
 package com.analistas.luzclaritaweb.model.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,17 @@ import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
 @Service
 public class ProductoServiceImpl implements IProductoService {
 
-    // Inyección de dependencias
     @Autowired
     private IProductoRepository productoRepository;
+    
+    @Autowired
+    private ICategoriaRepository categoriaRepository;
 
     @Override
     @Transactional
-    public void guardarProducto(Producto producto) { // Nombre corregido
+    public void guardarProducto(Producto producto) {
         productoRepository.save(producto);
     }
-
-    @Autowired
-    ICategoriaRepository categoriaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -35,9 +35,15 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
-    public List<Producto> buscarPor(String criterio) {
+    @Transactional(readOnly = true)
+    public List<Producto> buscarActivos() {
+        return productoRepository.findByActivoTrue();
+    }
 
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPor'");
+    @Override
+    public List<Producto> buscarPor(String criterio) {
+        // Implementación de búsqueda por criterio
+        return productoRepository.findByNombreContainingOrDescripcionContaining(criterio, criterio);
     }
 
     @Override
@@ -53,20 +59,38 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
+    @Transactional
     public void borrarPorId(Long id) {
         productoRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Categoria> getCategorias() {
-
         return (List<Categoria>) categoriaRepository.findAll();
-
     }
 
     @Override
-    public Producto buscarPorNombre(String descripcion) {
-        return productoRepository.findByDescripcion(descripcion).orElse(null);
+    @Transactional(readOnly = true)
+    public Producto buscarPorNombre(String nombre) {
+        return productoRepository.findByNombre(nombre).orElse(null);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> buscarPorCategoria(Long categoriaId) {
+        // Obtener todos los productos activos de la categoría
+        List<Producto> productos = productoRepository.findByCategoriaIdAndActivoTrue(categoriaId);
+        
+        // Limitar a 4 productos aleatorios
+        return productos.stream()
+                .limit(4)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> buscarDestacados() {
+        return productoRepository.findTop4ByActivoTrueOrderByPrecioDesc();
+    }
 }

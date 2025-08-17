@@ -22,29 +22,27 @@ public class CategoriaController {
 
     @GetMapping("/categorias")
     public String verCategorias(Model model) {
-        List<Categoria> categorias = categoriaRepository.findAll();
+        List<Categoria> categorias = (List<Categoria>) categoriaRepository.findAll();
         model.addAttribute("categorias", categorias);
-        model.addAttribute("categoria", new Categoria()); // Para el formulario de la categoría
-        return "categorias"; // Página donde se muestran las categorías y el formulario
+        model.addAttribute("categoria", new Categoria());
+        return "categorias";
     }
 
-    // Método para agregar una nueva categoría
     @PostMapping("/categorias/guardar")
     public String agregarCategoria(@ModelAttribute Categoria categoria, RedirectAttributes redirectAttributes) {
         categoriaRepository.save(categoria);
-        redirectAttributes.addFlashAttribute("mensajeExito", "Categoría '" + categoria.getNombre() + "' guardada con éxito.");
-        return "redirect:/productos/listado";  // Redirige a la página de listado de productos
+        redirectAttributes.addFlashAttribute("mensajeExito", "Categoría agregada correctamente");
+        return "redirect:/productos/listado2";
     }
 
-    // Método para eliminar una categoría
     @PostMapping("/categorias/eliminar")
     public String eliminarCategoria(@RequestParam("categoriaId") Long categoriaId, RedirectAttributes redirectAttributes) {
         if (categoriaId != null) {
-            categoriaRepository.deleteById(categoriaId); // Eliminar la categoría de la base de datos
-            redirectAttributes.addFlashAttribute("mensajeExito", "Categoría eliminada con éxito.");
+            categoriaRepository.deleteById(categoriaId);
+            redirectAttributes.addFlashAttribute("mensajeEliminar", "Categoría eliminada correctamente");
         } else {
             redirectAttributes.addFlashAttribute("mensajeError", "No se seleccionó ninguna categoría.");
         }
-        return "redirect:/productos/listado";  // Redirige a la página de listado de productos
+        return "redirect:/productos/listado2";
     }
 }

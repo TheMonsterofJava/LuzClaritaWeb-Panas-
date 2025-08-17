@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <title th:text="${titulo}"></title>
+    <link rel="stylesheet" href="/css/inventario.css">
+    
+    <th:block layout:fragment="styles">
+         <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .main-content {
+                min-height: 100vh;
+            }
+         </style>
+    </th:block>
 </head>
 
-<body class="form-body">
-    <div layout:fragment="contenido" class="container-fluid py-4">
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content" class="main-content">
         <div class="card card-text">
             <div class="card-header bg-primary text-white">
                 <h4 class="card-title" th:text="${titulo}">Proveedores</h4>
@@ -43,31 +64,36 @@
                                 </td>
                                 <td style="white-space: nowrap;">
                                     <a th:href="@{/proveedor/editar/} + ${p.id}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Editar
+                                        <i class="fas fa-edit"></i>
                                     </a>
                                     <a th:href="@{/proveedor/eliminar/} + ${p.id}" class="btn btn-sm btn-danger"
                                         onclick="return confirm('¿Estás seguro de que deseas eliminar este proveedor?');">
-                                        <i class="fas fa-trash"></i> Eliminar
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                </div>
+                <div class="card-footer">
+                    <div class="d-grid gap-2 d-md-flex float-end">
                         <a th:href="@{/proveedor/nuevo}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Nuevo proveedor
                         </a>
                     </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                    <div class="d-grid gap-2 d-md-flex float-end me-2">
                         <a th:href="@{/compras/nueva}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Compra a Proveedores
                         </a>
                     </div>
                 </div>
             </div>
-        </div>aaa
+        </div>
     </div>
-    <script th:fragment="js" th:src="@{/js/proveedor-list.js}"></script>
-</body>
 
+    <!-- Scripts específicos -->
+    <th:block layout:fragment="scripts">
+        <script th:fragment="js" th:src="@{/js/proveedor-list.js}"></script>
+    </th:block>
+</body>
 </html>

@@ -73,30 +73,10 @@ public class WebSecurityConfig {
         return tokenRepo;
     }
 
-    // @Autowired
-    // @Qualifier("userDetailsService")
-    // private UserDetailsService userDetailsService;
-
-    // @Bean
-    // public UserDetailsService userDetailsService(IUsuarioRepository
-    // usuarioRepository) {
-    // return new CustomUserDetailsService(usuarioRepository);
-    // }
-
-    // Bean para manejar sincronización del carrito después del login
-
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
     }
-
-    // Bean para manejar el TestAuthController:
-    // Activar si queremos usar el TestAuthController
-    // @Bean
-    // public AuthenticationManager authenticationManager(
-    // AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    // return authenticationConfiguration.getAuthenticationManager();
-    // }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -109,9 +89,9 @@ public class WebSecurityConfig {
 
                         // Public routes
                         .requestMatchers(
-                                "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
+                                "/","/static/**" , "/home", "/img/**", "/js/**", "/css/**", "/font/**", "/uploads/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
-                                "/receta-clasica/**", "/receta-especial/**", "/productos/**", "/productos/listado",
+                                "/recetas/cards**", "/recetas/detalle**", "/productos/**", "/productos/listado",
                                 "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2")
                         .permitAll()
 
@@ -218,67 +198,3 @@ public class WebSecurityConfig {
     }
 
 }
-// Anulamos los metodos de configuracion de autenticacion por jdbc, ya que no se
-// utilizan
-// @Autowired
-// public void configGlobal(AuthenticationManagerBuilder builder) throws
-// Exception {
-
-// builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-
-// //Prueba Unificacion de usuarios por email y nombre de usuario
-// // Se unifican las consultas de usuarios por email y nombre de usuario
-// builder.jdbcAuthentication()
-// .dataSource(dataSource)
-// .passwordEncoder(passwordEncoder())
-// .usersByUsernameQuery("select nomb_usu, clave, activo from usuarios where
-// nomb_usu = ? OR email = ?")
-// .authoritiesByUsernameQuery(
-// "SELECT u.nomb_usu, " +
-// "CASE " +
-// " WHEN p.nombre LIKE '%PROGRAMADOR%' THEN 'ROLE_PROGRAMADOR' " +
-// " WHEN p.nombre LIKE '%ADMIN%' THEN 'ROLE_ADMIN' " +
-// " WHEN p.nombre LIKE '%OPERADOR%' THEN 'ROLE_OPERADOR' " +
-// " WHEN p.nombre LIKE '%CLIENTE%' THEN 'ROLE_CLIENTE' " +
-// " WHEN p.nombre LIKE '%UNLOGUED%' THEN 'ROLE_UNLOGGED' " +
-// "END as authority " +
-// "FROM permisos p INNER JOIN usuarios u ON u.id_permiso = p.id WHERE
-// u.nomb_usu = ? OR u.email = ?");
-
-// // builder
-// // .jdbcAuthentication()
-// // .dataSource(dataSource)
-// // .passwordEncoder(passwordEncoder())
-// // .usersByUsernameQuery("select nomb_usu, clave, activo from usuarios where
-// nomb_usu = ?")
-// // .authoritiesByUsernameQuery(
-// // "SELECT u.nomb_usu, " +
-// // "CASE " +
-// // " WHEN p.nombre LIKE '%PROGRAMADOR%' THEN 'ROLE_PROGRAMADOR' " +
-// // " WHEN p.nombre LIKE '%ADMIN%' THEN 'ROLE_ADMIN' " +
-// // " WHEN p.nombre LIKE '%OPERADOR%' THEN 'ROLE_OPERADOR' " +
-// // " WHEN p.nombre LIKE '%CLIENTE%' THEN 'ROLE_CLIENTE' " +
-// // " WHEN p.nombre LIKE '%UNLOGUED%' THEN 'ROLE_UNLOGGED' " +
-// // "END as authority " +
-// // "FROM permisos p INNER JOIN usuarios u ON u.id_permiso = p.id WHERE
-// u.nomb_usu = ?");
-
-// // builder
-// // .jdbcAuthentication()
-// // .dataSource(dataSource)
-// // .passwordEncoder(passwordEncoder())
-// // .usersByUsernameQuery("select email, clave, activo from usuarios where
-// email = ?")
-// // .authoritiesByUsernameQuery(
-// // "select u.email, " +
-// // "CASE " +
-// // " WHEN p.nombre LIKE '%PROGRAMADOR%' THEN 'ROLE_PROGRAMADOR' " +
-// // " WHEN p.nombre LIKE '%ADMIN%' THEN 'ROLE_ADMIN' " +
-// // " WHEN p.nombre LIKE '%OPERADOR%' THEN 'ROLE_OPERADOR' " +
-// // " WHEN p.nombre LIKE '%CLIENTE%' THEN 'ROLE_CLIENTE' " +
-// // " WHEN p.nombre LIKE '%UNLOGUED%' THEN 'ROLE_UNLOGGED' " +
-// // "END " +
-// // "from permisos p inner join usuarios u on u.id_permiso = p.id where
-// u.email = ?");
-
-// }

@@ -21,8 +21,9 @@
 
     <!-- Estilos personalizados -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/carrito.css}">
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+
 
     <!-- Datatables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
@@ -103,47 +104,6 @@
             /* Mayor que navbar-actions */
         }
 
-        /* Estilos del carrito */
-        .carrito-contenedor {
-            position: fixed;
-            right: 20px;
-            top: 70px;
-            /* Ajustar según altura del navbar */
-            background-color: white;
-            padding: 20px;
-            width: 90%;
-            max-width: 530px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            /* Menor que navbar-actions y dropdown */
-            display: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .navbar-actions {
-                margin-left: 0;
-                margin-top: 10px;
-                width: 100%;
-                justify-content: flex-end;
-            }
-
-            .user-dropdown {
-                margin-top: 10px;
-            }
-
-            .carrito-contenedor {
-                top: 120px;
-                /* Más espacio en móvil */
-                right: 10px;
-                left: 10px;
-                width: calc(100% - 20px);
-            }
-        }
     </style>
 </head>
 
@@ -190,19 +150,6 @@
 
                 <!-- Contenedor para carrito y usuario -->
                 <div class="navbar-actions">
-                    <!-- Botón del carrito -->
-                    <!-- <div class="position-relative">
-                        <button id="mostrar-carrito" class="btn btn-carrito">
-                            <i class="bi bi-cart4"></i>
-                            <span class="d-none d-md-inline">Carrito</span>
-                            <span id="carrito-cantidad"
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
-                                0
-                            </span>
-                        </button>
-                    </div> -->
-
-                    <!-- Botón del carrito (CONDICIONAL) -->
                     <div th:if="${mostrarCarrito}">
                         <div class="position-relative">
                             <button id="mostrar-carrito" class="btn btn-carrito">

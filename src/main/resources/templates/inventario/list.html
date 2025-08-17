@@ -1,45 +1,52 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout/layout}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!--Jquery para Datatable-->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-
-    <!-- Datatable -->   
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-
     <title th:text="${titulo}"></title>
+    <link rel="stylesheet" href="/css/inventario.css">
+    
+    <th:block layout:fragment="styles">
+    </th:block>
 </head>
 
-<body class="form-body">
-    <div layout:fragment="contenido" class="container-fluid py-4">
-
-        <div class="card card-text">
-            <div class="card-header">
-                <h4 class="card-title" th:text="${titulo}">Inventario</h4>
-            </div>
-            <div class="card-body shadow p-3 mb-5 bg-body rounded">
-                <div class="table-responsive">
-                    <table id="tabla-inventario" class="table table-striped table-hover table-bordered shadow p-3 mb-5 bg-body rounded">
-                        <thead>
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content" class="main-content">
+        <div class="container-fluid py-4">
+            <div class="card card-text">
+                <div class="card-header bg-light">
+                    <h4 class="card-title mb-0" th:text="${titulo}">Inventario</h4>
+                    <div class="btn-group" role="group">
+                        <a th:href="@{/inventario/nuevo}" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> Nuevo ingrediente
+                        </a>
+                        <a th:href="@{/proveedor/listado}" class="btn btn-outline-primary">
+                            <i class="bi bi-truck"></i> Proveedores
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="tabla-inventario" class="table table-striped table-hover table-bordered" style="width:100%">
+                        <thead class="table-light">
                             <tr>
-                                <th>#</th>
+                                <th width="5%">#</th>
                                 <th>Ingrediente</th>
-                                <th>Unidad</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>Fecha de Ingreso</th>
-                                <th>Fecha de Vencimiento</th>
-                                <th>ID Proveedor</th>
-                                <th>ID Usuario</th>
-                                <th>Acciones</th>
+                                <th width="8%">Unidad</th>
+                                <th width="10%">Precio</th>
+                                <th width="10%">Cantidad</th>
+                                <th width="12%">F. Ingreso</th>
+                                <th width="12%">F. Vencimiento</th>
+                                <th>Proveedor</th>
+                                <th>Usuario</th>
+                                <th width="12%" class="table-actions">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,37 +54,91 @@
                                 <td th:text="${i.id}"></td>
                                 <td th:text="${i.nombreIngrediente}"></td>
                                 <td th:text="${i.unidadMedida}"></td>
-                                <td th:text="${i.precio}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(i.precio, 1, 2)}"></td>
                                 <td th:text="${i.cantidad}"></td>
-                                <td th:text="${i.fechaIngreso}"></td>
-                                <td th:text="${i.fechaVencimiento}"></td>
+                                <td th:text="${#temporals.format(i.fechaIngreso, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${i.fechaVencimiento != null} ? ${#temporals.format(i.fechaVencimiento, 'dd/MM/yyyy')} : 'N/A'"></td>
                                 <td th:text="${i.proveedor.nombre}"></td>
                                 <td th:text="${i.usuario.nomb_usu}"></td>
-                                <td style="max-width: 35px;">
-                                    <a th:href="@{/inventario/editar/} + ${i.id}" class="btn btn-sm btn-warning">Editar</a>
-                                    <a th:href="@{/inventario/borrar/} + ${i.id}" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('¿Deshabilitar el Producto?');">Borrar
-                                        <span th:text="${not i.activo} ? 'Habilitar : Deshabilitar'"></span>
+                                <td class="table-actions">
+                                    <a th:href="@{/inventario/editar/} + ${i.id}" class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a th:href="@{/inventario/borrar/} + ${i.id}" class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('¿Deshabilitar el Producto?');"
+                                       th:title="${not i.activo} ? 'Habilitar' : 'Deshabilitar'">
+                                        <i class="bi" 
+                                           th:class="${not i.activo} ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
                                     </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="btn-group float-end" role="group" aria-label="Basic outlined example">
-                        <a th:href="@{/inventario/nuevo}" class="btn btn-outline-primary float-end">
-                            Nuevo ingrediente
-                        </a>
-                        <a th:href="@{/proveedor/listado}" class="btn btn-outline-primary">
-                            Nuevo proveedor
-                        </a>
-                    </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>
-    <script th:fragment="js"></script>
-    <script th:fragment="js" th:src="@{/js/inventario-list.js}"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 
+    <!-- Scripts específicos -->
+    <th:block layout:fragment="scripts">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- DataTables -->
+        <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        
+        <script>
+            $(document).ready(function() {
+                // Configuración de DataTable en español
+                $('#tabla-inventario').DataTable({
+                    "language": {
+                        "decimal": ",",
+                        "thousands": ".",
+                        "processing": "Procesando...",
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "zeroRecords": "No se encontraron resultados",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No hay registros disponibles",
+                        "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                        "search": "Buscar:",
+                        "loadingRecords": "Cargando...",
+                        "paginate": {
+                            "first": "Primera",
+                            "last": "Última",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "aria": {
+                            "sortAscending": ": activar para ordenar columna ascendente",
+                            "sortDescending": ": activar para ordenar columna descendente"
+                        },
+                        "emptyTable": "No hay datos disponibles en la tabla",
+                        "infoPostFix": "",
+                        "searchPlaceholder": "Ingrese término...",
+                        "url": ""
+                    },
+                    "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    "responsive": true,
+                    "autoWidth": false,
+                    "columnDefs": [
+                        { 
+                            "orderable": false, 
+                            "targets": [9],
+                            "className": "text-center" // Centrar contenido columna acciones
+                        }
+                    ],
+                    "initComplete": function() {
+                        // Añadir estilo al buscador
+                        $('.dataTables_filter input').addClass('form-control form-control-sm');
+                        // Añadir estilo al selector de cantidad
+                        $('.dataTables_length select').addClass('form-select form-select-sm');
+                    }
+                });
+            });
+        </script>
+    </th:block>
 </body>
-</html> 
+</html>

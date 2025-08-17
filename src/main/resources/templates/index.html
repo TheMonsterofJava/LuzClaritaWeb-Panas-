@@ -54,55 +54,6 @@
       transform: translateY(0);
     }
   }
-
-  .custom-card {
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  }
-
-  .custom-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .custom-card img {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-  }
-
-  .custom-card .card-body {
-    padding: 20px;
-  }
-
-  .custom-card .card-title {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .custom-card .card-text {
-    font-family: 'Poppins', sans-serif;
-    color: #777;
-  }
-
-  .agregar-carrito {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease-in-out;
-    font-family: 'Poppins', sans-serif;
-    margin-top: 10px;
-  }
-
-  .agregar-carrito:hover {
-    background-color: #ff4a3d;
-  }
 </style>
 </head>
 
@@ -195,14 +146,13 @@
       <div class="row mb-4">
         <h2 class="titulo col-12 text-center h1 text-muted">Categorías principales</h2>
       </div>
-
       <div class="row justify-content-center">
-        <div th:each="c : ${categorias}" class="col-md-3 col-12 mb-4">
-          <div class="card shadow-sm border-0 rounded-lg">
-            <!-- Usamos una condición para asignar un color a cada categoría -->
-            <button type="button" th:value="${c.id}" class="btn category-btn w-100 p-3 rounded-lg btn-outline-peach">
-              <span th:text="${c.nombre}" class="h5 text-dark"></span>
-            </button>
+        <div class="col-md-2 mb-3" th:each="cat : ${categoriasTop}">
+          <div class="card text-center pastel-card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${cat.nombre}">Nombre Categoría</h5>
+              <p class="card-text text-muted" th:text="'Productos: ' + ${#lists.size(cat.productos)}"></p>
+            </div>
           </div>
         </div>
       </div>
@@ -212,25 +162,6 @@
       <h2 class="titulo col-12 text-center h1 text-muted">Destacados</h2>
     </div>
 
-    <!-- CARDS -->
-    <div class="container mt-2">
-      <div class="d-flex flex-wrap justify-content-center"> <!-- Centra horizontalmente -->
-        <div th:each="p : ${productos}" class="col-md-4 mb-4">
-          <div class="card custom-card pastel-card shadow-sm">
-            <img th:src="@{${p.linkImagen}}" class="card-img-top" alt="Imagen del producto">
-            <div class="card-body text-center">
-              <h5 class="card-title" th:text="${p.descripcion}">Nombre del Producto</h5>
-              <p class="card-text"> $<span th:text="${p.precio}">$0.00</span></p>
-              <!-- Botón con atributos data-* -->
-              <a href="#" class="agregar-carrito bi bi-cart4" th:data-id="${p.id}" th:data-nombre="${p.descripcion}"
-                th:data-precio="${p.precio}" th:data-imagen="${p.linkImagen}">
-                Añadir al Carrito
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="container mt-5 mb-4">
       <div class="row">
         <div class="col text-center">

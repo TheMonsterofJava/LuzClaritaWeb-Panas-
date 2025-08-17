@@ -14,259 +14,232 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
         :root {
-            --primary: #ff6f61;
-            --secondary: #f8d0c0;
-            --accent: #ff9e80;
-            --dark: #6d4c41;
-            --light: #fff8f0;
+            --primary: #4a6bff;
+            --secondary: #f0f2ff;
+            --accent: #6c8aff;
+            --dark: #1a237e;
+            --light: #f8f9fa;
             --success: #28a745;
             --danger: #dc3545;
             --info: #17a2b8;
+            --border-radius: 8px;
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #fdf8f5;
-            color: #5a3929;
-            background-image: linear-gradient(to bottom, rgba(253, 248, 245, 0.95), rgba(253, 248, 245, 0.95)), 
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="%23f8d0c0" opacity="0.3"/><circle cx="50" cy="50" r="2" fill="%23f8d0c0" opacity="0.3"/><circle cx="80" cy="70" r="4" fill="%23f8d0c0" opacity="0.3"/></svg>');
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
         }
         
-        .caja-header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 3rem 0;
+        .dashboard-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 0;
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .caja-header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,20 Q40,15 50,30 T80,20" fill="none" stroke="white" stroke-opacity="0.1" stroke-width="2"/></svg>');
-            background-size: cover;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 1;
         }
         
         .header-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
         }
         
         .header-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
+            color: #6c757d;
+            font-size: 1rem;
         }
         
         .summary-card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
             margin-bottom: 1.5rem;
-            border: none;
+            height: 100%;
         }
         
         .summary-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
         }
         
         .card-ingresos {
-            border-top: 5px solid var(--success);
+            border-left: 4px solid var(--success);
         }
         
         .card-egresos {
-            border-top: 5px solid var(--danger);
+            border-left: 4px solid var(--danger);
         }
         
         .card-saldo {
-            border-top: 5px solid var(--info);
+            border-left: 4px solid var(--info);
         }
         
         .summary-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.8;
         }
         
         .summary-title {
-            font-size: 1.1rem;
-            color: var(--dark);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .summary-value {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 0;
         }
         
         .filters-card {
             background: white;
-            border-radius: 15px;
+            border-radius: var(--border-radius);
             padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             margin-bottom: 2rem;
         }
         
         .filter-label {
-            font-weight: 600;
-            color: var(--dark);
+            font-weight: 500;
+            color: #495057;
             margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
         
         .filter-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
         
         .filter-btn:hover {
             background: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 111, 97, 0.3);
+            box-shadow: 0 2px 8px rgba(74, 107, 255, 0.3);
         }
         
-        .movements-table {
+        .data-table {
             background: white;
-            border-radius: 15px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .table-header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
+            background-color: var(--secondary);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0;
+            font-size: 1rem;
         }
         
         .movement-row {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        
+        .movement-row:last-child {
+            border-bottom: none;
         }
         
         .movement-row:hover {
-            background-color: rgba(255, 111, 97, 0.05);
+            background-color: rgba(74, 107, 255, 0.03);
         }
         
         .movement-type {
-            padding: 0.4rem 0.8rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            display: inline-block;
         }
         
         .type-ingreso {
-            background-color: rgba(40, 167, 69, 0.15);
+            background-color: rgba(40, 167, 69, 0.1);
             color: var(--success);
         }
         
         .type-egreso {
-            background-color: rgba(220, 53, 69, 0.15);
+            background-color: rgba(220, 53, 69, 0.1);
             color: var(--danger);
         }
         
         .movement-amount {
-            font-weight: 700;
+            font-weight: 600;
         }
         
         .export-btn {
-            background: var(--dark);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
         }
         
         .export-btn:hover {
-            background: #5a3929;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(90, 57, 41, 0.3);
-            color: white;
-        }
-        
-        .footer-caja {
-            background: linear-gradient(135deg, var(--dark), #5a3929);
-            color: white;
-            padding: 3rem 0;
-            margin-top: 3rem;
-        }
-        
-        .footer-logo {
-            max-width: 80px;
-            margin-bottom: 1rem;
-        }
-        
-        .footer-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .footer-contact {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-social {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .social-icon:hover {
             background: var(--primary);
-            transform: translateY(-3px);
+            color: white;
+            box-shadow: 0 2px 8px rgba(74, 107, 255, 0.3);
+        }
+        
+        .badge-origin {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .table th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            border-bottom-width: 1px;
+        }
+        
+        .table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            padding: 1rem;
         }
         
         @media (max-width: 768px) {
-            .header-title {
-                font-size: 2.5rem;
+            .summary-value {
+                font-size: 1.25rem;
             }
             
-            .summary-value {
+            .header-title {
                 font-size: 1.5rem;
             }
         }
@@ -274,111 +247,102 @@
 </head>
 
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <!-- Encabezado -->
+    <div class="dashboard-header">
         <div class="container">
-            <a class="navbar-brand" href="/home">
-                <img src="/img/logo.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
-                <span class="ms-2 fw-bold" style="color: var(--primary);">Luz Clarita</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/home">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/dashboard-1">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/caja/movimientos">Caja</a>
-                    </li>
-                </ul>
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <a href="#" class="btn btn-outline-primary">
-                        <i class="bi bi-person-circle me-1"></i> Mi Cuenta
-                    </a>
+                    <h1 class="header-title">Movimientos de Caja</h1>
+                    <p class="header-subtitle">Registro detallado de transacciones financieras</p>
+                </div>
+                <div>
+                    <span class="badge bg-light text-dark">
+                        <i class="bi bi-calendar me-1"></i>
+                        <span th:text="${#temporals.format(fechaInicio, 'dd/MM/yyyy') + ' - ' + #temporals.format(fechaFin, 'dd/MM/yyyy')}"></span>
+                    </span>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Encabezado de la caja -->
-    <div class="caja-header">
-        <div class="container text-center header-content">
-            <h1 class="header-title">Movimientos de Caja</h1>
-            <p class="header-subtitle">Seguimiento detallado de todos los ingresos y egresos de tu pastelería</p>
-        </div>
     </div>
 
-    <div class="container py-4">
+    <div class="container py-2">
         <!-- Tarjetas de resumen -->
-        <div class="row">
+        <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="summary-card card-ingresos">
-                    <div class="card-body text-center">
-                        <div class="summary-icon text-success">
-                            <i class="bi bi-arrow-down-circle"></i>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-success">
+                                <i class="bi bi-arrow-down-circle summary-icon"></i>
+                            </div>
+                            <div>
+                                <h3 class="summary-title">Total Ingresos</h3>
+                                <p class="summary-value text-success" 
+                                   th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                                    $0.00
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="summary-title">Total Ingresos</h3>
-                        <p class="summary-value text-success" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
-                            $0.00
-                        </p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="summary-card card-egresos">
-                    <div class="card-body text-center">
-                        <div class="summary-icon text-danger">
-                            <i class="bi bi-arrow-up-circle"></i>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-danger">
+                                <i class="bi bi-arrow-up-circle summary-icon"></i>
+                            </div>
+                            <div>
+                                <h3 class="summary-title">Total Egresos</h3>
+                                <p class="summary-value text-danger" 
+                                   th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                                    $0.00
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="summary-title">Total Egresos</h3>
-                        <p class="summary-value text-danger" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('egresos'), 1, 2, 'COMMA')) : '$0.00'}">
-                            $0.00
-                        </p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="summary-card card-saldo">
-                    <div class="card-body text-center">
-                        <div class="summary-icon text-info">
-                            <i class="bi bi-wallet2"></i>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-info">
+                                <i class="bi bi-wallet2 summary-icon"></i>
+                            </div>
+                            <div>
+                                <h3 class="summary-title">Saldo Actual</h3>
+                                <p class="summary-value text-info" 
+                                   th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
+                                    $0.00
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="summary-title">Saldo Actual</h3>
-                        <p class="summary-value text-info" 
-                           th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('saldo'), 1, 2, 'COMMA')) : '$0.00'}">
-                            $0.00
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Filtros -->
-        <div class="filters-card">
+        <div class="filters-card mb-4">
             <form th:action="@{/caja/movimientos}" method="get">
-                <div class="row g-3">
+                <div class="row g-3 align-items-end">
                     <div class="col-md-4">
                         <label class="filter-label">Fecha Inicio</label>
-                        <input type="date" class="form-control" 
+                        <input type="date" class="form-control form-control-sm" 
                                th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" 
                                name="fechaInicio" required>
                     </div>
                     <div class="col-md-4">
                         <label class="filter-label">Fecha Fin</label>
-                        <input type="date" class="form-control" 
+                        <input type="date" class="form-control form-control-sm" 
                                th:value="${#temporals.format(fechaFin, 'yyyy-MM-dd')}" 
                                name="fechaFin" required>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-4">
                         <button type="submit" class="filter-btn w-100">
-                            <i class="bi bi-funnel me-1"></i> Filtrar Movimientos
+                            <i class="bi bi-funnel me-1"></i> Filtrar
                         </button>
                     </div>
                 </div>
@@ -386,21 +350,28 @@
         </div>
 
         <!-- Tabla de movimientos -->
-        <div class="movements-table">
-            <div class="table-header p-3">
-                <h5 class="mb-0 d-flex align-items-center">
-                    <i class="bi bi-list-check me-2"></i> Detalle de Movimientos
-                </h5>
+        <div class="data-table mb-5">
+            <div class="table-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="table-title">
+                        <i class="bi bi-table me-2"></i> Detalle de Transacciones
+                    </h5>
+                    <a th:if="${cajaId != null}"
+                        th:href="@{/caja/exportar/pdf(cajaId=${cajaId}, fechaInicio=${#temporals.format(fechaInicio, 'yyyy-MM-dd')}, fechaFin=${#temporals.format(fechaFin, 'yyyy-MM-dd')})}"
+                        class="export-btn" target="_blank">
+                        <i class="bi bi-file-earmark-pdf"></i> Exportar
+                    </a>
+                </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table mb-0">
                     <thead>
                         <tr>
                             <th class="text-center">Fecha/Hora</th>
                             <th>Tipo</th>
                             <th class="text-end">Monto</th>
                             <th>Descripción</th>
-                            <th>Operador</th>
+                            <th>Responsable</th>
                             <th>Origen</th>
                         </tr>
                     </thead>
@@ -421,19 +392,19 @@
                                 th:title="${mov.compra != null ? 'ID Compra: ' + mov.compra.id : 
                                            (mov.factura != null ? 'ID Factura: ' + mov.factura.id + ' / N°: ' + mov.factura.numero_factura :
                                            (mov.venta != null ? 'ID Venta: ' + mov.venta.id : 'Sin origen específico'))}">
-                                <span th:case="${mov.compra != null}" class="badge bg-info">
+                                <span th:case="${mov.compra != null}" class="badge bg-info badge-origin">
                                     <i class="bi bi-bag-check me-1"></i>
-                                    <span th:text="'Compra #' + mov.compra.id"></span>
+                                    <span th:text="'Compra'"></span>
                                 </span>
-                                <span th:case="${mov.factura != null}" class="badge bg-success">
-                                    <i class="bi bi-receipt-cutoff me-1"></i>
-                                    <span th:text="'Venta Fact. #' + mov.factura.numero_factura"></span>
+                                <span th:case="${mov.factura != null}" class="badge bg-success badge-origin">
+                                    <i class="bi bi-receipt me-1"></i>
+                                    <span th:text="'Factura'"></span>
                                 </span>
-                                <span th:case="${mov.venta != null}" class="badge bg-warning text-dark">
+                                <span th:case="${mov.venta != null}" class="badge bg-warning text-dark badge-origin">
                                     <i class="bi bi-cart3 me-1"></i>
-                                    <span th:text="'Venta #' + mov.venta.id"></span>
+                                    <span th:text="'Venta'"></span>
                                 </span>
-                                <span th:case="*" class="text-muted">N/A</span>
+                                <span th:case="*" class="badge bg-secondary badge-origin">N/A</span>
                             </td>
                         </tr>
                     </tbody>
@@ -441,74 +412,12 @@
             </div>
             <div class="p-3 border-top">
                 <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted" th:text="'Mostrando ' + ${movimientos.size()} + ' movimientos'"></small>
-                    <a th:if="${cajaId != null}"
-                        th:href="@{/caja/exportar/pdf(cajaId=${cajaId}, fechaInicio=${#temporals.format(fechaInicio, 'yyyy-MM-dd')}, fechaFin=${#temporals.format(fechaFin, 'yyyy-MM-dd')})}"
-                        class="export-btn" target="_blank">
-                        <i class="bi bi-printer"></i> Exportar PDF
-                    </a>
+                    <small class="text-muted" th:text="'Mostrando ' + ${movimientos.size()} + ' registros'"></small>
+                    <small class="text-muted" th:text="'Generado el ' + ${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></small>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer-caja">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <img src="/img/logo-white.png" alt="Logo Luz Clarita" class="footer-logo">
-                    <h3 class="footer-title">Luz Clarita</h3>
-                    <p class="mb-4">¡Hace más de 10 años llenando de dulzura cada momento!</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-icon">
-                            <i class="bi bi-facebook text-white"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="bi bi-instagram text-white"></i>
-                        </a>
-                        <a href="#" class="social-icon">
-                            <i class="bi bi-whatsapp text-white"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h5 class="text-white mb-4">Contacto</h5>
-                    <div class="footer-contact">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Calle 123, Resistencia, Chaco</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="bi bi-telephone"></i>
-                        <span>3624-883171</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="bi bi-envelope"></i>
-                        <span>luzclarita@gmail.com</span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="text-white mb-4">Horarios</h5>
-                    <div class="footer-contact">
-                        <i class="bi bi-clock"></i>
-                        <span>Lunes a Viernes: 8:00 - 20:00</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="bi bi-clock"></i>
-                        <span>Sábados: 9:00 - 13:00</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="bi bi-clock"></i>
-                        <span>Domingos: Cerrado</span>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4 bg-light opacity-25">
-            <div class="text-center">
-                <p class="mb-0">© 2025 Luz Clarita Sin TACC. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -523,32 +432,24 @@
             // Inicializar tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-            
-            // Animación de las tarjetas
-            const cards = document.querySelectorAll('.summary-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'all 0.5s ease';
-                
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 150);
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    trigger: 'hover'
+                });
             });
             
             // Verificar si hay mensajes flash
             const successMessage = /*[[${success}]]*/ null;
             if (successMessage) {
                 Swal.fire({
-                    title: 'Operación exitosa',
+                    title: 'Éxito',
                     text: successMessage,
                     icon: 'success',
-                    confirmButtonColor: '#ff6f61',
+                    confirmButtonColor: 'var(--primary)',
                     timer: 3000,
-                    timerProgressBar: true
+                    timerProgressBar: true,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false
                 });
             }
             
@@ -558,22 +459,10 @@
                     title: 'Error',
                     text: errorMessage,
                     icon: 'error',
-                    confirmButtonColor: '#ff6f61'
+                    confirmButtonColor: 'var(--primary)'
                 });
             }
         });
     </script>
 </body>
 </html>
-
-<!-- Fix: Corregir asignación de usuario a caja y origen de movimiento.
-
-Este commit incluye las siguientes correcciones:
-
-1.  **Asignación de Usuario a Caja:**
-    *   En `CajaController`, al guardar una nueva caja, ahora se asigna correctamente el usuario autenticado a la entidad `Caja`. Esto asegura que el creador de la caja se registre y se muestre en el listado de cajas.
-
-2.  **Visualización de Origen del Movimiento:**
-    *   En `ComprasController`, al registrar una compra y crear el `MovimientoCaja` de egreso asociado, se asegura que la entidad `Compra` (persistida) se vincule correctamente al `MovimientoCaja`. Esto permite que la columna "Origen Movimiento" en la vista `movimientos_caja.html` muestre la referencia a la compra (ej. "Compra #ID").
-
- -->

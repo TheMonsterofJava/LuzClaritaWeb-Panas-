@@ -1,0 +1,253 @@
+:root {
+    --primary-pastel: #FF9BB3; /* Rosa más fuerte */
+    --secondary-pastel: #8BD3FF; /* Azul más fuerte */
+    --accent-pastel: #C5F076; /* Verde más fuerte */
+    --dark-pastel: #7EC8FF; /* Azul oscuro más fuerte */
+    --light-pastel: #FFF0F5; /* Rosa pastel claro */
+    
+    --primary-dark: #2E4057;
+    --secondary-dark: #3A506B;
+    --accent-dark: #4A6FA5;
+    --text-light: #F8F9FA;
+    
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-pastel); /* Fondo pastel */
+    color: #333;
+    overflow-x: hidden;
+}
+
+.main-content {
+    background-color: #fedbe6; /* Rosa pastel más intenso que el body */
+}
+
+/* Navbar Superior */
+.navbar {
+    background-color: var(--primary-pastel) !important; /* Navbar en color pastel */
+    box-shadow: var(--shadow);
+    padding: 0.8rem 1.5rem;
+}
+
+.navbar-brand {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333 !important; /* Texto oscuro para contraste */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    color: #FF6B8B !important; /* Rosa más fuerte para el ícono */
+    margin-right: 10px;
+}
+
+.navbar-toggler {
+    border-color: #333;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2851, 51, 51, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.nav-link, .dropdown-item {
+    color: #333 !important; /* Texto oscuro */
+    font-weight: 500 !important;
+}
+
+.dropdown-menu {
+    background-color: var(--light-pastel); /* Fondo pastel */
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-pastel); /* Rosa pastel al hover */
+}
+
+/* Contenido Principal */
+.main-content {
+    padding: 2rem;
+    transition: var(--transition);
+}
+
+.page-header {
+    background-color: rgb(248, 203, 231);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+}
+
+.page-header-title {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.page-header-title i {
+    color: var(--accent-dark);
+    margin-right: 10px;
+}
+
+/* Grid de Cubos */
+.cube-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.cube {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    overflow: hidden;
+    cursor: pointer;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.cube:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+}
+
+.cube-header {
+    padding: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex-grow: 1;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.cube-header i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.cube-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.cube-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    background-color: white;
+}
+
+.cube.active {
+    height: auto;
+}
+
+.cube.active .cube-header {
+    padding-bottom: 10px;
+}
+
+.cube.active .cube-body {
+    max-height: 500px;
+    padding: 20px;
+}
+
+.cube-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.cube-item:last-child {
+    border-bottom: none;
+}
+
+.cube-item i {
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.cube-item a {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.2s;
+    width: 100%;
+    display: block;
+    font-weight: 500;
+}
+
+.cube-item a:hover {
+    color: var(--accent-dark);
+}
+
+/* Colores individuales para los cubos - más fuertes */
+.cube-dashboard .cube-header {
+    background-color: #FF8FA3; /* Rosa más fuerte */
+}
+
+.cube-pedidos .cube-header {
+    background-color: #7FDBB6; /* Verde más fuerte */
+}
+
+.cube-productos .cube-header {
+    background-color: #9FB4FF; /* Azul más fuerte */
+}
+
+.cube-inventario .cube-header {
+    background-color: #B5E56E; /* Verde claro más fuerte */
+}
+
+.cube-proveedores .cube-header {
+    background-color: #FFB347; /* Naranja más fuerte */
+}
+
+.cube-ventas .cube-header {
+    background-color: #7FDBB6; /* Verde más fuerte */
+}
+
+.cube-cursos .cube-header {
+    background-color: #9FB4FF; /* Azul más fuerte */
+}
+
+.cube-usuarios .cube-header {
+    background-color: #FF8FA3; /* Rosa más fuerte */
+}
+
+/* Botones */
+.btn-outline-primary {
+    border-color: var(--accent-dark);
+    color: var(--accent-dark);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-dark);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cube-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cube {
+        height: 240px;
+    }
+}

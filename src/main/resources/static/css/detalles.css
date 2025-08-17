@@ -1,0 +1,240 @@
+/* Estilos generales */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ffebf3;
+}
+
+/* Fuentes especiales */
+.pastry-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.8rem;
+    color: #e83e8c;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    color: #e83e8c;
+    border-bottom: 2px dashed #ffb6c1;
+    padding-bottom: 10px;
+}
+
+/* Fondo y decoración */
+.pastry-bg {
+    background-color: #fff5f5;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #ffe8e8;
+    position: relative;
+    overflow: hidden;
+}
+
+.pastry-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background-image: url('/img/cake-pattern.png');
+    background-size: contain;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.pastry-section {
+    background-color: #fff5f5;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 40px;
+    border: 1px solid #ffe8e8;
+}
+
+/* Imágenes de productos */
+.product-image {
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 15px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(232, 62, 140, 0.1);
+    border: 1px solid #ffdfea;
+    z-index: 1;
+    position: relative;
+}
+
+.pastry-shadow {
+    box-shadow: 0 10px 20px rgba(232, 62, 140, 0.15);
+}
+
+/* Badges y etiquetas */
+.availability-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.available {
+    background-color: #e83e8c;
+    color: white;
+}
+
+.unavailable {
+    background-color: #6c757d;
+    color: white;
+}
+
+.category-badge {
+    background-color: #ffb6c1;
+    color: #8a2be2;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+
+.ingredient-badge {
+    background-color: #f8d7da;
+    color: #e83e8c;
+    padding: 5px 12px;
+    border-radius: 15px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+/* Precios */
+.price-tag {
+    font-size: 2.2rem;
+    color: #e83e8c;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(to right, #e83e8c, #ff8fab);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Tarjetas */
+.detail-card {
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(232, 62, 140, 0.1);
+    margin-bottom: 25px;
+    border: none;
+    overflow: hidden;
+}
+
+.detail-card .card-header {
+    background: linear-gradient(to right, #e83e8c, #ff8fab);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border: none;
+}
+
+.pastry-card-header {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem !important;
+}
+
+.related-product-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 100%;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.related-product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(232, 62, 140, 0.2);
+}
+
+.related-product-img {
+    height: 200px;
+    object-fit: contain;
+    background: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #ffe8e8;
+}
+
+.pastry-item-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #e83e8c;
+    transition: color 0.3s ease;
+}
+
+/* Botones */
+.btn-pastel-primary {
+    background-color: #e83e8c;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-pastel-primary:hover {
+    background-color: #d2337a;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(232, 62, 140, 0.3);
+}
+
+.btn-pastel-secondary {
+    background-color: white;
+    color: #e83e8c;
+    border: 2px solid #e83e8c;
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-pastel-secondary:hover {
+    background-color: #fff5f5;
+    color: #d2337a;
+    border-color: #d2337a;
+}
+
+/* Decoración adicional */
+.cake-decoration {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('/img/cake-decoration.png');
+    background-size: 40px 40px;
+    opacity: 0.05;
+    z-index: 0;
+}
+
+.ingredients h5 {
+    color: #e83e8c;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pastry-title {
+        font-size: 2rem;
+    }
+    
+    .product-image {
+        max-height: 350px;
+    }
+    
+    .price-tag {
+        font-size: 1.8rem;
+    }
+}

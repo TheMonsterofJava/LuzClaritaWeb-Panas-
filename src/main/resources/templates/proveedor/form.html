@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout/layout}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${titulo}"></title>
+
+    <th:block layout:fragment="styles">
+    </th:block>
 </head>
 
 <body>
-    <div layout:fragment="contenido" class="container-fluid py-4 ">
-        <div class="card shadow p-3 mb-5 bg-body rounded">
-            <div class="card-header">
-                <h4 class="text-primary" th:text="${titulo}"></h4>
+    <!-- Contenido principal -->
+    <div layout:fragment="content" class="main-content">
+        <div class="card card-text">
+            <div class="card-header bg-primary text-white">
+                <h4 class="titulo-form" th:text="${titulo}"></h4>
             </div>
             <form th:action="@{/proveedor/guardar}" method="post" th:object="${proveedor}">
                 <div class="card-body">
@@ -71,6 +74,9 @@
         </div>
     </div>        
 
-    <script th:fragment="js"></script>
+    <!-- Scripts específicos -->
+    <th:block layout:fragment="scripts">
+        <script th:fragment="js"></script>
+    </th:block>
 </body>
 </html>

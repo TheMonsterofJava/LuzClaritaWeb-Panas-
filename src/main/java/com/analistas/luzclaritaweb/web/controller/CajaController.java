@@ -73,7 +73,7 @@ public class CajaController {
     @GetMapping("/listado")
     public String listadoCajas(Model model) {
         List<Caja> cajas = cajaService.listarCajas();
-        model.addAttribute("titulo", "Administración de Cajas");
+        model.addAttribute("titulo", "Administración de Caja");
         model.addAttribute("cajas", cajas);
         return "movimientos/caja";
     }

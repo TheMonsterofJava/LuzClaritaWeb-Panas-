@@ -1,24 +1,31 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titulo}"></title>
+    <title>Compra a proveedores</title>
+    
+    <th:block layout:fragment="styles">
+    </th:block>
 </head>
 
 <body>
-    <div layout:fragment="contenido" class="container-fluid py-4">
+    <!-- Contenido principal -->
+    <div layout:fragment="content" class="main-content">
         <!-- Template oculto para opciones de ingredientes -->
-        <div id="ingredientes-options" style="display: none;">
-            <option th:each="ing : ${ingredientes}" th:value="${ing.id}"
-                th:text="${ing.nombreIngrediente} + ' (' + ${ing.unidadMedida} + ')'"></option>
+        <div id="ingredientes-options" class="d-none">
+            <option th:each="ing : ${ingredientes}" 
+                    th:value="${ing.id}"
+                    th:text="${ing.nombreIngrediente} + ' (' + ${ing.unidadMedida} + ')'">
+            </option>
         </div>
 
-        <div class="card shadow p-3 mb-5 bg-body rounded">
-            <div class="card-header">
-                <h4 class="text-primary" th:text="${titulo}"></h4>
+        <div class="card card-text">
+            <div class="card-header bg-primary text-white">
+                <h4 class="text-title">Nueva compra a Proveedores</h4>
             </div>
 
             <form id="formCompra" th:action="@{/compras/guardar}" method="post" th:object="${compra}">
@@ -26,412 +33,138 @@
 
                 <div class="card-body">
                     <!-- Sección de proveedor -->
-                    <div class="form mb-3">
+                    <div class="mb-3">
                         <label for="proveedor" class="form-label">Proveedor</label>
-                        <select id="proveedor" class="form-select" th:field="*{proveedor.id}">
+                        <select id="proveedor" class="form-select" th:field="*{proveedor.id}" required>
                             <option value="">Seleccione un proveedor</option>
-                            <option th:each="prov : ${proveedores}" th:value="${prov.id}" th:text="${prov.nombre}"
-                                th:selected="${compra.proveedor != null and compra.proveedor.id == prov.id}"></option>
+                            <option th:each="prov : ${proveedores}" 
+                                    th:value="${prov.id}" 
+                                    th:text="${prov.nombre}"
+                                    th:selected="${compra.proveedor != null and compra.proveedor.id == prov.id}">
+                            </option>
                         </select>
-                        <small class="form-label text-danger" th:errors="*{proveedor}"></small>
+                        <small class="text-danger" th:errors="*{proveedor}"></small>
                     </div>
 
                     <!-- Sección de caja -->
-                    <div class="form mb-3">
+                    <div class="mb-3">
                         <label for="caja" class="form-label">Caja</label>
-                        <select id="caja" class="form-select" th:field="*{caja.id}">
+                        <select id="caja" class="form-select" th:field="*{caja.id}" required>
                             <option value="">Seleccione una caja abierta</option>
-                            <option th:each="c : ${cajasAbiertas}" th:value="${c.id}" th:text="'Caja #' + ${c.id}"
-                                th:selected="${compra.caja != null and compra.caja.id == c.id}"></option>
+                            <option th:each="c : ${cajasAbiertas}" 
+                                    th:value="${c.id}" 
+                                    th:text="'Caja #' + ${c.id}"
+                                    th:selected="${compra.caja != null and compra.caja.id == c.id}">
+                            </option>
                         </select>
-                        <small class="form-label text-danger" th:errors="*{caja}"></small>
+                        <small class="text-danger" th:errors="*{caja}"></small>
                     </div>
 
                     <!-- Descripción -->
-                    <div class="form mb-3">
+                    <div class="mb-4">
                         <label for="descripcion" class="form-label">Descripción</label>
-                        <input type="text" id="descripcion" class="form-control" th:field="*{descripcion}"
-                            placeholder="Descripción de la compra" />
-                        <small class="form-label text-danger" th:errors="*{descripcion}"></small>
+                        <input type="text" id="descripcion" class="form-control" 
+                               th:field="*{descripcion}" placeholder="Descripción de la compra" />
+                        <small class="text-danger" th:errors="*{descripcion}"></small>
                     </div>
 
+                    <!-- Detalles de la compra -->
                     <div class="mb-4">
-                        <h5 class="mb-3">Detalles de la Compra</h5>
+                        <h5 class="mb-3 text-secondary">Detalles de la Compra</h5>
+                        
                         <div class="table-responsive">
                             <table class="table table-striped table-hover table-bordered" id="tablaDetalles">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Ingrediente</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
-                                        <th>Subtotal</th>
-                                        <th>Acciones</th>
+                                        <th width="35%">Ingrediente</th>
+                                        <th width="15%">Cantidad</th>
+                                        <th width="20%">Precio Unitario</th>
+                                        <th width="20%">Subtotal</th>
+                                        <th width="10%">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="detalle, stat : *{detalles}">
                                         <td>
-                                            <select class="form-select"
-                                                th:field="*{detalles[__${stat.index}__].ingrediente.id}">
+                                            <select class="form-select select2-ingrediente" 
+                                                    th:field="*{detalles[__${stat.index}__].ingrediente.id}" required>
                                                 <option value="">Seleccionar ingrediente</option>
-                                                <option th:each="ing : ${ingredientes}" th:value="${ing.id}"
-                                                    th:text="${ing.nombreIngrediente} + ' (' + ${ing.unidadMedida} + ')'">
+                                                <option th:each="ing : ${ingredientes}" 
+                                                        th:value="${ing.id}"
+                                                        th:text="${ing.nombreIngrediente} + ' (' + ${ing.unidadMedida} + ')'">
                                                 </option>
                                             </select>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control cantidad" min="1" step="1"
-                                                th:field="*{detalles[__${stat.index}__].cantidad}" />
+                                                   th:field="*{detalles[__${stat.index}__].cantidad}" required>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control precio" min="0.01" step="0.01"
-                                                th:field="*{detalles[__${stat.index}__].precioUnitario}" />
+                                                   th:field="*{detalles[__${stat.index}__].precioUnitario}" required>
                                         </td>
-                                        <td
-                                            th:text="${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2)}">
-                                            0.00</td>
-                                        <td>
+                                        <td th:text="${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2)}">
+                                            0.00
+                                        </td>
+                                        <td class="text-center">
                                             <button type="button" class="btn btn-danger btn-sm btn-eliminar">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tfoot>
+                                <tfoot class="table-group-divider">
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Total:</td>
-                                        <td id="totalTabla"
-                                            th:text="${#numbers.formatDecimal(compra.getTotal(), 1, 2)}">0.00</td>
+                                        <td id="totalTabla" class="fw-bold"
+                                            th:text="${#numbers.formatDecimal(compra.getTotal(), 1, 2)}">
+                                            0.00
+                                        </td>
                                         <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
 
-                        <button type="button" id="agregarDetalleBtn" class="btn btn-success">
-                            <i class="bi bi-plus-circle"></i> Agregar Detalle
-                        </button>
-                        <!-- <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal"
-                            data-bs-target="#modalNuevoIngrediente">
-                            <i class="bi bi-plus-circle"></i> Nuevo Ingrediente
-                        </button> -->
-
-
-                        <!-- Botones finales -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="submit" class="btn btn-outline-primary me-md-2">
-                                <i class="bi bi-save"></i> Guardar Compras
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" id="agregarDetalleBtn" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Agregar Detalle
                             </button>
-                            <a th:href="@{/compras/listado}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-primary me-md-2">
+                                    <i class="bi bi-save"></i> Guardar Compras
+                                </button>
+                                <a th:href="@{/compras/listado}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
                         </div>
                     </div>
-            </form>
-            <!-- Modal para nuevo ingrediente
-            <div class="modal fade" id="modalNuevoIngrediente" tabindex="-1"
-                aria-labelledby="modalNuevoIngredienteLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <form id="formNuevoIngrediente">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalNuevoIngredienteLabel">Agregar nuevo
-                                    ingrediente</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nuevoIngredienteNombre" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Unidad de Medida</label>
-                                    <input type="text" class="form-control" id="nuevoIngredienteUnidad" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Precio Total</label>
-                                    <input type="number" class="form-control" id="nuevoIngredientePrecio" min="0.01"
-                                        step="0.01" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Cantidad Total del Ingrediente</label>
-                                    <input type="number" class="form-control" id="nuevoIngredienteCantidad" min="1"
-                                        required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Fecha Ingreso</label>
-                                    <input type="date" class="form-control" id="nuevoIngredienteFechaIngreso" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Fecha Vencimiento</label>
-                                    <input type="date" class="form-control" id="nuevoIngredienteFechaVencimiento"
-                                        required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Proveedor</label>
-                                    <select class="form-select" id="nuevoIngredienteProveedor" required>
-                                        <option value="">Seleccionar proveedor</option>
-                                        <option th:each="prov : ${proveedores}" th:value="${prov.id}"
-                                            th:text="${prov.nombre}"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Agregar</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
-            </div> -->
+            </form>
         </div>
     </div>
-    </div>
 
-    <script th:fragment="js">
-        //Agregar CSRF token a las peticiones AJAX
-        //para que Spring pueda validar las peticiones POST
-        // Y tambien para que no falle la creación de ingredientes
-        $(function () {
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
-            if (token && header) {
-                $(document).ajaxSend(function (e, xhr, options) {
-                    // Solo agregar el token para métodos que no sean GET, HEAD, OPTIONS
-                    if (!/^(GET|HEAD|OPTIONS)$/i.test(options.type) && options.url && !options.url.startsWith('http')) {
-                        // Asegurarse que la URL sea relativa (para no enviar CSRF token a dominios externos)
-                        xhr.setRequestHeader(header, token);
-                    }
-                });
-            } else {
-                console.error("CSRF token or header not found. AJAX POST requests might fail.");
-            }
-        });
-        // Inicializa select2 para un select de ingrediente
-        function initSelect2Ingrediente($select, proveedorId) {
-            $select.select2({
-                placeholder: "Buscar o agregar ingrediente...",
-                allowClear: true,
-                tags: true, // Permite escribir uno nuevo
-                ajax: {
-                    url: '/inventario/buscar',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return { q: params.term || '' };
-                    },
-                    processResults: function (data) {
-                        return { results: data };
-                    },
-                    cache: true
-                },
-                createTag: function (params) {
-                    var term = $.trim(params.term);
-                    if (term === '') return null;
-                    return { id: term, text: term, newTag: true };
-                }
-            }).on('select2:select', function (e) {
-                var data = e.params.data;
-                var $select = $(this); // Get current select2 instance
+    <th:block layout:fragment="scripts">
+        <!-- Primero jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <!-- Luego Select2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        
+        <!-- Opcional: Select2 en español -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/es.js"></script>
 
-                if (data.newTag) {
-                    var currentProveedorId = $('#proveedor').val(); // Get current proveedorId
-
-                    if (!currentProveedorId) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Debe seleccionar un proveedor antes de agregar un nuevo ingrediente.'
-                        });
-                        $select.val(null).trigger('change'); // Clear the new tag
-                        return; // Stop processing
-                    }
-
-                    Swal.fire({
-                        title: 'Nuevo Ingrediente: ' + data.text,
-                        html: '<input id="swal-unidad" class="swal2-input" placeholder="Unidad de medida (kg, gr, etc)">',
-                        focusConfirm: false,
-                        showCancelButton: true,
-                        confirmButtonText: 'Crear',
-                        cancelButtonText: 'Cancelar',
-                        preConfirm: () => {
-                            const unidad = document.getElementById('swal-unidad').value;
-                            if (!unidad) {
-                                Swal.showValidationMessage('Por favor, ingrese la unidad de medida');
-                                return false;
-                            }
-                            return unidad;
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed && result.value) {
-                            const unidadMedida = result.value;
-                            $.post('/inventario/ajax/crear-rapido', {
-                                nombre: data.text,
-                                unidad: unidadMedida,
-                                proveedorId: currentProveedorId // Use the currentProveedorId
-                            }, function (resp) {
-                                if (resp && resp.id && resp.text) {
-                                    var option = new Option(resp.text, resp.id, true, true);
-                                    $select.empty().append(option).trigger('change');
-                                } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: 'La respuesta del servidor no fue la esperada al crear el ingrediente.'
-                                    });
-                                    $select.val(null).trigger('change');
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                console.error("Error AJAX en crear-rapido:", jqXHR.responseText);
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error al crear ingrediente',
-                                    text: 'Hubo un problema al intentar guardar el nuevo ingrediente. ' + (jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : errorThrown)
-                                });
-                                $select.val(null).trigger('change'); // Clear the new tag
-                            });
-                        } else {
-                            // User cancelled or didn't confirm
-                            $select.val(null).trigger('change');
-                        }
-                    });
-                }
-            });
-        }
-
-        $(document).ready(function () {
-            // Función para agregar nueva fila
-            function agregarFila(index) {
-                const newRow = `
-        <tr>
-            <td>
-                <select class="form-select select2-ingrediente" name="detalles[${index}].ingrediente.id" required style="width:100%"></select>
-            </td>
-            <td>
-                <input type="number" class="form-control cantidad" name="detalles[${index}].cantidad" min="1" required>
-            </td>
-            <td>
-                <input type="number" class="form-control precio" name="detalles[${index}].precioUnitario" min="0.01" step="0.01" required>
-            </td>
-            <td class="subtotal">0.00</td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm btn-eliminar">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </td>
-        </tr>`;
-                return newRow;
-            }
-
-            // Inicializa Select2 en todos los selects de ingrediente existentes
-            $('#tablaDetalles tbody .select2-ingrediente').each(function () {
-                var proveedorId = $('#proveedor').val();
-                initSelect2Ingrediente($(this), proveedorId);
-            });
-
-            // Evento para agregar detalle
-            $('#agregarDetalleBtn').click(function () {
-                const index = $('#tablaDetalles tbody tr').length;
-                const newRow = agregarFila(index);
-                $('#tablaDetalles tbody').append(newRow);
-
-                // Inicializar Select2 en la nueva fila
-                setTimeout(function () {
-                    var $newSelect = $('#tablaDetalles tbody tr:last .select2-ingrediente');
-                    var proveedorId = $('#proveedor').val();
-                    initSelect2Ingrediente($newSelect, proveedorId);
-                }, 100);
-
-                // Inicializar eventos en la nueva fila
-                const $newRow = $('#tablaDetalles tbody tr').last();
-                $newRow.find('.cantidad, .precio').on('input', calcularSubtotal);
-                $newRow.find('.btn-eliminar').click(eliminarDetalle);
-            });
-
-            // Si cambia proveedor, actualiza el proveedorId en los selects nuevos
-            $('#proveedor').on('change', function () {
-                var proveedorId = $(this).val();
-                $('.select2-ingrediente').each(function () {
-                    $(this).data('proveedorId', proveedorId);
-                });
-            });
-
-            // Cálculo de subtotal
-            function calcularSubtotal() {
-                const row = $(this).closest("tr");
-                const cantidad = parseFloat(row.find('.cantidad').val()) || 0;
-                const precio = parseFloat(row.find('.precio').val()) || 0;
-                const subtotal = cantidad * precio;
-                row.find('.subtotal').text(subtotal.toFixed(2));
-                calcularTotal();
-            }
-
-            // Eliminar fila
-            function eliminarDetalle() {
-                Swal.fire({
-                    title: '¿Eliminar este item?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).closest("tr").remove();
-                        calcularTotal();
-                        reindexarFilas();
-                    }
-                });
-            }
-
-            // Cálculo de total
-            function calcularTotal() {
-                let total = 0;
-                $('.subtotal').each(function () {
-                    total += parseFloat($(this).text()) || 0;
-                });
-                $("#totalTabla").text(total.toFixed(2));
-            }
-
-            // Reindexar filas
-            function reindexarFilas() {
-                $('#tablaDetalles tbody tr').each(function (newIndex) {
-                    $(this).find('[name]').each(function () {
-                        const newName = $(this).attr('name')
-                            .replace(/detalles\[\d+\]/g, `detalles[${newIndex}]`);
-                        $(this).attr('name', newName);
-                    });
-                });
-            }
-
-            // Eventos iniciales
-            $(document).on('input', '.cantidad, .precio', calcularSubtotal);
-            $(document).on('click', '.btn-eliminar', eliminarDetalle);
-
-            // Validación: No permitir guardar compra sin detalles
-            $('#formCompra').on('submit', function (e) {
-                var error = false;
-                $('.select2-ingrediente').each(function () {
-                    var val = $(this).val();
-                    if (!val || isNaN(Number(val))) {
-                        error = true;
-                    }
-                });
-                if (error) {
-                    e.preventDefault();
-                    Swal.fire("Hay ingredientes no válidos", "Corrige los ingredientes antes de guardar", "error");
-                    return false;
-                }
-                if ($('#tablaDetalles tbody tr').length === 0) {
-                    e.preventDefault();
-                    Swal.fire("Debes agregar al menos un detalle", "", "warning");
-                }
-            });
-        });
-    </script>
-
-    </div>
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+            
+        <!-- Finalmente tu script -->
+        <script th:src="@{/js/compras.js}"></script>
+    </th:block>
 </body>
-
 </html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+    <title th:text="${titulo}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts - Fuentes dulces -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" th:href="@{/css/detalles.css}">
+</head>
+
+<body>
+    <div layout:fragment="contenido">
+        
+        <!-- Detalles del Producto -->
+        <div class="container my-5">
+            <div class="product-header pastry-bg">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="position-relative">
+                            <div class="cake-decoration"></div>
+                            <img th:src="@{${producto.linkImagen}}" 
+                                 class="img-fluid product-image pastry-shadow" 
+                                 alt="Imagen del pastel"
+                                 onerror="this.src='/img/default-cake.png'">
+                            <span th:class="${producto.activo && producto.stock > 0} ? 
+                                          'badge availability-badge available' : 
+                                          'badge availability-badge unavailable'"
+                                  th:text="${producto.activo && producto.stock > 0} ? 
+                                          '¡Disponible!' : 'Agotado'">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h1 th:text="${producto.nombre}" class="mb-3 pastry-title"></h1>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge category-badge me-2" 
+                                  th:text="${producto.categoria.nombre}"></span>
+                            <small class="text-muted">Código: #<span th:text="${producto.id}"></span></small>
+                        </div>
+                        
+                        <div class="price-tag mb-3" 
+                             th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2, 'COMMA')}"></div>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="me-3"><strong>Porciones:</strong> 
+                                <span th:text="${producto.stock}"></span> disponibles
+                            </span>
+                            <span th:if="${producto.activo}" class="text-success">
+                                <i class="bi bi-check-circle-fill"></i> ¡Recién horneado!
+                            </span>
+                            <span th:unless="${producto.activo}" class="text-danger">
+                                <i class="bi bi-x-circle-fill"></i> No disponible
+                            </span>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a th:href="@{/productos/listado}" class="btn btn-pastel-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver al menú
+                            </a>
+                            <button th:if="${producto.activo && producto.stock > 0}" class="btn btn-pastel-primary">
+                                <i class="bi bi-cart-plus"></i> Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card detail-card">
+                        <div class="card-header pastry-card-header">
+                            <i class="bi bi-card-text"></i> Descripción del Pastel
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" th:text="${producto.descripcion} ?: 'Este delicioso pastel está esperando por tu descripción...'"></p>
+                            <div class="ingredients mt-4">
+                                <h5><i class="bi bi-list-check"></i> Ingredientes principales:</h5>
+                                <div class="d-flex flex-wrap">
+                                    <span class="ingredient-badge">Harina premium</span>
+                                    <span class="ingredient-badge">Huevos frescos</span>
+                                    <span class="ingredient-badge">Mantequilla</span>
+                                    <span class="ingredient-badge">Azúcar</span>
+                                    <span class="ingredient-badge">Esencia de vainilla</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos Relacionados -->
+            <div class="related-products pastry-section" th:if="${not #lists.isEmpty(productosRelacionados)}">
+                <h3 class="mb-4 section-title"><i class="bi bi-star-fill"></i> Más delicias para probar</h3>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4" th:each="relacionado : ${productosRelacionados}">
+                        <div class="card related-product-card h-100">
+                            <a th:href="@{'/productos/detalle/' + ${relacionado.id}}" class="text-decoration-none">
+                                <div class="position-relative">
+                                    <img th:src="@{${relacionado.linkImagen}}" 
+                                         class="card-img-top related-product-img" 
+                                         alt="Producto relacionado"
+                                         onerror="this.src='/img/default-cake.png'">
+                                    <span th:if="${!relacionado.activo || relacionado.stock <= 0}" 
+                                          class="badge availability-badge unavailable">
+                                        Agotado
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title pastry-item-title" th:text="${relacionado.nombre}"></h5>
+                                    <p class="card-text price-tag" 
+                                       th:text="'$' + ${#numbers.formatDecimal(relacionado.precio, 1, 2, 'COMMA')}"></p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/carrito.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejar imágenes por defecto
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = '/img/default-cake.png';
+                };
+            });
+            
+            // Efecto hover para tarjetas de productos
+            document.querySelectorAll('.related-product-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.querySelector('.pastry-item-title').style.color = '#e83e8c';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.querySelector('.pastry-item-title').style.color = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

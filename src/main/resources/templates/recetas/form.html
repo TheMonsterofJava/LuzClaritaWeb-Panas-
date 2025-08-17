@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin}">
+
 <head>
     <title th:text="${titulo}"></title>
     <style>
@@ -161,14 +164,12 @@
         }
     </style>
 </head>
-<body class="form-body">
-
-<div layout:fragment="contenido" class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card card-receta">
-                <div class="card-header card-header-receta">
-                    <h4 class="titulo-form" th:text="${titulo}"></h4>
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content" class="main-content">
+            <div class="card card-form">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                <h4 class="titulo-form" th:text="${titulo}"></h4>
                 </div>
 
                 <form th:action="@{/recetas/guardar}" method="post" th:object="${receta}" accept-charset="UTF-8" id="recetaForm">
@@ -278,86 +279,86 @@
                 </form>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Scripts -->
-<script th:fragment="js">
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl, {
-                placement: 'top',
-                trigger: 'hover focus',
-                delay: { "show": 300, "hide": 100 }
-            });
-        });
-
-        // Vista previa de la imagen
-        const imageLinkInput = document.getElementById('imagen_link');
-        const imagePreview = document.getElementById('imagePreview');
-        
-        imageLinkInput.addEventListener('change', function() {
-            if (this.value) {
-                imagePreview.src = this.value;
-                imagePreview.style.display = 'block';
-            } else {
-                imagePreview.style.display = 'none';
-            }
-        });
-        
-        // Mostrar alerta si hay mensajes flash
-        const successMessage = /*[[${success}]]*/ null;
-        if (successMessage) {
-            Swal.fire({
-                title: '¡Éxito!',
-                text: successMessage,
-                icon: 'success',
-                confirmButtonColor: '#ff6f61',
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            }).then(() => {
-                if (window.location.pathname.includes('/recetas/form')) {
-                    window.location.href = '/recetas/listado';
-                }
-            });
-        }
-        
-        const errorMessage = /*[[${error}]]*/ null;
-        if (errorMessage) {
-            Swal.fire({
-                title: 'Error',
-                text: errorMessage,
-                icon: 'error',
-                confirmButtonColor: '#ff6f61'
-            });
-        }
-        
-        // Validación antes de enviar el formulario
-        document.getElementById('recetaForm').addEventListener('submit', function(e) {
-            let isValid = true;
-            const requiredFields = this.querySelectorAll('[required]');
-            
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.classList.add('is-invalid');
-                }
-            });
-            
-            if (!isValid) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Campos incompletos',
-                    text: 'Por favor completa todos los campos requeridos',
-                    icon: 'warning',
-                    confirmButtonColor: '#ff6f61'
+    <!-- Fragmento de JavaScript -->
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Inicializar tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl, {
+                        placement: 'top',
+                        trigger: 'hover focus',
+                        delay: { "show": 300, "hide": 100 }
+                    });
                 });
-            }
-        });
-    });
-</script>
+
+                // Vista previa de la imagen
+                const imageLinkInput = document.getElementById('imagen_link');
+                const imagePreview = document.getElementById('imagePreview');
+                
+                imageLinkInput.addEventListener('change', function() {
+                    if (this.value) {
+                        imagePreview.src = this.value;
+                        imagePreview.style.display = 'block';
+                    } else {
+                        imagePreview.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar alerta si hay mensajes flash
+                const successMessage = /*[[${success}]]*/ null;
+                if (successMessage) {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: successMessage,
+                        icon: 'success',
+                        confirmButtonColor: '#ff6f61',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    }).then(() => {
+                        if (window.location.pathname.includes('/recetas/form')) {
+                            window.location.href = '/recetas/listado';
+                        }
+                    });
+                }
+                
+                const errorMessage = /*[[${error}]]*/ null;
+                if (errorMessage) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonColor: '#ff6f61'
+                    });
+                }
+                
+                // Validación antes de enviar el formulario
+                document.getElementById('recetaForm').addEventListener('submit', function(e) {
+                    let isValid = true;
+                    const requiredFields = this.querySelectorAll('[required]');
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            isValid = false;
+                            field.classList.add('is-invalid');
+                        }
+                    });
+                    
+                    if (!isValid) {
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'Campos incompletos',
+                            text: 'Por favor completa todos los campos requeridos',
+                            icon: 'warning',
+                            confirmButtonColor: '#ff6f61'
+                        });
+                    }
+                });
+            });
+        </script>
+    </th:block>
 </body>
 </html>

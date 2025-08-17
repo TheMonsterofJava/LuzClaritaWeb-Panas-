@@ -19,7 +19,8 @@ public class CarritoInterceptor implements HandlerInterceptor {
         "/home",
         "/productos/listado",
         "/recetas/cards",
-        "/cursos/listado2"
+        "/cursos/listado2",
+        "/productos/detalle"
     );
 
     // Rutas donde NO debe aparecer el carrito
