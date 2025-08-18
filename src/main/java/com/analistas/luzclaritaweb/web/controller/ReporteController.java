@@ -1,7 +1,7 @@
 package com.analistas.luzclaritaweb.web.controller;
 
 import com.analistas.luzclaritaweb.model.domain.RegistroVenta;
-import com.analistas.luzclaritaweb.model.service.interfaces.IRegistroVentaService;
+import com.analistas.luzclaritaweb.model.repository.IRegistroVentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -18,11 +18,11 @@ import java.util.List;
 public class ReporteController {
 
     @Autowired
-    private IRegistroVentaService registroVentaService;
+    private IRegistroVentaRepository registroVentaRepository;
 
     @GetMapping("/ventas")
     public String verReporteVentas(Model model) {
-        List<RegistroVenta> ventas = registroVentaService.buscarTodos();
+        List<RegistroVenta> ventas = registroVentaRepository.findAll();
 
         // Calcular el total general de los ingresos
         BigDecimal totalGeneral = ventas.stream()

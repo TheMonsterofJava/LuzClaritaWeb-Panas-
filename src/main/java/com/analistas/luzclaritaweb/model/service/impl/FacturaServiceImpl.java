@@ -21,7 +21,6 @@ import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
 import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
-import com.analistas.luzclaritaweb.model.service.interfaces.IRegistroVentaService;
 
 import jakarta.transaction.Transactional;
 
@@ -40,9 +39,6 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Autowired
     private ICajaService cajaService;
-
-    @Autowired 
-    private IRegistroVentaService registroVentaService; 
 
     @Override
     public Factura guardar(Factura factura) {
@@ -100,19 +96,8 @@ public class FacturaServiceImpl implements IFacturaService {
             Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + item.getProductoId()));
 
-            // Verificar y Actualizar Stock:
-            // Verificar y actualizar el stock
-            if (producto.getStock() < item.getCantidad()) {
-                // Lanzamos una excepción específica que podría ser manejada en el controlador
-                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getDescripcion());
-            }
-            producto.setStock(producto.getStock() - item.getCantidad());
-            productoRepository.save(producto); // Guardamos el producto con el stock actualizado
-
-            // Registrar la venta en el nuevo sistema de reportes
-            registroVentaService.registrarVenta(producto.getDescripcion(), item.getCantidad(), producto.getPrecio());
-
-            // Crear el detalle de la factura
+            // La lógica de stock y registro de venta se maneja en el controlador.
+            // Aquí solo creamos la factura y sus detalles.
 
             Detalle_factura detalle = new Detalle_factura();
 

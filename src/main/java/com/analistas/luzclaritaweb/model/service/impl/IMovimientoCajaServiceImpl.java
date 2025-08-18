@@ -6,19 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
-
 import com.analistas.luzclaritaweb.model.domain.Caja;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.repository.IMovimientoCajaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.IMovimientoCajaService;
+
 import com.analistas.luzclaritaweb.model.repository.ICajaRepository;
 
 @Service
 public class IMovimientoCajaServiceImpl implements IMovimientoCajaService {
+
+
 
     private final IMovimientoCajaRepository movimientoCajaRepository;
     private final ICajaRepository cajaRepository;
@@ -165,6 +166,5 @@ public class IMovimientoCajaServiceImpl implements IMovimientoCajaService {
 
         return resumen;
     }
-
 
 }
