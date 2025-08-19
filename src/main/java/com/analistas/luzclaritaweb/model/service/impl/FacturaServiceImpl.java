@@ -1,6 +1,5 @@
 package com.analistas.luzclaritaweb.model.service.impl;
 
-// import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.Caja;
@@ -21,11 +21,12 @@ import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
 import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 
-import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
+@Slf4j
 public class FacturaServiceImpl implements IFacturaService {
 
     @Autowired
@@ -41,91 +42,112 @@ public class FacturaServiceImpl implements IFacturaService {
     private ICajaService cajaService;
 
     @Override
+    @Transactional
     public Factura guardar(Factura factura) {
         // Guardar la factura primero
         Factura facturaGuardada = facturaRepository.save(factura);
 
         // Guardar los detalles
-        for (Detalle_factura detalle : factura.getDetalles()) {
-            detalle.setFactura(facturaGuardada);
-            detalleFacturaRepository.save(detalle);
+        if (factura.getDetalles() != null) {
+            for (Detalle_factura detalle : factura.getDetalles()) {
+                detalle.setFactura(facturaGuardada);
+                detalleFacturaRepository.save(detalle);
+            }
         }
 
         return facturaGuardada;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Factura buscarPorId(Long id) {
         return facturaRepository.findById(id).orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Factura> buscarTodas() {
         return facturaRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Factura> buscarPorUsuario(Usuario usuario) {
         return facturaRepository.findByClienteUsuario(usuario);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Factura crearFacturaDesdeCarrito(List<CarritoDTO> itemsCarrito, Usuario usuario, String metodoPago) {
+        log.info("Iniciando creación de factura para usuario: {} con {} items.", usuario.getNomb_usu(), itemsCarrito.size());
+
         if (usuario.getCliente() == null) {
+            log.error("Error crítico: El usuario {} no tiene un cliente asociado.", usuario.getNomb_usu());
             throw new IllegalStateException("El usuario no tiene un cliente asociado");
         }
 
-        // Obtener la caja activa
         Caja cajaActiva = cajaService.buscarUltimaCajaAbiertaYActiva(Caja.EstadoCaja.ABIERTA)
-                .orElseThrow(() -> new IllegalStateException(
-                        "No hay ninguna caja activa en el sistema. No se puede crear la factura."));
+                .orElseThrow(() -> {
+                    log.error("Error crítico: No hay ninguna caja activa en el sistema.");
+                    return new IllegalStateException("No hay ninguna caja activa en el sistema. No se puede crear la factura.");
+                });
+        log.info("Caja activa encontrada: ID {}", cajaActiva.getId());
 
         Factura factura = new Factura();
-        factura.setNumero_factura("FAC-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" +
-                generarNumeroFactura());
+        factura.setNumero_factura("FAC-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + generarNumeroFactura());
         factura.setFecha_pedido(LocalDateTime.now());
         factura.setMetodo_pago(metodoPago);
         factura.setCliente(usuario.getCliente());
         factura.setActivo(true);
-        factura.setCaja(cajaActiva); // Asignamos la Caja Activa a la factura.
+        factura.setCaja(cajaActiva);
+        log.info("Objeto Factura pre-creado con N°: {}", factura.getNumero_factura());
 
         List<Detalle_factura> detalles = new ArrayList<>();
-
         for (CarritoDTO item : itemsCarrito) {
+            log.info("Procesando item: Producto ID {}, Cantidad: {}", item.getProductoId(), item.getCantidad());
             Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + item.getProductoId()));
 
-            // La lógica de stock y registro de venta se maneja en el controlador.
-            // Aquí solo creamos la factura y sus detalles.
+            log.info("Producto '{}' encontrado. Stock actual: {}", producto.getDescripcion(), producto.getStock());
+            if (producto.getStock() < item.getCantidad()) {
+                log.error("Stock insuficiente para producto: '{}'. Requerido: {}, Disponible: {}", producto.getDescripcion(), item.getCantidad(), producto.getStock());
+                throw new StockInsuficienteException(
+                        "Stock insuficiente para el producto: " + producto.getDescripcion());
+            }
+
+            int nuevoStock = producto.getStock() - item.getCantidad();
+            log.info("Descontando stock para '{}'. Nuevo stock: {}", producto.getDescripcion(), nuevoStock);
+            producto.setStock(nuevoStock);
+            productoRepository.save(producto);
 
             Detalle_factura detalle = new Detalle_factura();
-
             detalle.setProducto(producto);
             detalle.setCantidad(item.getCantidad());
-
             detalle.setPrecio_unitario(producto.getPrecio());
             detalle.setFactura(factura);
             detalles.add(detalle);
         }
         factura.setDetalles(detalles);
-        return guardar(factura);
+
+        log.info("Guardando factura y sus {} detalles...", detalles.size());
+        Factura facturaGuardada = guardar(factura);
+        log.info("Factura ID: {} guardada exitosamente en la base de datos.", facturaGuardada.getId());
+        
+        return facturaGuardada;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String generarNumeroFactura() {
         Long ultimoNumero = facturaRepository.countByFechaPedidoBetween(
-                LocalDateTime.now().withHour(0).withMinute(0).withSecond(0),
+                LocalDateTime.now().toLocalDate().atStartOfDay(),
                 LocalDateTime.now());
-        // Formateamos el número con 4 dígitos, rellenando con ceros a la izquierda
         return String.format("%04d", ultimoNumero + 1);
     }
 
+    // Este método ya no es necesario, la lógica está en crearFacturaDesdeCarrito
     @Override
-    @Transactional
     public void actualizarInventario(List<CarritoDTO> itemsCarrito) {
-        // Esta lógica ha sido movida a crearFacturaDesdeCarrito para asegurar la atomicidad.
-        // Se mantiene el método por si es usado en otro lugar, pero su cuerpo está vacío.
-        // Idealmente, se eliminaría si no hay otras referencias.
+        // Cuerpo vacío intencionalmente. La lógica fue centralizada.
     }
 }

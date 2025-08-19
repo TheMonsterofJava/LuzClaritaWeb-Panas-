@@ -104,7 +104,10 @@ public class WebSecurityConfig {
                 clientRegistrationRepository);
         http
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        // Desactivar CSRF para los callbacks de MercadoPago
+                        .ignoringRequestMatchers("/success", "/failure", "/pending")
+                )
                 .authorizeHttpRequests((requests) -> requests
 
                         // Public routes
@@ -112,7 +115,9 @@ public class WebSecurityConfig {
                                 "/", "/home", "/img/**", "/js/**", "/css/**", "/assets/**",
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
                                 "/recetas/cards", "/productos/**", "/productos/listado",
-                                "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2")
+                                "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2",
+                                // Callbacks de MP deben ser públicos
+                                "/success", "/failure", "/pending")
                         .permitAll()
 
                         //URL de carrito
@@ -128,15 +133,7 @@ public class WebSecurityConfig {
                         // Prductos - permitir la lectura para clientes y escritura para Admin
                         .requestMatchers(HttpMethod.GET, "/productos/listado").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers("/productos/**").hasAnyAuthority("ROLE_ADMIN")
-
-                        // Rutas de MercadoPago - acceso para clientes y admin
-                        .requestMatchers("/createAndRedirect", "/success", "/failure", "/pending")
-                        .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
-
-                        // Rutas de MercadoPago
-                        .requestMatchers("/createAndRedirect").hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN") // Creación de pago requiere usuario logueado
-                        .requestMatchers("/success", "/failure", "/pending").permitAll() // Callbacks de MP deben ser públicos
-
+                        
                         // Client routes
                         .requestMatchers("/api/carrito/**")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")

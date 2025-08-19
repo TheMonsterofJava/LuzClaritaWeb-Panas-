@@ -1,322 +1,287 @@
 package com.analistas.luzclaritaweb.web.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
+import com.analistas.luzclaritaweb.model.domain.Caja;
+import com.analistas.luzclaritaweb.model.domain.Detalle_factura;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.Producto;
-import com.analistas.luzclaritaweb.model.domain.RegistroVenta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
-import com.analistas.luzclaritaweb.model.repository.IRegistroVentaRepository;
-import com.analistas.luzclaritaweb.model.repository.IUsuarioRepository;
+import com.analistas.luzclaritaweb.model.repository.IDetalleFacturaRepository;
 import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
+import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
-import com.analistas.luzclaritaweb.model.service.interfaces.IFacturaService;
-import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
 import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class MercadoPagoController {
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     @Autowired
-    private IProductoService productoService;
-
-    @Autowired
-    private IFacturaService facturaService;
+    private IProductoRepository productoRepository;
 
     @Autowired
     private ICarritoService carritoService;
 
     @Autowired
-    private IRegistroVentaRepository registroVentaRepository;
-
-    @Autowired
-    private IUsuarioRepository usuarioRepository;
-
-    @Autowired
     private IFacturaRepository facturaRepository;
 
+    @Autowired
+    private IDetalleFacturaRepository detalleFacturaRepository;
+
+    @Autowired
+    private ICajaService cajaService;
+
+
     @PostMapping("/createAndRedirect")
-    @SuppressWarnings("CallToPrintStackTrace")
     public String createAndRedirect(@RequestParam("cartData") String cartDataJson,
             Model model,
-            Authentication authentication) throws MPException {
+            Authentication authentication,
+            RedirectAttributes flash,
+            HttpSession session) {
 
+        log.info("--- INICIANDO PROCESO DE PAGO CON MERCADOPAGO ---");
         try {
             if (authentication == null || !authentication.isAuthenticated()) {
-                model.addAttribute("error", "Usuario no autenticado.");
+                log.warn("Intento de pago sin autenticación.");
+                flash.addFlashAttribute("error", "Usuario no autenticado.");
                 return "redirect:/inicioSesion/login";
             }
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             Usuario usuario = userDetails.getUsuario();
-
-            if (usuario == null) {
-                model.addAttribute("error", "No se pudieron cargar los datos del usuario.");
-                return "redirect:/inicioSesion/login";
-            }
+            log.info("Usuario autenticado: {}", usuario.getNomb_usu());
 
             ObjectMapper objectMapper = new ObjectMapper();
-            List<CarritoDTO> carritoItems = objectMapper.readValue(cartDataJson,
-                    new TypeReference<List<CarritoDTO>>() {
-                    });
+            List<CarritoDTO> carritoItems = objectMapper.readValue(cartDataJson, new TypeReference<List<CarritoDTO>>() {});
+            log.info("Carrito JSON recibido y parseado. Items: {}", carritoItems.stream().map(Object::toString).collect(Collectors.joining(", ")));
+
 
             if (carritoItems.isEmpty()) {
-                model.addAttribute("error", "El carrito está vacío");
-                return "redirect:/home?error=carrito_vacio";
+                log.warn("El carrito está vacío. Abortando pago.");
+                flash.addFlashAttribute("error", "El carrito está vacío");
+                return "redirect:/home";
             }
 
-            // Validar stock ANTES de crear la preferencia
+            log.info("Validando stock de productos...");
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
+                Producto producto = productoRepository.findById(item.getProductoId()).orElse(null);
                 if (producto == null) {
-                    model.addAttribute("error", "Producto no encontrado: " + item.getProductoId());
-                    return "redirect:/home?error=producto_no_encontrado";
+                    log.error("Producto no encontrado con ID: {}. Abortando.", item.getProductoId());
+                    flash.addFlashAttribute("error", "Producto no encontrado: " + item.getProductoId());
+                    return "redirect:/home";
                 }
                 if (producto.getStock() < item.getCantidad()) {
-                    model.addAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
-                    return "redirect:/home?error=sin_stock";
+                    log.error("Stock insuficiente para '{}'. Requerido: {}, Disponible: {}. Abortando.", producto.getDescripcion(), item.getCantidad(), producto.getStock());
+                    flash.addFlashAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
+                    return "redirect:/home";
                 }
             }
+            log.info("Validación de stock completada exitosamente.");
 
-            // Verificar si ya existe una factura pendiente para evitar duplicados
             String externalReference = usuario.getId().toString() + "_" + System.currentTimeMillis();
+            log.info("Generada External Reference para MP: {}", externalReference);
 
             Preference preference = new Preference();
             preference.setBackUrls(new BackUrls()
                     .setFailure(baseUrl + "/failure")
                     .setPending(baseUrl + "/pending")
                     .setSuccess(baseUrl + "/success"));
-            
+            log.info("Back URLs configuradas: success={}, failure={}, pending={}", preference.getBackUrls().getSuccess(), preference.getBackUrls().getFailure(), preference.getBackUrls().getPending());
+
             preference.setExternalReference(externalReference);
 
-            // Crear los items de MercadoPago
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
-                if (producto != null) {
-                    Item mpItem = new Item();
-                    mpItem.setTitle(producto.getDescripcion())
-                            .setQuantity(item.getCantidad())
-                            .setUnitPrice(producto.getPrecio().floatValue());
-
-                    preference.appendItem(mpItem);
-                }
+                Producto producto = productoRepository.findById(item.getProductoId()).get();
+                Item mpItem = new Item();
+                mpItem.setTitle(producto.getDescripcion())
+                      .setQuantity(item.getCantidad())
+                      .setUnitPrice(producto.getPrecio().floatValue());
+                preference.appendItem(mpItem);
             }
+            log.info("Items añadidos a la preferencia de MercadoPago.");
+
+            log.info("Guardando carrito y usuario en la sesión HTTP...");
+            session.setAttribute("carrito_mp", carritoItems);
+            session.setAttribute("usuario_mp", usuario);
+            log.info("Datos guardados en sesión. Clave 'carrito_mp' y 'usuario_mp'.");
+
 
             var result = preference.save();
-            System.out.println("MercadoPago preference created. Redirect URL: " + result.getInitPoint());
-            System.out.println("External Reference: " + externalReference);
-
+            log.info("Preferencia de MercadoPago creada con ID: {}. Redirigiendo a: {}", result.getId(), result.getInitPoint());
             return "redirect:" + result.getInitPoint();
 
-        } catch (MPException e) {
-            System.err.println("Error de MercadoPago: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error al procesar el pago con MercadoPago.");
-            return "redirect:/home?error=error_mercadopago";
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            System.err.println("Error al procesar JSON del carrito: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error al procesar los datos del carrito.");
-            return "redirect:/home?error=error_datos";
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error de validación: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error en los datos proporcionados.");
-            return "redirect:/home?error=error_validacion";
+        } catch (Exception e) {
+            log.error("Error catastrófico en /createAndRedirect", e);
+            flash.addFlashAttribute("error", "Error al procesar la solicitud de pago: " + e.getMessage());
+            return "redirect:/home";
         }
     }
 
     @GetMapping("/success")
+    @Transactional(rollbackFor = Exception.class)
+    @SuppressWarnings("unchecked")
     public String success(HttpServletRequest request,
             @RequestParam("collection_id") String collectionId,
             @RequestParam("collection_status") String collectionStatus,
             @RequestParam("external_reference") String externalReference,
-            @RequestParam("payment_type") String paymentType,
-            @RequestParam("merchant_order_id") String merchantOrderId,
-            @RequestParam("preference_id") String preferenceId,
-            @RequestParam("site_id") String siteId,
-            @RequestParam("processing_mode") String processingMode,
-            @RequestParam("merchant_account_id") String merchantAccountId,
-            Model model) throws MPException {
+            Model model,
+            HttpSession session,
+            RedirectAttributes flash) {
 
-        System.out.println("--- PAGO RECIBIDO, PROCESANDO /success ---");
-        System.out.println("Collection ID: " + collectionId);
-        System.out.println("Collection Status: " + collectionStatus);
-        System.out.println("External Reference: " + externalReference);
-        System.out.println("Preference ID: " + preferenceId);
+        log.info("--- CALLBACK DE MERCADOPAGO /success INVOCADO ---");
+        log.info("Parámetros recibidos -> collection_id: {}, collection_status: {}, external_reference: {}", collectionId, collectionStatus, externalReference);
 
         if (!"approved".equals(collectionStatus)) {
-            System.out.println("El pago no fue aprobado, redirigiendo a /failure");
+            log.warn("El pago no fue aprobado. Estado: {}. Redirigiendo a /failure.", collectionStatus);
+            flash.addFlashAttribute("error", "El pago no fue aprobado por MercadoPago. Estado: " + collectionStatus);
             return "redirect:/failure";
         }
+        log.info("El pago fue aprobado por MercadoPago.");
 
-        // Verificar si esta factura ya fue procesada para evitar duplicados
         if (facturaRepository.existsByMpCollectionId(collectionId)) {
-            System.out.println("Esta transacción ya fue procesada anteriormente");
-            model.addAttribute("titulo", "Transacción ya procesada");
-            model.addAttribute("mensaje", "Esta compra ya fue registrada en el sistema.");
-            return "ventas/success";
+            log.warn("Intento de procesar una transacción duplicada. Collection ID: {}. Redirigiendo a home.", collectionId);
+            flash.addFlashAttribute("warning", "Esta compra ya fue registrada anteriormente.");
+            return "redirect:/home";
         }
+        log.info("La transacción es nueva. Collection ID: {} no existe en la BD.", collectionId);
+        
+        log.info("Recuperando carrito y usuario de la sesión HTTP...");
+        List<CarritoDTO> carritoItems = (List<CarritoDTO>) session.getAttribute("carrito_mp");
+        Usuario usuario = (Usuario) session.getAttribute("usuario_mp");
+        
+        if (carritoItems == null || usuario == null) {
+            log.error("Error crítico: No se encontraron datos del carrito o del usuario en la sesión. La sesión puede haber expirado.");
+            flash.addFlashAttribute("error", "Tu sesión ha expirado. No se pudo completar la compra.");
+            return "redirect:/home";
+        }
+        log.info("Datos de sesión recuperados exitosamente para usuario: {}. Items en carrito: {}", usuario.getNomb_usu(), carritoItems.size());
 
         try {
-            // Obtener información del pago desde MercadoPago
-            var payment = com.mercadopago.resources.Payment.findById(collectionId);
-            var preference = Preference.findById(preferenceId);
-            
-            // Extraer el usuario ID del external_reference
-            String userIdStr = externalReference.split("_")[0];
-            Long userId = Long.parseLong(userIdStr);
-            
-            Usuario usuario = usuarioRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + userId));
+            // LÓGICA DE NEGOCIO DIRECTAMENTE EN EL CONTROLADOR
+            log.info("Iniciando lógica de negocio directamente en el controlador.");
 
-            // AQUÍ ESTÁ LA CLAVE: Obtener los datos desde la preferencia de MercadoPago
-            // en lugar de desde el carrito (que puede estar vacío)
-            List<CarritoDTO> itemsCarrito = new ArrayList<>();
-            
-            for (Item mpItem : preference.getItems()) {
-                // Buscar el producto por nombre (ya que MP solo devuelve el título)
-                Producto producto = productoService.buscarPorNombre(mpItem.getTitle());
-                if (producto != null) {
-                    CarritoDTO carritoDTO = new CarritoDTO();
-                    carritoDTO.setProductoId(producto.getId());
-                    carritoDTO.setProductoNombre(producto.getDescripcion());
-                    carritoDTO.setProductoPrecio(producto.getPrecio());
-                    carritoDTO.setCantidad(mpItem.getQuantity());
-                    itemsCarrito.add(carritoDTO);
-                }
+            if (usuario.getCliente() == null) {
+                log.error("Error crítico: El usuario {} no tiene un cliente asociado.", usuario.getNomb_usu());
+                throw new IllegalStateException("El usuario no tiene un cliente asociado");
             }
 
-            if (itemsCarrito.isEmpty()) {
-                System.err.println("No se pudieron recuperar los items del carrito desde MercadoPago");
-                model.addAttribute("error", "Error al procesar los items de la compra");
-                return "ventas/failure";
-            }
+            Caja cajaActiva = cajaService.buscarUltimaCajaAbiertaYActiva(Caja.EstadoCaja.ABIERTA)
+                    .orElseThrow(() -> new IllegalStateException("No hay ninguna caja activa en el sistema."));
+            log.info("Caja activa encontrada: ID {}", cajaActiva.getId());
 
-            // Verificar stock nuevamente antes de procesar
-            for (CarritoDTO item : itemsCarrito) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
-                if (producto == null || producto.getStock() < item.getCantidad()) {
-                    model.addAttribute("error", "Stock insuficiente para completar la compra");
-                    return "ventas/failure";
-                }
-            }
-
-            // Crear la factura usando tu servicio existente
-            Factura factura = facturaService.crearFacturaDesdeCarrito(itemsCarrito, usuario, "MercadoPago");
-            
-            // Agregar información de MercadoPago a la factura
+            // 1. Crear la Factura
+            Factura factura = new Factura();
+            Long ultimoNumero = facturaRepository.countByFechaPedidoBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
+            factura.setNumero_factura("FAC-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + String.format("%04d", ultimoNumero + 1));
+            factura.setFecha_pedido(LocalDateTime.now());
+            factura.setMetodo_pago("MercadoPago");
+            factura.setCliente(usuario.getCliente());
+            factura.setActivo(true);
+            factura.setCaja(cajaActiva);
             factura.setMpCollectionId(collectionId);
             factura.setMpExternalReference(externalReference);
-            factura = facturaRepository.save(factura);
+            
+            Factura facturaGuardada = facturaRepository.save(factura);
+            log.info("Factura guardada con ID temporal: {}", facturaGuardada.getId());
 
-            // Procesar cada item: descontar stock y crear registro de venta
-            for (CarritoDTO item : itemsCarrito) {
-                Producto producto = productoService.buscarPorId(item.getProductoId());
-                if (producto != null) {
-                    // Descontar stock
-                    int nuevoStock = producto.getStock() - item.getCantidad();
-                    producto.setStock(nuevoStock);
-                    productoService.guardar(producto);
+            // 2. Procesar detalles y descontar stock
+            List<Detalle_factura> detalles = new ArrayList<>();
+            for (CarritoDTO item : carritoItems) {
+                log.info("Procesando item: Producto ID {}, Cantidad: {}", item.getProductoId(), item.getCantidad());
+                Producto producto = productoRepository.findById(item.getProductoId())
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + item.getProductoId()));
 
-                    // Crear registro de venta
-                    RegistroVenta registro = new RegistroVenta();
-                    registro.setFecha(LocalDateTime.now());
-                    registro.setDescripcionProducto(producto.getDescripcion());
-                    registro.setCantidad(item.getCantidad());
-                    registro.setPrecioUnitario(producto.getPrecio());
-                    registro.setTotalVenta(producto.getPrecio().multiply(new java.math.BigDecimal(item.getCantidad())));
-                    registroVentaRepository.save(registro);
-
-                    System.out.println("Stock actualizado para " + producto.getDescripcion() + 
-                                     ": " + (producto.getStock() + item.getCantidad()) + " -> " + producto.getStock());
+                log.info("Producto '{}' encontrado. Stock actual: {}", producto.getDescripcion(), producto.getStock());
+                if (producto.getStock() < item.getCantidad()) {
+                    log.error("Stock insuficiente para producto: '{}'. Requerido: {}, Disponible: {}", producto.getDescripcion(), item.getCantidad(), producto.getStock());
+                    throw new StockInsuficienteException("Stock insuficiente para el producto: " + producto.getDescripcion());
                 }
+
+                int nuevoStock = producto.getStock() - item.getCantidad();
+                log.info("Descontando stock para '{}'. Nuevo stock: {}", producto.getDescripcion(), nuevoStock);
+                producto.setStock(nuevoStock);
+                productoRepository.save(producto);
+
+                Detalle_factura detalle = new Detalle_factura();
+                detalle.setProducto(producto);
+                detalle.setCantidad(item.getCantidad());
+                detalle.setPrecio_unitario(producto.getPrecio());
+                detalle.setFactura(facturaGuardada);
+                detalles.add(detalle);
             }
+            
+            detalleFacturaRepository.saveAll(detalles);
+            log.info("Guardados {} detalles de la factura.", detalles.size());
 
-            // Vaciar el carrito del usuario
+            log.info("Vaciando carrito de la base de datos para el usuario ID: {}", usuario.getId());
             carritoService.vaciarCarrito(usuario.getId());
+            log.info("Carrito vaciado.");
 
-            System.out.println("✅ Venta procesada exitosamente. Factura ID: " + factura.getId());
+            log.info("Limpiando datos de la sesión...");
+            session.removeAttribute("carrito_mp");
+            session.removeAttribute("usuario_mp");
+            log.info("Sesión limpiada.");
 
-            model.addAttribute("payment", payment);
-            model.addAttribute("factura", factura);
+            model.addAttribute("factura", facturaGuardada);
             model.addAttribute("titulo", "¡Compra Exitosa!");
 
-            return "ventas/success";
+            log.info("--- PROCESO DE PAGO COMPLETADO EXITOSAMENTE. Mostrando página de éxito. ---");
+            return "success";
 
+        } catch (StockInsuficienteException e) {
+            log.error("Error de negocio: Stock insuficiente. La transacción hará rollback.", e);
+            flash.addFlashAttribute("error", "No se pudo completar la compra: " + e.getMessage());
+            throw e; // Relanzar para asegurar rollback
         } catch (Exception e) {
-            System.err.println("Error al procesar la venta: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error interno al procesar la venta");
-            return "ventas/failure";
+            log.error("Error crítico al procesar la venta en /success. La transacción hará rollback.", e);
+            flash.addFlashAttribute("error", "Error crítico al procesar la venta. Contacte a soporte.");
+            throw e; // Relanzar para asegurar rollback
         }
     }
 
     @GetMapping("/failure")
-    public String failure(HttpServletRequest request,
-            @RequestParam("collection_id") String collectionId,
-            @RequestParam("collection_status") String collectionStatus,
-            @RequestParam("external_reference") String externalReference,
-            @RequestParam("payment_type") String paymentType,
-            @RequestParam("merchant_order_id") String merchantOrderId,
-            @RequestParam("preference_id") String preferenceId,
-            @RequestParam("site_id") String siteId,
-            @RequestParam("processing_mode") String processingMode,
-            @RequestParam("merchant_account_id") String merchantAccountId,
-            Model model) {
-
-        System.out.println("--- PAGO RECHAZADO ---");
-        System.out.println("Collection ID: " + collectionId);
-        System.out.println("Collection Status: " + collectionStatus);
-
-        model.addAttribute("titulo", "Pago Rechazado");
-        model.addAttribute("error", "El pago no pudo ser procesado. Por favor, intente nuevamente.");
-
-        return "ventas/failure";
+    public String failure(RedirectAttributes flash) {
+        log.warn("Redirigiendo al usuario a HOME desde /failure.");
+        flash.addFlashAttribute("error", "El pago fue rechazado o cancelado. Por favor, intenta de nuevo.");
+        return "redirect:/home";
     }
 
     @GetMapping("/pending")
-    public String pending(HttpServletRequest request,
-            @RequestParam("collection_id") String collectionId,
-            @RequestParam("collection_status") String collectionStatus,
-            @RequestParam("external_reference") String externalReference,
-            @RequestParam("payment_type") String paymentType,
-            @RequestParam("merchant_order_id") String merchantOrderId,
-            @RequestParam("preference_id") String preferenceId,
-            @RequestParam("site_id") String siteId,
-            @RequestParam("processing_mode") String processingMode,
-            @RequestParam("merchant_account_id") String merchantAccountId,
-            Model model) {
-
-        System.out.println("--- PAGO PENDIENTE ---");
-        System.out.println("Collection ID: " + collectionId);
-
-        model.addAttribute("titulo", "Pago Pendiente");
-        model.addAttribute("mensaje", "Su pago está siendo procesado. Le notificaremos cuando sea aprobado.");
-
-        return "ventas/pending";
+    public String pending(RedirectAttributes flash) {
+        log.info("Redirigiendo al usuario a HOME desde /pending.");
+        flash.addFlashAttribute("info", "El pago está pendiente de procesamiento. Te notificaremos cuando se apruebe.");
+        return "redirect:/home";
     }
 }
