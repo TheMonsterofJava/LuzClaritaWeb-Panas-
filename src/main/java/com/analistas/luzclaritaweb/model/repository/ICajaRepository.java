@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.analistas.luzclaritaweb.model.domain.Caja;
+import com.analistas.luzclaritaweb.model.domain.Caja.TipoCaja;
+
 
 @Repository
 public interface ICajaRepository extends JpaRepository<Caja, Long> {
@@ -33,7 +35,9 @@ public interface ICajaRepository extends JpaRepository<Caja, Long> {
     List<Caja> findByEstadoAndActivaTrue(Caja.EstadoCaja estado);
     Optional<Caja> findByIdAndActivaTrue(Long id);
     Optional<Caja> findTopByEstadoAndActivaTrueOrderByFechaDesc(Caja.EstadoCaja estado);
+    Optional<Caja> findTopByTipoCajaAndEstadoAndActivaTrueOrderByFechaDesc(TipoCaja tipoCaja, Caja.EstadoCaja estado);
 }
+
 
 // 📝 Explicación:
 

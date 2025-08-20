@@ -68,4 +68,11 @@ public class CajaServiceImpl implements ICajaService {
     public List<Caja> listarCajasAbiertas() {
         return cajaRepository.findByEstadoAndActivaTrue(Caja.EstadoCaja.ABIERTA);
     }
+
+    @Override
+    public Caja obtenerCajaActivaParaVentas() {
+        return cajaRepository.findTopByTipoCajaAndEstadoAndActivaTrueOrderByFechaDesc(Caja.TipoCaja.VENTAS, Caja.EstadoCaja.ABIERTA)
+                .orElseThrow(() -> new IllegalStateException("No hay ninguna caja de ventas activa en el sistema. Un administrador debe abrir una."));
+    }
+
 }

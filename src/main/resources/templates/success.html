@@ -1,16 +1,392 @@
-<html>
-    <head>
-        <title>Success</title>
-    </head>
-    <body>
-        <h1>Success!</h1>
-        <h4 th:text="${titulo}" class="text-black-50 my-4"></h4>
-        <h5>Datos de la Operación</h5>
-        <p th:text="'Identificador del Pago: ' + ${paymentId}"></p>
-        <p th:text="'Estado del Pago: ' + ${status}"></p>
-        <!-- <p th:text="'Referencia Externa' + ${externalReference}"></p> -->
-        <p th:text="'Identificador de Orden de Pago: ' + ${merchantOrderId}"></p>
-        <br />
-        <p class="text-info">Ya puede cerrar esta ventana</p>
-    </body>
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>¡Compra Exitosa! - Luz Clarita</title>
+    <style>
+        .success-container {
+            background: linear-gradient(135deg, #00a650 0%, #00d085 100%);
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .success-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 166, 80, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 166, 80, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .success-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: #00a650;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: successPulse 2s ease-in-out infinite;
+        }
+        
+        .success-icon i {
+            font-size: 50px;
+            color: white;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 166, 80, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(0, 166, 80, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 166, 80, 0); }
+        }
+        
+        .success-title {
+            color: #00a650;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .success-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .order-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .order-number {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .order-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .customer-info {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00a650;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .customer-email {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .items-list {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-row:last-child {
+            border-bottom: none;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .item-quantity {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: #00a650;
+        }
+        
+        .total-section {
+            background: #00a650;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn-primary-custom {
+            background: #00a650;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #008a43;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 166, 80, 0.4);
+        }
+        
+        .btn-secondary-custom {
+            background: white;
+            border: 2px solid #00a650;
+            color: #00a650;
+            padding: 10px 28px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: #00a650;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .mp-logo {
+            height: 30px;
+            filter: brightness(0) invert(1);
+        }
+        
+        @media (max-width: 768px) {
+            .success-card {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .success-title {
+                font-size: 2rem;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .item-row {
+                flex-direction: column;
+                gap: 5px;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="contenido" class="success-container">
+        <div class="success-card">
+            <div class="success-content">
+                <!-- Icono de éxito -->
+                <div class="success-icon">
+                    <i class="bi bi-check"></i>
+                </div>
+                
+                <!-- Título y subtítulo -->
+                <h1 class="success-title" th:text="${titulo}">¡Gracias por tu compra!</h1>
+                <p class="success-subtitle">Tu pago se ha procesado correctamente y tu pedido está confirmado.</p>
+                
+                <!-- Información del pedido -->
+                <div class="order-info">
+                    <!-- Header del pedido -->
+                    <div class="order-header">
+                        <div>
+                            <div class="order-number">
+                                Pedido #<span th:text="${venta.id}">00000</span>
+                            </div>
+                        </div>
+                        <div class="order-date">
+                            <i class="bi bi-calendar3"></i>
+                            <span th:text="${#temporals.format(venta.fechaVenta, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Información del cliente -->
+                    <div class="customer-info">
+                        <div class="customer-name">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span th:text="${venta.cliente.nomb_ape}">Nombre del Cliente</span>
+                        </div>
+                        <div class="customer-email">
+                            <i class="bi bi-envelope me-2"></i>
+                            <span th:text="${venta.cliente.correo}">email@cliente.com</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de productos -->
+                    <div class="items-list">
+                        <h6 class="mb-3"><i class="bi bi-bag-check me-2"></i>Productos comprados:</h6>
+                        <div class="item-row" th:each="detalle : ${venta.detalles}">
+                            <div class="item-details">
+                                <div class="item-name" th:text="${detalle.tipoItem == T(com.analistas.luzclaritaweb.model.domain.DetalleVenta.TipoItem).PRODUCTO ? 'Producto ID: ' + detalle.itemId : 'Curso ID: ' + detalle.itemId}">
+                                    Producto
+                                </div>
+                                <div class="item-quantity">
+                                    Cantidad: <span th:text="${detalle.cantidad}">1</span>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                $<span th:text="${#numbers.formatDecimal(detalle.subtotal, 1, 2)}">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="total-section">
+                        <div class="total-row">
+                            <span class="total-label">Total pagado</span>
+                            <span class="total-amount">
+                                $<span th:text="${#numbers.formatDecimal(venta.total, 1, 2)}">0.00</span>
+                            </span>
+                        </div>
+                        <div class="payment-method">
+                            <i class="bi bi-credit-card-2-front"></i>
+                            <span th:text="${venta.metodoPago}">MercadoPago</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="action-buttons">
+                    <a href="/home" class="btn-primary-custom">
+                        <i class="bi bi-house-door"></i>
+                        Volver al inicio
+                    </a>
+                    <a href="/perfil" class="btn-secondary-custom">
+                        <i class="bi bi-person"></i>
+                        Ver mis compras
+                    </a>
+                </div>
+                
+                <!-- Mensaje adicional -->
+                <div class="mt-4">
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Recibirás un email de confirmación en breve
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-whatsapp me-2"></i>
+                        ¿Necesitas ayuda? Contáctanos al 3624883171
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>

@@ -28,6 +28,7 @@
                                 <th>#</th>
                                 <th>Fecha Apertura</th>
                                 <th>Usuario</th>
+                                <th>Tipo de Caja</th>
                                 <th>Saldo Inicial</th>
                                 <th>Saldo Final</th>
                                 <th>Estado</th>
@@ -39,6 +40,7 @@
                                 <td th:text="${caja.id}"></td>
                                 <td th:text="${#temporals.format(caja.fecha, 'dd/MM/yyyy HH:mm')}"></td>
                                 <td th:text="${caja.usuario != null ? caja.usuario.nomb_usu : '-'}"></td>
+                                <td th:text="${caja.tipoCaja}"></td>
                                 <td th:text="${'$' + #numbers.formatDecimal(caja.saldoInicial, 1, 2)}"></td>
                                 <td th:text="${'$' + #numbers.formatDecimal(caja.saldoFinal, 1, 2)}"></td>
                                 <td>

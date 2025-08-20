@@ -235,12 +235,11 @@ public class CajaController {
 
         // 5. Pasa los datos a la vista
         Map<String, Object> resumen = new HashMap<>();
-        // La visualización de 'ingresos' se ha movido al nuevo reporte de ventas online.
-        // Se mantiene el cálculo para la lógica del saldo, pero no se pasa a la vista.
-        // resumen.put("ingresos", totalIngresos); 
-        resumen.put("egresos", totalEgresos); 
-        resumen.put("saldo", saldoActual); 
+        resumen.put("ingresos", totalIngresos);
+        resumen.put("egresos", totalEgresos);
+        resumen.put("saldo", saldoActual);
         model.addAttribute("resumen", resumen);
+        model.addAttribute("caja", caja); // Pasar el objeto caja completo
 
         return "movimientos/movimientos_caja";
     }

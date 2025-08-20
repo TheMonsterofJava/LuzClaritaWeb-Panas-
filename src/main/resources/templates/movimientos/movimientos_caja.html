@@ -316,7 +316,24 @@
     <div class="container py-4">
         <!-- Tarjetas de resumen -->
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <!-- Tarjeta de Ingresos (Solo para cajas de VENTA) -->
+            <div class="col-md-6" th:if="${caja.tipoCaja.name() == 'VENTAS'}">
+                <div class="summary-card card-ingresos">
+                    <div class="card-body text-center">
+                        <div class="summary-icon text-success">
+                            <i class="bi bi-arrow-down-circle"></i>
+                        </div>
+                        <h3 class="summary-title">Total Ingresos (Ventas a Clientes)</h3>
+                        <p class="summary-value text-success"
+                            th:text="${resumen != null ? ('$' + #numbers.formatDecimal(resumen.get('ingresos'), 1, 2, 'COMMA')) : '$0.00'}">
+                            $0.00
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Egresos (Solo para cajas de COMPRA) -->
+            <div class="col-md-6" th:if="${caja.tipoCaja.name() == 'COMPRAS'}">
                 <div class="summary-card card-egresos">
                     <div class="card-body text-center">
                         <div class="summary-icon text-danger">
@@ -330,6 +347,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="summary-card card-saldo">
                     <div class="card-body text-center">
@@ -552,15 +570,3 @@
 </body>
 
 </html>
-
-<!-- Fix: Corregir asignación de usuario a caja y origen de movimiento.
-
-Este commit incluye las siguientes correcciones:
-
-1.  **Asignación de Usuario a Caja:**
-    *   En `CajaController`, al guardar una nueva caja, ahora se asigna correctamente el usuario autenticado a la entidad `Caja`. Esto asegura que el creador de la caja se registre y se muestre en el listado de cajas.
-
-2.  **Visualización de Origen del Movimiento:**
-    *   En `ComprasController`, al registrar una compra y crear el `MovimientoCaja` de egreso asociado, se asegura que la entidad `Compra` (persistida) se vincule correctamente al `MovimientoCaja`. Esto permite que la columna "Origen Movimiento" en la vista `movimientos_caja.html` muestre la referencia a la compra (ej. "Compra #ID").
-
- -->

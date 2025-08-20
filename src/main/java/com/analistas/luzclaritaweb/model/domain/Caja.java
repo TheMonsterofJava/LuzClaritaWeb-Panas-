@@ -72,6 +72,13 @@ public class Caja {
         ABIERTA, CERRADA
     }
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_caja", nullable = false)
+    private TipoCaja tipoCaja;
+    public enum TipoCaja {
+        COMPRAS, VENTAS
+    }
+
     @PrePersist
     public void prePersist() {
         this.fecha = LocalDateTime.now();

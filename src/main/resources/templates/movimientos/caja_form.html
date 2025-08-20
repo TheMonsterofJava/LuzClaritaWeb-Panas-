@@ -14,6 +14,14 @@
         <form th:action="@{/caja/guardar}" method="post" th:object="${caja}">
             <div class="card-body">
                 <div class="mb-3">
+                    <label for="tipoCaja" class="form-label">Tipo de Caja</label>
+                    <select id="tipoCaja" th:field="*{tipoCaja}" class="form-select" required>
+                        <option value="" disabled selected>Seleccione un tipo</option>
+                        <option th:each="tipo : ${T(com.analistas.luzclaritaweb.model.domain.Caja.TipoCaja).values()}"
+                                th:value="${tipo}" th:text="${tipo}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Saldo Inicial</label>
                     <input type="number" step="0.01" min="0" th:field="*{saldoInicial}" class="form-control" required>
                 </div>

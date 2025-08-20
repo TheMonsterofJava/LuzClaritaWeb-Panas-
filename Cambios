@@ -568,4 +568,54 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ;         src/main/resources/static/font/YakuzaLobster.ttf
 ;         src/main/resources/templates/reportes/
 
+
+; Cambios en el programa para solucionar la venta de un producto:
+; Resumen de los Cambios Realizados
+; Aquí tienes un listado de los archivos modificados y los cambios clave que se implementaron para que puedas aplicarlos manualmente si lo necesitas.
+
+; 1. src/main/java/com/analistas/luzclaritaweb/model/domain/Caja.java
+
+; Se añadió el enum TipoCaja { COMPRAS, VENTAS }.
+; Se añadió un campo private TipoCaja tipoCaja; con las anotaciones @Enumerated(EnumType.STRING) y @Column.
+; 2. src/main/java/com/analistas/luzclaritaweb/model/repository/ICajaRepository.java
+
+; Se añadió un nuevo método: Optional<Caja> findTopByTipoCajaAndEstadoAndActivaTrueOrderByFechaDesc(TipoCaja tipoCaja, Caja.EstadoCaja estado);
+; 3. src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/ICajaService.java
+
+; Se añadió la firma del nuevo método: Caja obtenerCajaActivaParaVentas();
+; 4. src/main/java/com/analistas/luzclaritaweb/model/service/impl/CajaServiceImpl.java
+
+; Se implementó el método obtenerCajaActivaParaVentas() para que use el nuevo método del repositorio y lance una excepción si no encuentra una caja de ventas abierta.
+; 5. src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/IVentaService.java
+
+; Se añadieron las firmas de dos nuevos métodos: Venta buscarPorId(Long id); y void procesarVentaExitosa(Long ventaId);.
+; 6. src/main/java/com/analistas/luzclaritaweb/model/service/impl/VentaServiceImpl.java
+
+; Se inyectaron los repositorios y servicios necesarios (IProductoRepository, IFacturaRepository, IMovimientoCajaService, ICajaService).
+; Se implementó el método buscarPorId().
+; Se implementó el método procesarVentaExitosa(Long ventaId) con la anotación @Transactional. Este método contiene toda la lógica de negocio:
+; Busca la venta y verifica que esté pendiente.
+; Cambia el estado de la venta a COMPLETADA.
+; Recorre los detalles y descuenta el stock de cada producto.
+; Crea y guarda la Factura.
+; Crea y guarda el MovimientoCaja.
+; Guarda el estado final de la Venta.
+; 7. src/main/java/com/analistas/luzclaritaweb/web/controller/MercadoPagoController.java
+
+; Se refactorizó por completo:
+; Se eliminaron las inyecciones de dependencias que ya no se usan.
+; El método createAndRedirect ahora crea una Venta con estado PENDIENTE y usa su ID como external_reference. También configura la notification_url.
+; El método success se simplificó para ser solo una página de confirmación para el usuario.
+; Se creó el nuevo endpoint @PostMapping("/api/mercadopago/notificaciones") para recibir los webhooks.
+; La lógica del webhook verifica que el pago esté aprobado y luego llama a ventaService.procesarVentaExitosa(ventaId).
+; Se corrigió un NullPointerException en el cálculo del total.
+; 8. src/main/java/com/analistas/luzclaritaweb/web/config/WebSecurityConfig.java
+
+; Se actualizó para permitir el acceso público sin CSRF al nuevo endpoint /api/mercadopago/notificaciones.
+; 9. Vistas de Thymeleaf:
+
+; templates/movimientos/caja_form.html: Se añadió el <select> para elegir el TipoCaja.
+; templates/movimientos/caja.html: Se añadió la columna para mostrar el TipoCaja.
+; templates/movimientos/movimientos_caja.html: Se modificó para mostrar "Total Ingresos" o "Total Egresos" según el TipoCaja.
+
 Arbol del proyecto actulizado:

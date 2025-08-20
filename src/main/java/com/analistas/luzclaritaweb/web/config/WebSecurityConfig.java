@@ -105,9 +105,8 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        // Desactivar CSRF para los callbacks de MercadoPago
-                        .ignoringRequestMatchers("/success", "/failure", "/pending")
-                )
+                        // Desactivar CSRF para los callbacks y notificaciones de MercadoPago
+                        .ignoringRequestMatchers("/success", "/failure", "/pending", "/api/mercadopago/notificaciones"))
                 .authorizeHttpRequests((requests) -> requests
 
                         // Public routes
@@ -116,11 +115,10 @@ public class WebSecurityConfig {
                                 "/consultas/**", "/inicioSesion/**", "/registro/**",
                                 "/recetas/cards", "/productos/**", "/productos/listado",
                                 "/accessDenied", "/api/usuario/actual", "/api/usuario/verificar", "/cursos/listado2",
-                                // Callbacks de MP deben ser públicos
-                                "/success", "/failure", "/pending")
+                                // Callbacks y notificaciones de MP deben ser públicos
+                                "/success", "/failure", "/pending", "/api/mercadopago/notificaciones")
                         .permitAll()
-
-                        //URL de carrito
+                        // URL de carrito
                         .requestMatchers("/api/carrito/**").hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")
                         // Profile route
                         .requestMatchers("/perfil/**").authenticated()
@@ -133,7 +131,7 @@ public class WebSecurityConfig {
                         // Prductos - permitir la lectura para clientes y escritura para Admin
                         .requestMatchers(HttpMethod.GET, "/productos/listado").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers("/productos/**").hasAnyAuthority("ROLE_ADMIN")
-                        
+
                         // Client routes
                         .requestMatchers("/api/carrito/**")
                         .hasAnyAuthority("ROLE_CLIENTE", "ROLE_ADMIN")

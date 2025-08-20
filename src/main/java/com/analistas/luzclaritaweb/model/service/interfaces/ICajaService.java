@@ -19,6 +19,11 @@ public interface ICajaService {
     List<Caja> buscarCajasPorRangoDeFechas(LocalDateTime inicio, LocalDateTime fin); // No change for now
 
     //listar Cajas Abiertas
+    
     List<Caja> listarCajasAbiertas(); // Impl will use findByEstadoAndActivaTrue
+
+    Caja obtenerCajaActivaParaVentas();
+
+
 }
 

@@ -14,9 +14,11 @@ public interface IVentaService {
     void crearVentaDesdeFactura(Factura factura);
 
     List<Venta> listarVentas();
+    Venta buscarPorId(Long id);
     Optional<Venta> obtenerVentaPorId(Long id);
     Venta guardarVenta(Venta venta);
     void eliminarVenta(Long id);
+    void procesarVentaExitosa(Long ventaId);
 
     // Métodos personalizados
     List<Venta> buscarPorCliente(Long clienteId);

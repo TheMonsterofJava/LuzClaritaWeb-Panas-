@@ -13,16 +13,34 @@ import org.springframework.transaction.annotation.Transactional;
 import com.analistas.luzclaritaweb.model.domain.DetalleVenta;
 import com.analistas.luzclaritaweb.model.domain.Detalle_factura;
 import com.analistas.luzclaritaweb.model.domain.Factura;
+import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
+import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.domain.Venta;
-//import com.analistas.luzclaritaweb.model.repository.IDetalleVentaRepository;
+import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
+import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
 import com.analistas.luzclaritaweb.model.repository.IVentaRepository;
+import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IMovimientoCajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IVentaService;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 
 @Service
 public class VentaServiceImpl implements IVentaService {
 
     @Autowired
     private IVentaRepository ventaRepository;
+
+    @Autowired
+    private IProductoRepository productoRepository;
+
+    @Autowired
+    private IFacturaRepository facturaRepository;
+
+    @Autowired
+    private IMovimientoCajaService movimientoCajaService;
+
+    @Autowired
+    private ICajaService cajaService;
 
     // @Autowired
     // private IDetalleVentaRepository detalleVentaRepository;
@@ -110,5 +128,74 @@ public class VentaServiceImpl implements IVentaService {
     @Override
     public List<Venta> buscarPorMetodoPago(String metodoPago) {
         return ventaRepository.findByMetodoPago(metodoPago);
+    }
+
+    @Override
+    public Venta buscarPorId(Long id) {
+        return ventaRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void procesarVentaExitosa(Long ventaId) {
+        Venta venta = buscarPorId(ventaId);
+        if (venta == null || venta.getEstado() != Venta.EstadoVenta.PENDIENTE) {
+            // Si la venta no existe o ya fue procesada, no hacer nada.
+            return;
+        }
+
+        // 1. Cambiar estado de la venta
+        venta.setEstado(Venta.EstadoVenta.COMPLETADA);
+        venta.setFechaVenta(LocalDateTime.now());
+
+        // 2. Descontar stock
+        for (DetalleVenta detalle : venta.getDetalles()) {
+            Producto producto = productoRepository.findById(detalle.getItemId())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + detalle.getItemId()));
+            
+            if (producto.getStock() < detalle.getCantidad()) {
+                throw new StockInsuficienteException("Stock insuficiente para el producto: " + producto.getDescripcion());
+            }
+            producto.setStock(producto.getStock() - detalle.getCantidad());
+            productoRepository.save(producto);
+        }
+
+        // 3. Crear Factura
+        Factura factura = new Factura();
+        factura.setCliente(venta.getCliente());
+        factura.setFecha_pedido(LocalDateTime.now());
+        factura.setMetodo_pago(venta.getMetodoPago());
+        factura.setActivo(true);
+        // Asociar la caja de ventas activa
+        factura.setCaja(cajaService.obtenerCajaActivaParaVentas());
+        // Aquí podrías añadir el collection_id y external_reference si los guardas en la Venta
+        
+        List<Detalle_factura> detallesFactura = new ArrayList<>();
+        for (DetalleVenta detalleVenta : venta.getDetalles()) {
+            Detalle_factura detalleFactura = new Detalle_factura();
+            detalleFactura.setFactura(factura);
+            detalleFactura.setProducto(productoRepository.findById(detalleVenta.getItemId()).get());
+            detalleFactura.setCantidad(detalleVenta.getCantidad());
+            detalleFactura.setPrecio_unitario(detalleVenta.getPrecioUnitario());
+            detallesFactura.add(detalleFactura);
+        }
+        factura.setDetalles(detallesFactura);
+        facturaRepository.save(factura);
+
+        // 4. Crear Movimiento de Caja
+        MovimientoCaja movimiento = new MovimientoCaja();
+        movimiento.setCaja(factura.getCaja());
+        movimiento.setTipoOperacion(MovimientoCaja.TipoOperacion.INGRESO);
+        movimiento.setMonto(venta.getTotal());
+        movimiento.setMontoDouble(venta.getTotal().doubleValue());
+        movimiento.setDescripcion("Ingreso por Venta #" + venta.getId());
+        movimiento.setOperador(venta.getVendedor());
+        movimiento.setVenta(venta);
+        movimiento.setFactura(factura);
+        movimiento.setTipo("INGRESO");
+        movimientoCajaService.guardarMovimiento(movimiento);
+
+        // Guardar la venta actualizada
+        ventaRepository.save(venta);
     }
 }
