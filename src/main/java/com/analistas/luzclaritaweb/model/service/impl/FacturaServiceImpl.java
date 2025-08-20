@@ -79,7 +79,8 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Factura crearFacturaDesdeCarrito(List<CarritoDTO> itemsCarrito, Usuario usuario, String metodoPago) {
-        log.info("Iniciando creación de factura para usuario: {} con {} items.", usuario.getNomb_usu(), itemsCarrito.size());
+        log.info("Iniciando creación de factura para usuario: {} con {} items.", usuario.getNomb_usu(),
+                itemsCarrito.size());
 
         if (usuario.getCliente() == null) {
             log.error("Error crítico: El usuario {} no tiene un cliente asociado.", usuario.getNomb_usu());
@@ -89,13 +90,15 @@ public class FacturaServiceImpl implements IFacturaService {
         Caja cajaActiva = cajaService.buscarUltimaCajaAbiertaYActiva(Caja.EstadoCaja.ABIERTA)
                 .orElseThrow(() -> {
                     log.error("Error crítico: No hay ninguna caja activa en el sistema.");
-                    return new IllegalStateException("No hay ninguna caja activa en el sistema. No se puede crear la factura.");
+                    return new IllegalStateException(
+                            "No hay ninguna caja activa en el sistema. No se puede crear la factura.");
                 });
         log.info("Caja activa encontrada: ID {}", cajaActiva.getId());
 
         Factura factura = new Factura();
-        factura.setNumero_factura("FAC-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + generarNumeroFactura());
-        factura.setFecha_pedido(LocalDateTime.now());
+        factura.setNumero_factura("FAC-" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-"
+                + generarNumeroFactura());
+        factura.setFechapedido(LocalDateTime.now());
         factura.setMetodo_pago(metodoPago);
         factura.setCliente(usuario.getCliente());
         factura.setActivo(true);
@@ -110,7 +113,8 @@ public class FacturaServiceImpl implements IFacturaService {
 
             log.info("Producto '{}' encontrado. Stock actual: {}", producto.getDescripcion(), producto.getStock());
             if (producto.getStock() < item.getCantidad()) {
-                log.error("Stock insuficiente para producto: '{}'. Requerido: {}, Disponible: {}", producto.getDescripcion(), item.getCantidad(), producto.getStock());
+                log.error("Stock insuficiente para producto: '{}'. Requerido: {}, Disponible: {}",
+                        producto.getDescripcion(), item.getCantidad(), producto.getStock());
                 throw new StockInsuficienteException(
                         "Stock insuficiente para el producto: " + producto.getDescripcion());
             }
@@ -132,7 +136,7 @@ public class FacturaServiceImpl implements IFacturaService {
         log.info("Guardando factura y sus {} detalles...", detalles.size());
         Factura facturaGuardada = guardar(factura);
         log.info("Factura ID: {} guardada exitosamente en la base de datos.", facturaGuardada.getId());
-        
+
         return facturaGuardada;
     }
 
@@ -149,5 +153,11 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public void actualizarInventario(List<CarritoDTO> itemsCarrito) {
         // Cuerpo vacío intencionalmente. La lógica fue centralizada.
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Factura> buscarPorIdUsuario(Long id) {
+        return facturaRepository.findByCliente_Usuario_IdOrderByFechapedidoDesc(id);
     }
 }

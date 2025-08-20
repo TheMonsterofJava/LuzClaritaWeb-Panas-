@@ -39,10 +39,10 @@ public class Factura {
     @NotEmpty(message = "Su Numero de Factura es requerido...")
     private String numero_factura;
 
-    @Column(name = "fecha_pedido")
+    @Column(name = "fechapedido")
     // @NotEmpty // LocalDateTime no puede ser @NotEmpty, se valida con @NotNull o se asigna siempre
     // @NotEmpty(message = "La Fecha es requerida...")
-    private LocalDateTime fecha_pedido;
+    private LocalDateTime fechapedido;
 
     //Estado del Pedido
     @Column(name = "activo", columnDefinition = "boolean default 1")
@@ -60,7 +60,8 @@ public class Factura {
     @JoinColumn(name = "id_caja", referencedColumnName = "id")
     private Caja caja;
     
-    @OneToMany(mappedBy = "factura", fetch = FetchType.LAZY)
+    //Permitimos que el detallefactura ahora se cargue correctamente
+    @OneToMany(mappedBy = "factura", fetch = FetchType.LAZY, cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     private List<Detalle_factura> detalles;
 
     //Nuevos Campos para Mercado Pago

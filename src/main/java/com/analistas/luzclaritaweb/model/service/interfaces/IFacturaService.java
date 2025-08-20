@@ -21,5 +21,7 @@ public interface IFacturaService {
     String generarNumeroFactura();
     
     void actualizarInventario(List<CarritoDTO> itemsCarrito);
+
+    List<Factura> buscarPorIdUsuario(Long id);
     
 }

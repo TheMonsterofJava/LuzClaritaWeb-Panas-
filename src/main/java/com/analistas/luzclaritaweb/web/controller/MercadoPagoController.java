@@ -2,15 +2,21 @@ package com.analistas.luzclaritaweb.web.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
@@ -24,16 +30,12 @@ import com.analistas.luzclaritaweb.model.service.interfaces.IVentaService;
 import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.Payment;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import com.mercadopago.resources.Payment;
-import com.mercadopago.exceptions.MPException;
-import java.util.Map;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -125,7 +127,8 @@ public class MercadoPagoController {
             }
             ventaPendiente.setDetalles(detallesVenta);
             ventaPendiente.setTotal(total);
-            
+            ventaPendiente.setFechaVenta(java.time.LocalDateTime.now()); // Asignar fecha actual
+
             // Guardar la venta pendiente para obtener su ID
             ventaService.guardarVenta(ventaPendiente);
             log.info("Venta PENDIENTE guardada con ID: {}", ventaPendiente.getId());
@@ -191,6 +194,8 @@ public class MercadoPagoController {
         Usuario usuario = userDetails.getUsuario();
         carritoService.vaciarCarrito(usuario.getId());
         log.info("Carrito vaciado para el usuario ID: {}", usuario.getId());
+
+        flash.addFlashAttribute("compraExitosa", true);
 
         return "success";
     }

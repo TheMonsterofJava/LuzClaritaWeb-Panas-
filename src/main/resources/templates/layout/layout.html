@@ -248,6 +248,9 @@
                                 <a class="dropdown-item" href="/perfil">
                                     <i class="bi bi-person"></i> Mi Perfil
                                 </a>
+                                <a class="dropdown-item" th:href="@{/facturas/mis-compras}" sec:authorize="hasRole('ROLE_CLIENTE')">
+                                    <i class="bi bi-receipt"></i> Mis Compras
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 <!-- <form th:action="@{/logout}" method="post">
                                     <button class="dropdown-item" type="submit">

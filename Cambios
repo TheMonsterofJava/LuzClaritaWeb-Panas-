@@ -618,4 +618,42 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ; templates/movimientos/caja.html: Se añadió la columna para mostrar el TipoCaja.
 ; templates/movimientos/movimientos_caja.html: Se modificó para mostrar "Total Ingresos" o "Total Egresos" según el TipoCaja.
 
+; SOLUCIONAMOS EL REGISTRO DE LAS VENTASSSSSS!!!!
+
+; Cambios que solucionaron el error de registrar las ventas:
+; 1.  En `Venta.java`, se ha deshabilitado un método `@PrePersist` que establecía incorrectamente el estado de la venta a `COMPLETADA` de forma prematura.
+; 2.  En `MercadoPagoController.java`, se ha añadido la asignación manual de `fecha_venta` para evitar un error de nulidad en la base de datos que surgió como efecto secundario.
+; 3.  En `VentaServiceImpl.java`, se ha añadido la generación y asignación de un `numero_factura` único antes de guardar la factura, solucionando una `ConstraintViolationException`.
+
+; Con estos cambios, el flujo de venta ahora funciona correctamente: la venta se crea como `PENDIENTE`, se procesa exitosamente tras la notificación de pago, el stock se descuenta, la factura se genera y el movimiento de caja se registra.
+
+; Soluciona múltiples bugs críticos en el flujo de procesamiento de ventas y añade nuevas funcionalidades para mejorar la experiencia del cliente.
+
+; **Correcciones de Bugs:**
+; 1.  **Persistencia de `detalle_factura`:** Se soluciona un error que impedía guardar los detalles de la factura añadiendo `cascade = CascadeType.ALL` en la entidad `Factura`.
+; 2.  **Actualización de Saldo de `Caja`:** Se corrige un bug que omitía la actualización del saldo de la caja tras una venta, añadiendo la lógica correspondiente en `VentaServiceImpl`.
+; 3.  **Error de Arranque por `QueryCreationException`:** Se corrige un error de tipeo en el nombre de un método del repositorio (`...OrderByFecha_pedidoDesc` a `...OrderByFechaPedidoDesc`) que impedía el inicio de la aplicación.
+
+; **Nuevas Funcionalidades:**
+; 1.  **Notificación Post-Compra:** Se implementa una alerta con SweetAlert en la página de inicio para notificar al usuario de una compra exitosa.
+; 2.  **Historial de Compras:** Se crea una nueva sección "Mis Compras", accesible para los clientes, que muestra su historial de facturas. Esto incluye un nuevo controlador, servicios, y vistas.
+
+; Archivos modificados:
+;  modified:   Cambios
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/domain/Factura.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/domain/Venta.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/repository/IFacturaRepository.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/service/impl/FacturaServiceImpl.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/service/impl/VentaServiceImpl.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/IFacturaService.java
+;         modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/MercadoPagoController.java
+;         modified:   src/main/resources/application.properties
+;         modified:   src/main/resources/templates/index.html
+;         modified:   src/main/resources/templates/layout/layout.html
+
+; Untracked files:
+;   (use "git add <file>..." to include in what will be committed)
+;         src/main/java/com/analistas/luzclaritaweb/web/controller/FacturaController.java
+;         src/main/resources/templates/cliente/
+
 Arbol del proyecto actulizado:

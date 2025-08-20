@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.analistas.luzclaritaweb.model.domain.Caja;
 import com.analistas.luzclaritaweb.model.domain.DetalleVenta;
 import com.analistas.luzclaritaweb.model.domain.Detalle_factura;
 import com.analistas.luzclaritaweb.model.domain.Factura;
@@ -50,7 +51,7 @@ public class VentaServiceImpl implements IVentaService {
     public void crearVentaDesdeFactura(Factura factura) {
         Venta venta = new Venta();
         venta.setCliente(factura.getCliente());
-        venta.setFechaVenta(factura.getFecha_pedido());
+        venta.setFechaVenta(factura.getFechapedido());
         venta.setMetodoPago(factura.getMetodo_pago());
         
         // Asumiendo que el usuario que paga es el vendedor en este contexto.
@@ -162,8 +163,9 @@ public class VentaServiceImpl implements IVentaService {
 
         // 3. Crear Factura
         Factura factura = new Factura();
+        factura.setNumero_factura("F-" + venta.getId()); // Asignar número de factura único
         factura.setCliente(venta.getCliente());
-        factura.setFecha_pedido(LocalDateTime.now());
+        factura.setFechapedido(LocalDateTime.now());
         factura.setMetodo_pago(venta.getMetodoPago());
         factura.setActivo(true);
         // Asociar la caja de ventas activa
@@ -194,6 +196,13 @@ public class VentaServiceImpl implements IVentaService {
         movimiento.setFactura(factura);
         movimiento.setTipo("INGRESO");
         movimientoCajaService.guardarMovimiento(movimiento);
+
+        // 5. Actualizar Saldo de Caja
+        Caja caja = factura.getCaja();
+        if (caja != null) {
+            caja.setSaldoFinal(caja.getSaldoFinal().add(venta.getTotal()));
+            cajaService.guardarCaja(caja);
+        }
 
         // Guardar la venta actualizada
         ventaRepository.save(venta);

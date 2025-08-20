@@ -253,6 +253,14 @@
   <!-- SweetAlert2 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+   <script th:if="${compraExitosa}">
+    Swal.fire({
+      title: '¡Gracias por tu compra!',
+      text: 'Tu pedido ha sido procesado exitosamente.',
+      icon: 'success',
+      confirmButtonText: 'Aceptar'
+    });
+  </script>
  
 </body>
 
