@@ -1,4 +1,5 @@
 package com.analistas.luzclaritaweb.web.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,11 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,9 +19,14 @@ import com.analistas.luzclaritaweb.model.domain.Categoria;
 import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICategoriaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IProductoService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IUploadFileService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Controller
 @RequestMapping("/productos")
@@ -34,111 +39,94 @@ public class ProductoController {
     @Autowired
     ICategoriaService categoriaService;
 
-    // @Autowired
-    // ICategoriaRepository categoriaRepository;
-
-    // Implementar el controlador de producto
     @GetMapping("/listado")
-    public String listar(
-            @RequestParam(name = "categoriaId", required = false) Long categoriaId,
-            @RequestParam(value = "sort", required = false, defaultValue = "precio_asc") String sort,
-            Model model) {
-
-        List<Producto> productos = productoService.buscar(categoriaId, sort);
-
+    public String listar(Model model) {
         model.addAttribute("titulo", "Productos");
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.buscarTodo());
+        model.addAttribute("categorias", categoriaService.buscarTodo());
         model.addAttribute("categoria", new Categoria());
-        model.addAttribute("sort", sort);
-        model.addAttribute("categoriaId", categoriaId);
-
-
         return "productos/list";
     }
 
     @GetMapping("/listado2")
-    public String listado2(Model model) {
-        model.addAttribute("titulo", "Listado de productos");
-        model.addAttribute("productos", productoService.buscar(null, "precio_asc"));
+    public String listar2(Model model) {
+        model.addAttribute("titulo", "Productos");
+        model.addAttribute("productos", productoService.buscarTodo());
+        model.addAttribute("categorias", categoriaService.buscarTodo());
         model.addAttribute("categoria", new Categoria());
         return "productos/list2";
     }
 
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
-
         model.addAttribute("titulo", "Nuevo Producto");
         model.addAttribute("producto", new Producto());
-
+        model.addAttribute("categorias", categoriaService.buscarTodo()); 
         return "productos/form";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable("id") Long id, Model model) {
-
         Producto producto = productoService.buscarPorId(id);
-
         model.addAttribute("titulo", "Editar Producto");
         model.addAttribute("producto", producto);
-
+        model.addAttribute("categorias", categoriaService.buscarTodo()); 
         return "productos/form";
     }
 
+    @Autowired
+    private IUploadFileService uploadFileService;
+
     @PostMapping("/guardar")
     public String guardar(@Valid Producto producto, BindingResult result,
-            Model model, SessionStatus status, RedirectAttributes flash) {
+        Model model, SessionStatus status, RedirectAttributes flash,
+        @org.springframework.web.bind.annotation.RequestParam("imagen") MultipartFile imagen) {
 
-        // Verificar si hay errores...
         if (result.hasErrors()) {
-            model.addAttribute("error", "Corrija los errores...");
+            model.addAttribute("titulo", "Corrija los errores");
+            model.addAttribute("error", "Corrija los errores del formulario");
+            model.addAttribute("categorias", categoriaService.buscarTodo());
             return "productos/form";
         }
 
-        // Verificar si el producto tiene ID (lo que indica que es un producto
-        // existente)
-        boolean esNuevoProducto = (producto.getId() == null);
+        // Si se subió un archivo de imagen
+        if (!imagen.isEmpty()) {
+            // Si el producto ya tiene una imagen y se está subiendo una nueva, borrar la anterior
+            if (producto.getId() != null && producto.getId() > 0 && producto.getLinkImagen() != null && producto.getLinkImagen().length() > 0) {
+                uploadFileService.delete(producto.getLinkImagen());
+            }
+            
+            String uniqueFilename = null;
+            try {
+                // Copiar la nueva imagen al directorio de subidas
+                uniqueFilename = uploadFileService.copy(imagen);
+                flash.addFlashAttribute("info", "Imagen subida correctamente: " + uniqueFilename);
+                // Guardar la ruta de la imagen en el producto
+                producto.setLinkImagen(uniqueFilename);
+            } catch (Exception e) {
+                model.addAttribute("error", "Error al subir la imagen: " + e.getMessage());
+                model.addAttribute("categorias", categoriaService.buscarTodo());
+                return "productos/form";
+            }
+        } 
+        // Si no se sube una nueva imagen, el campo producto.linkImagen (poblado por el input de texto) se mantiene.
 
+        boolean esNuevoProducto = (producto.getId() == null);
         productoService.guardar(producto);
         status.setComplete();
 
-        // Determinar el mensaje y la clase del alert dependiendo si es un nuevo
-        // producto o uno editado
-        String mensaje = esNuevoProducto ? "Producto " + producto.getDescripcion() + " guardado con éxito"
-                : "Producto " + producto.getDescripcion() + " modificado con éxito";
+        String mensaje = esNuevoProducto ?
+            "Producto '" + producto.getNombre() + "' guardado con éxito" :
+            "Producto '" + producto.getNombre() + "' modificado con éxito";
 
-        String alertClass = esNuevoProducto ? "alert-success" : "alert-warning"; // Verde para nuevo, Naranja para
-                                                                                 // editado
-
-        // Agregar el mensaje y la clase para el alert
-        flash.addFlashAttribute("info", mensaje); // Mensaje para mostrar
-        flash.addFlashAttribute("alertClass", alertClass); // Clase para el alert (verde o naranja)
-
-        return "redirect:/productos/listado"; // Redirigir al listado de productos
-    }
-
-    @GetMapping("/borrar/{id}")
-    public String cambiarEstado(@PathVariable Long id, RedirectAttributes flash) {
-
-        Producto producto = productoService.buscarPorId(id);
-        producto.setActivo(!producto.isActivo()); // Si esta activo lo desactiva y viceversa
-        productoService.guardar(producto);
-
-        String mensaje = producto.isActivo() ? "Producto " + producto.getDescripcion() + " habilitado"
-                : "Producto " + producto.getDescripcion() + " deshabilitado";
-
-        // Añadir clase al flash para determinar el color del alert
-        String alertClass = producto.isActivo() ? "alert-info" : "alert-danger"; // Cambiar el color según el estado
+        String alertClass = esNuevoProducto ? "alert-success" : "alert-warning";
         flash.addFlashAttribute("info", mensaje);
         flash.addFlashAttribute("alertClass", alertClass);
 
-        return "redirect:/productos/listado";
+        return "redirect:/productos/listado2";
     }
-
-    @ModelAttribute("categorias")
-    public List<Categoria> listarCategorias() {
-        return productoService.getCategorias();
-    }
-     
+    
+    
     @GetMapping("/detalle/{id}")
     public String verDetalle(@PathVariable("id") Long id, Model model) {
         Producto producto = productoService.buscarPorId(id);
@@ -164,4 +152,36 @@ public class ProductoController {
         return "redirect:" + request.getHeader("Referer");
     }
 
+    // API endpoints
+    @GetMapping("/api")
+    @ResponseBody
+    public List<Producto> listarApi() {
+        return productoService.buscarTodo();
+    }
+
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public Producto detalleApi(@PathVariable Long id) {
+        return productoService.buscarPorId(id);
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id, RedirectAttributes flash) {
+        Producto producto = productoService.buscarPorId(id);
+        // Eliminar imagen física si existe
+        if (producto != null && producto.getLinkImagen() != null && !producto.getLinkImagen().isEmpty()) {
+            try {
+                // Elimina el primer '/' si existe
+                String rutaRelativa = producto.getLinkImagen().startsWith("/") ? producto.getLinkImagen().substring(1) : producto.getLinkImagen();
+                Path rutaImagen = Paths.get(rutaRelativa).toAbsolutePath();
+                Files.deleteIfExists(rutaImagen);
+            } catch (Exception e) {
+                flash.addFlashAttribute("error", "No se pudo eliminar la imagen asociada al producto.");
+            }
+        }
+        productoService.borrarPorId(id);
+        flash.addFlashAttribute("info", "Producto eliminado correctamente");
+        flash.addFlashAttribute("alertClass", "alert-danger");
+        return "redirect:/productos/listado2";
+    }
 }

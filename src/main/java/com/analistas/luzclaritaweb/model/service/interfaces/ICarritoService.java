@@ -15,14 +15,19 @@ import com.analistas.luzclaritaweb.model.domain.Producto;
 import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.repository.ICarritoRepository;
+import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
 import com.analistas.luzclaritaweb.web.controller.CarritoController.ItemCarritoLocal;
 import com.analistas.luzclaritaweb.web.excepciones.CarritoSyncException;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 
 @Service
 public class ICarritoService {
 
     @Autowired
     private ICarritoRepository carritoRepository;
+
+    @Autowired
+    private IProductoRepository productoRepository;
 
     @Transactional(readOnly = true)
     public List<CarritoDTO> obtenerCarritoPorUsuario(Long usuarioId) {
@@ -40,7 +45,21 @@ public class ICarritoService {
     @Transactional
     public void agregarProducto(Usuario usuario, Long productoId, int cantidad) {
         try {
+            // 1. Validar Stock
+            Producto producto = productoRepository.findById(productoId)
+                    .orElseThrow(() -> new CarritoSyncException("Producto no encontrado."));
 
+            int cantidadEnCarrito = carritoRepository.findByUsuarioIdAndProductoId(usuario.getId(), productoId)
+                    .map(Carrito::getCantidad)
+                    .orElse(0);
+
+            if ((cantidadEnCarrito + cantidad) > producto.getStock()) {
+                throw new StockInsuficienteException(
+                        "No hay suficiente stock para '" + producto.getNombre() + "'. Stock disponible: "
+                                + producto.getStock() + ", en carrito: " + cantidadEnCarrito);
+            }
+
+            // 2. Lógica para agregar o actualizar
             Optional<Carrito> carritoExistente = carritoRepository.findByUsuarioIdAndProductoId(usuario.getId(),
                     productoId);
 
@@ -52,10 +71,8 @@ public class ICarritoService {
             } else {
                 // Si no existe, lo creamos
                 Carrito item = new Carrito();
-                item.setUsuario(usuario); // Usar la entidad de usuario gestionada
-                Producto productoRef = new Producto();
-                productoRef.setId(productoId);
-                item.setProducto(productoRef); // Establecer la referencia del producto
+                item.setUsuario(usuario);
+                item.setProducto(producto); // Usar la entidad completa del producto
                 item.setCantidad(cantidad);
                 carritoRepository.save(item);
             }
@@ -63,9 +80,7 @@ public class ICarritoService {
         } catch (DataAccessException e) {
             // Envolver la excepción de base de datos en una excepción personalizada
             throw new CarritoSyncException("Error de base de datos al agregar el producto al carrito.", e);
-
         }
-
     }
 
     // Actualizar la cantidad del carrito

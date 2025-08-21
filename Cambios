@@ -722,3 +722,32 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 falta tacharlo de la caja 
 
 Arbol del proyecto actulizado:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   src/main/java/com/analistas/luzclaritaweb/LuzClaritaWebApplication.java
+        modified:   src/main/java/com/analistas/luzclaritaweb/model/service/impl/ProductoServiceImpl.java
+        modified:   src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/ICarritoService.java
+        modified:   src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/IProductoService.java
+        modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/CarritoController.java
+        modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/ProductoController.java
+        modified:   src/main/resources/application.properties
+        modified:   src/main/resources/templates/productos/detalles.html
+        modified:   src/main/resources/templates/productos/form.html
+        modified:   src/main/resources/templates/productos/list.html
+        modified:   src/main/resources/templates/productos/list2.html
+        modified:   src/main/resources/templates/success.html
+        deleted:    uploads/0b70a771-3af8-4b41-a2fe-688a7965af01_user.jpg
+        deleted:    uploads/5ed0f94d-d4a6-443c-95c1-4d4ed33679d2_user.jpg
+        deleted:    uploads/86e8a275-2773-4101-8f54-0800477e2306_user.jpg
+        deleted:    uploads/8ca4e00d-9358-4213-8eae-db7391dd474f_user.jpg
+        deleted:    uploads/9f48a777-05a5-414c-a775-4984ce0d3502_user.jpg
+        deleted:    uploads/d4d9c1a3-6741-4afb-afa6-719e236cb761_user.jpg
+        deleted:    uploads/dcc52308-6bf8-4853-86e6-0d0574ed832c_user.jpg
+        deleted:    uploads/f94069c4-18fc-4814-9f1e-7f9cc31f5cb8_user.jpg
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        src/main/java/com/analistas/luzclaritaweb/model/service/impl/UploadFileServiceImpl.java
+        src/main/java/com/analistas/luzclaritaweb/model/service/interfaces/IUploadFileService.java
+        src/main/java/com/analistas/luzclaritaweb/web/config/MvcConfig.java
+        src/main/resources/static/img/default-cake.png

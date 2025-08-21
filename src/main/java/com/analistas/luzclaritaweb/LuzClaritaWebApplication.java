@@ -1,5 +1,6 @@
 package com.analistas.luzclaritaweb;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,6 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
+import com.analistas.luzclaritaweb.model.service.interfaces.IUploadFileService;
 import com.mercadopago.MercadoPago;
 
 
@@ -19,8 +21,14 @@ public class LuzClaritaWebApplication implements CommandLineRunner {
 
     }
 
+    @Autowired
+    IUploadFileService uploadFileService;
+
     @Override
 	public void run(String... args) throws Exception {
+
+        uploadFileService.deleteAll();
+        uploadFileService.init();
 
 		//Credenciales de prueba (las pruebas sólo funcionan en un navegador que NO ESTÉ logueado en MP):
 		// MercadoPago.SDK.setAccessToken(System.getenv("APP_USR-1758590432023103-030711-b15a87044d281636f9e29a2ab28fd8f3-144433383"));

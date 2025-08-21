@@ -15,7 +15,7 @@ public interface IProductoService {
     public List<Producto> buscar(Long categoriaId, String sortBy);
 
     public Producto buscarPorId(Long id);
-
+    public List<Producto> buscarTodo();
     Producto guardar(Producto producto);
 
     public void borrarPorId(Long id);

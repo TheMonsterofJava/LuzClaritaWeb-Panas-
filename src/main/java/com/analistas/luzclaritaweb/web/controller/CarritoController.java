@@ -24,6 +24,7 @@ import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
 import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
 import com.analistas.luzclaritaweb.web.excepciones.CarritoSyncException;
+import com.analistas.luzclaritaweb.web.excepciones.StockInsuficienteException;
 
 //ME FALTA PONER QUE LOS USUARIOS QUE NO ESTAN LOGUEADOS PUEDAN AUMENTAR LA CANTIDA DE PRODUCTOS AL CARRITO...
 @RestController
@@ -61,6 +62,8 @@ public class CarritoController {
         try {
             carritoService.agregarProducto(usuario, productoId, cantidad);
             return ResponseEntity.ok().build();
+        } catch (StockInsuficienteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         } catch (CarritoSyncException e) {
             System.err.println("Error de negocio/datos al agregar producto: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

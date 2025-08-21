@@ -31,6 +31,12 @@ public class ProductoServiceImpl implements IProductoService {
     ICategoriaRepository categoriaRepository;
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Producto> buscarTodo() {
+        return (List<Producto>) productoRepository.findAll();
+    }
+
+    @Override
      public List<Producto> buscar(Long categoriaId, String sortBy) {
         
         Sort sort;
