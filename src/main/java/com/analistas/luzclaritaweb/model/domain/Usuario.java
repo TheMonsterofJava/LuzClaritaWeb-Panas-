@@ -2,6 +2,7 @@ package com.analistas.luzclaritaweb.model.domain;
 
 import java.util.Date;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

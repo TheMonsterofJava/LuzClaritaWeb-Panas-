@@ -29,9 +29,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.analistas.luzclaritaweb.model.domain.Cliente;
 import com.analistas.luzclaritaweb.model.domain.Permiso;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
+import com.analistas.luzclaritaweb.model.domain.Venta;
 import com.analistas.luzclaritaweb.model.service.interfaces.IClienteService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IFileStorageService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IUsuariosService;
+import com.analistas.luzclaritaweb.model.service.interfaces.IVentaService;
 
 import jakarta.transaction.Transactional;
 
@@ -46,6 +48,9 @@ public class DashboardController {
 
     @Autowired
     private IClienteService clienteService;
+
+    @Autowired
+    private IVentaService ventaService;
 
     @Autowired
     private IFileStorageService fileStorageService;
@@ -294,14 +299,32 @@ public class DashboardController {
             Usuario usuarioActual = usuarioActualOpt.get();
             String permisoActual = usuarioActual.getPermiso().getNombre();
 
-            if (!permisoActual.equals("ROLE_ADMIN")) { // && !permisoActual.equals("ROlE_PROGRAMADOR")) por si queremos
-                                                       // poner otro rol
+            if (!permisoActual.equals("ROLE_ADMIN")) {
                 response.put("success", false);
                 response.put("message", "No tienes permisos para eliminar usuarios.");
                 return response;
             }
 
-            // 2. Eliminar usuario (y cliente asociado automáticamente por cascade)
+            // 2. Verificar si el usuario a eliminar es un cliente y tiene ventas
+            // asociadas
+            Optional<Usuario> usuarioAEliminarOpt = usuarioService.findById(id);
+            if (usuarioAEliminarOpt.isPresent()) {
+                Usuario usuarioAEliminar = usuarioAEliminarOpt.get();
+                if ("ROLE_CLIENTE".equals(usuarioAEliminar.getPermiso().getNombre())) {
+                    Cliente cliente = usuarioAEliminar.getCliente();
+                    if (cliente != null) {
+                        List<Venta> ventas = ventaService.buscarPorCliente(cliente.getId());
+                        if (!ventas.isEmpty()) {
+                            response.put("success", false);
+                            response.put("message", "El cliente tiene compras asociadas.");
+                            response.put("compras", true);
+                            return response;
+                        }
+                    }
+                }
+            }
+
+            // 3. Eliminar usuario (y cliente asociado automáticamente por cascade)
             usuarioService.eliminarUsuario(id);
 
             response.put("success", true);
@@ -314,6 +337,45 @@ public class DashboardController {
         return response;
     }
 
+    @PostMapping("/usuarios/eliminar-forzado/{id}")
+    @ResponseBody
+    @Transactional
+    public Map<String, Object> eliminarUsuarioForzado(@PathVariable("id") Long id,
+            @RequestParam("password") String password,
+            Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 1. Verificar permisos y contraseña del administrador
+            String username = principal.getName();
+            Optional<Usuario> usuarioActualOpt = usuarioService.findByEmail(username);
+
+            if (!usuarioActualOpt.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Usuario no encontrado.");
+                return response;
+            }
+
+            Usuario usuarioActual = usuarioActualOpt.get();
+            if (!passwordEncoder.matches(password, usuarioActual.getClave())) {
+                response.put("success", false);
+                response.put("message", "La contraseña del administrador es incorrecta.");
+                return response;
+            }
+
+            // 2. Eliminar usuario y ventas asociadas
+            usuarioService.eliminarUsuarioYVentasAsociadas(id);
+
+            response.put("success", true);
+            response.put("message", "Usuario y sus compras asociadas eliminados correctamente.");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error al eliminar el usuario: " + e.getMessage());
+        }
+
+        return response;
+    }
 }
 
 // @GetMapping("/user-management-add-user")

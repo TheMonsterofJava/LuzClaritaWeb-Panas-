@@ -48,7 +48,7 @@ public class Venta {
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado", nullable = false, length = 20)
     private EstadoVenta estado;
 
     @Column(name = "metodo_pago", nullable = false)
@@ -64,6 +64,6 @@ public class Venta {
     // }
 
     public enum EstadoVenta {
-        PENDIENTE, COMPLETADA, CANCELADA
+        PENDIENTE, COMPLETADA, CANCELADA, ELIMINADA
     }
 }

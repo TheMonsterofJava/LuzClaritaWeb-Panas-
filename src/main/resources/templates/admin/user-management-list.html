@@ -161,10 +161,14 @@
         </script>
 
         <!-- Función para confirmar la eliminación de un usuario con Sweet Alert -->
-        <script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
             function confirmarEliminacion(event, url) {
                 event.preventDefault();
-                
+
+                const csrfToken = /*[[${_csrf.token}]]*/ null;
+                const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: "¡No podrás revertir esto!",
@@ -176,10 +180,6 @@
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Obtener el token CSRF
-                        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                        
                         fetch(url, {
                             method: 'POST',
                             headers: {
@@ -187,40 +187,70 @@
                                 [csrfHeader]: csrfToken
                             }
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error en la solicitud');
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    data.message,
-                                    'success'
-                                ).then(() => {
+                                Swal.fire('¡Eliminado!', data.message, 'success').then(() => {
                                     window.location.reload();
                                 });
+                            } else if (data.compras) {
+                                // Si el usuario tiene compras, pedir contraseña de admin
+                                Swal.fire({
+                                    title: 'Este usuario tiene compras',
+                                    text: 'Para eliminarlo, ingresa la contraseña de administrador.',
+                                    input: 'password',
+                                    inputAttributes: {
+                                        autocapitalize: 'off'
+                                    },
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Eliminar de todos modos',
+                                    showLoaderOnConfirm: true,
+                                    preConfirm: (password) => {
+                                        const forcedUrl = url.replace('/eliminar/', '/eliminar-forzado/');
+                                        const formData = new FormData();
+                                        formData.append('password', password);
+
+                                        return fetch(forcedUrl, {
+                                            method: 'POST',
+                                            headers: {
+                                                [csrfHeader]: csrfToken
+                                            },
+                                            body: new URLSearchParams(formData)
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error(response.statusText);
+                                            }
+                                            return response.json();
+                                        })
+                                        .catch(error => {
+                                            Swal.showValidationMessage(`La solicitud falló: ${error}`);
+                                        });
+                                    },
+                                    allowOutsideClick: () => !Swal.isLoading()
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        if (result.value.success) {
+                                            Swal.fire('¡Eliminado!', result.value.message, 'success').then(() => {
+                                                window.location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire('Error', result.value.message, 'error');
+                                        }
+                                    }
+                                });
                             } else {
-                                Swal.fire(
-                                    'Error',
-                                    data.message,
-                                    'error'
-                                );
+                                Swal.fire('Error', data.message, 'error');
                             }
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            Swal.fire(
-                                'Error',
-                                'Ocurrió un error al eliminar el usuario.',
-                                'error'
-                            );
+                            Swal.fire('Error', 'Ocurrió un error al eliminar el usuario.', 'error');
                         });
                     }
                 });
             }
+            /*]]>*/
         </script>
 
         <!-- Script para mostrar alertas de SweetAlert -->

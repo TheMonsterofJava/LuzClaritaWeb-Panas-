@@ -44,13 +44,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="mov : ${movimientos}">
+                    <tr th:each="mov : ${movimientos}"
+                        th:classappend="${mov.venta != null and mov.venta.estado.name() == 'ELIMINADA'} ? 'text-decoration-line-through' : ''">
                         <td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy HH:mm')}"></td>
                         <td th:text="${mov.tipoOperacion.name()}"
                             th:classappend="${mov.tipoOperacion.name() == 'INGRESO'} ? 'text-success' : 'text-danger'"></td>
                         <td th:text="${'$' + #numbers.formatDecimal(mov.monto, 1, 2)}"></td>
                         <td th:text="${mov.descripcion}"></td>
-                        <td th:text="${mov.operador != null ? mov.operador.nomb_usu : '-'}"></td>
+                        <td th:text="${mov.operador != null ? (mov.operador.activo ? mov.operador.nomb_usu : mov.operador.nomb_usu + ' (Eliminado)') : '-'}"></td>
+
                     </tr>
                     </tbody>
                 </table>

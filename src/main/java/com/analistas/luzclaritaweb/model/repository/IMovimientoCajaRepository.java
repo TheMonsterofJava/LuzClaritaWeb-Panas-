@@ -27,4 +27,6 @@ public interface IMovimientoCajaRepository extends JpaRepository<MovimientoCaja,
 
     MovimientoCaja findByCompraId(Long compraId);
 
+    List<MovimientoCaja> findByVentaId(Long ventaId);
+
 }

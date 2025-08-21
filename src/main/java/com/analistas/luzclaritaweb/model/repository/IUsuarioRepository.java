@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 
@@ -34,7 +36,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
             "FROM Usuario u WHERE u.email = ?1 OR u.nomb_usu = ?1")
     boolean existsByEmailOrNombUsu(String identificador);
 
-    
+    Page<Usuario> findAllByActivoTrue(Pageable pageable);    
     
 }
 

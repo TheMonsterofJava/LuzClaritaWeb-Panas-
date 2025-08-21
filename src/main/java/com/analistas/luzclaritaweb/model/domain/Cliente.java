@@ -1,5 +1,6 @@
 package com.analistas.luzclaritaweb.model.domain;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,9 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+
 import lombok.Data;
 
 @Data
@@ -60,6 +63,15 @@ public class Cliente {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
+
+    
+    @Column(name = "activo", columnDefinition = "boolean default 1")
+    private boolean activo;
+
+    @PrePersist
+    public void prePersist() {
+        activo = true;
+    }
 
     @Override
     public String toString() {

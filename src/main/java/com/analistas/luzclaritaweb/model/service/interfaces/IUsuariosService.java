@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.analistas.luzclaritaweb.model.domain.Cliente;
 import com.analistas.luzclaritaweb.model.domain.Permiso;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
+import com.analistas.luzclaritaweb.model.domain.Venta;
 import com.analistas.luzclaritaweb.model.repository.IClienteRepository;
 import com.analistas.luzclaritaweb.model.repository.IPermisoRepository;
 import com.analistas.luzclaritaweb.model.repository.IUsuarioRepository;
+import com.analistas.luzclaritaweb.model.repository.IVentaRepository;
 
 //Agregamos imprts para la paginacion en el Dashboard
 import org.springframework.data.domain.Page;
@@ -27,6 +29,7 @@ public class IUsuariosService {
     private final IUsuarioRepository usuarioRepository;
     private final IPermisoRepository permisoRepository;
     private final IClienteRepository clienteRepository;
+    private final IVentaRepository ventaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -55,12 +58,6 @@ public class IUsuariosService {
         usuario.setNomb_usu(nomb_usu);
         usuario.setEmail(email);
         usuarioRepository.save(usuario);
-    }
-
-
-    //Paginacion en el Dashboard
-     public Page<Usuario> findAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
     }
 
     public Optional<Usuario> findById(Long id) {
@@ -123,12 +120,43 @@ public class IUsuariosService {
         // Verificar si existe un cliente asociado
         Optional<Cliente> clienteOpt = clienteRepository.findByUsuario(usuario);
         if (clienteOpt.isPresent()) {
-            clienteRepository.delete(clienteOpt.get());
+            Cliente cliente = clienteOpt.get();
+            cliente.setActivo(false);
+            clienteRepository.save(cliente);
         }
 
-        // Eliminar el usuario
-        usuarioRepository.delete(usuario);
+        // Marcar el usuario como inactivo
+        usuario.setActivo(false);
+        usuarioRepository.save(usuario);
+    }
 
+    @Transactional
+    public void eliminarUsuarioYVentasAsociadas(Long id) {
+        // Buscar el usuario por ID
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar si existe un cliente asociado
+        Optional<Cliente> clienteOpt = clienteRepository.findByUsuario(usuario);
+        if (clienteOpt.isPresent()) {
+            Cliente cliente = clienteOpt.get();
+            // Buscar ventas asociadas
+            List<Venta> ventas = ventaRepository.findByClienteId(cliente.getId());
+
+            for (Venta venta : ventas) {
+                // Cambiar el estado de la venta a ELIMINADA
+                venta.setEstado(Venta.EstadoVenta.ELIMINADA);
+                ventaRepository.save(venta);
+            }
+
+            // Marcar el cliente como inactivo
+            cliente.setActivo(false);
+            clienteRepository.save(cliente);
+        }
+
+        // Marcar el usuario como inactivo
+        usuario.setActivo(false);
+        usuarioRepository.save(usuario);
     }
 
     // Metodo para ver si existe un usuario en la base de datos
@@ -187,61 +215,10 @@ public class IUsuariosService {
         usuarioRepository.save(usuario);
     }
 
+    //Paginacion en el Dashboard
+     public Page<Usuario> findAll(Pageable pageable) {
+        return usuarioRepository.findAllByActivoTrue(pageable);
+    }
+
+
 }
-
-// @Service
-// @RequiredArgsConstructor
-// public class IUsuariosService {
-
-// private final IUsuarioRepository usuarioRepository;
-// private final IPermisoRepository permisoRepository; // Inyectar el
-// repositorio de permisos
-
-// public Optional<Usuario> findById(Long id) {
-// return usuarioRepository.findById(id);
-// }
-
-// public Optional<Usuario> findByEmail(String email) {
-// return usuarioRepository.findByEmail(email);
-// }
-
-// public Usuario guardarUsuario(Usuario usuario) {
-// return usuarioRepository.save(usuario);
-// }
-
-// public List<Permiso> findAllPermisos() {
-// return permisoRepository.findAll();
-// }
-
-// public List<Usuario> findAll() {
-// List<Usuario> usuarios = usuarioRepository.findAll();
-// System.out.println("Usuarios en el servicio: " + usuarios);
-// return usuarios;
-// }
-
-// // Nuevo método para obtener un permiso por nombre
-// public Permiso obtenerPermisoPorNombre(String nombrePermiso) {
-// return permisoRepository.findByNombre(nombrePermiso)
-// .orElseThrow(() -> new RuntimeException("Permiso no encontrado: " +
-// nombrePermiso));
-// }
-
-// public Object findPermisoById(Long permisoId) {
-
-// return permisoRepository.findById(permisoId)
-// .orElseThrow(() -> new RuntimeException("Permiso no encontrado con ID: " +
-// permisoId));
-
-// }
-
-// //Buscar por email o usuario...
-// public Usuario findByEmailOrUSerAndPassword(String emailOrUser, String
-// password) {
-// return usuarioRepository.findByEmailOrUSerAndPassword(emailOrUser, password);
-// }
-
-// public void eliminarUsuario(Long id) {
-// usuarioRepository.eliminarUsuario(id);
-// }
-
-// }

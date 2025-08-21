@@ -111,11 +111,10 @@ public class VentaServiceImpl implements IVentaService {
         ventaRepository.deleteById(id);
     }
 
+    
     @Override
     public List<Venta> buscarPorCliente(Long clienteId) {
-        // La implementación requeriría un método en el repositorio, por ejemplo:
-        // findByClienteId(clienteId)
-        return new ArrayList<>();
+        return ventaRepository.findByClienteId(clienteId);
     }
 
     @Override
