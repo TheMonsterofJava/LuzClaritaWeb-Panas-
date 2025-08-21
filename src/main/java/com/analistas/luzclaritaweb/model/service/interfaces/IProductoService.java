@@ -22,6 +22,8 @@ public interface IProductoService {
 
     public List<Categoria> getCategorias();
 
+    public List<Producto> buscarPorCategoria(Long categoriaId);
+
     void guardarProducto(Producto producto);
 
     Producto buscarPorNombre(String nombre);

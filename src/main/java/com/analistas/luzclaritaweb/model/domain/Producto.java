@@ -26,6 +26,10 @@ import lombok.Data;
 @Table(name = "productos")
 public class Producto {
 
+    @NotEmpty(message = "El nombre es requerido...")
+    @Size(max = 65, message = "El nombre debe tener máximo 65 caracteres...")
+    private String nombre;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -7,10 +7,6 @@ INSERT INTO `permisos` (nombre, descripcion) VALUES ('ROLE_ADMIN', 'Dueño de la
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 1, 'Osvaldo', '$2y$10$ZP7gE3toR10ffABvlsvJXOGQsHaUQPizzXpuBZj5Gkf.7mT3hFmQS', 'Osvaldo@gmail.com.ar') /*user*/
 INSERT INTO `usuarios` (activo, fecha_creacion, id_permiso, nomb_usu, clave, email) VALUES (1, '2024-12-01', 3, 'Santi', '$2y$10$Y5PE96MBydWiAVCAkf1TQu99d7NKYNPWU/HEAZGQ2l5OQu2XiPiiC', 'Santi@gmail.com.ar') /*cliente*/
 
-
-
-
-
 -- CATEGORÍAS
 INSERT INTO `LuzClaritaWebOva`.`categorias` (`nombre`) VALUES ('Chocolate');
 INSERT INTO `LuzClaritaWebOva`.`categorias` (`nombre`) VALUES ('Frutilla');
@@ -18,9 +14,9 @@ INSERT INTO `LuzClaritaWebOva`.`categorias` (`nombre`) VALUES ('Vainilla');
 INSERT INTO `LuzClaritaWebOva`.`categorias` (`nombre`) VALUES ('Donas');
 
 -- PRODUCTOS
-INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '6', '2', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
-INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '10', '1', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
-INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `lnk_img`) VALUES ('1', '1.00', '20', '4', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
+INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `nombre`, `lnk_img`) VALUES ('1', '1.00', '6', '2', 'Divertida', 'Torta Spiderman', 'https://donolli.com.ar/wp-content/uploads/2023/01/20221015_122724-scaled.jpg');
+INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `nombre`, `lnk_img`) VALUES ('1', '1.00', '10', '1', 'Mmm Chocolata', 'Torta chocolate', 'https://i.ytimg.com/vi/H7uMpjzyaTU/maxresdefault.jpg');
+INSERT INTO `LuzClaritaWebOva`.`productos` (`activo`, `precio`, `stock`, `id_categoria`, `descripcion`, `nombre`, `lnk_img`) VALUES ('1', '1.00', '20', '4', 'Donas', 'Donas glaseadas', 'https://64.media.tumblr.com/155ba7881a89c4b5a70ad4466e8d86f5/tumblr_nuvqnoaaEe1tf311io1_1280.jpg');
 
 -- CAJAS
 INSERT INTO `LuzClaritaWebOva`.`caja` (`saldo_final`, `saldo_inicial`, `fecha`, `id_usuario`, `estado`) VALUES ('10000.00', '10000.00', '2025-04-20 00:00:00', 1, 'ABIERTA');

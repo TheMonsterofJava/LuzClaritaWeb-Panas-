@@ -138,19 +138,30 @@ public class ProductoController {
     public List<Categoria> listarCategorias() {
         return productoService.getCategorias();
     }
+     
+    @GetMapping("/detalle/{id}")
+    public String verDetalle(@PathVariable("id") Long id, Model model) {
+        Producto producto = productoService.buscarPorId(id);
+        List<Producto> productosRelacionados = productoService.buscarPorCategoria(producto.getCategoria().getId());
+        
+        model.addAttribute("producto", producto); // Aquí se pasa la descripción también
+        model.addAttribute("productosRelacionados", productosRelacionados);
+        model.addAttribute("titulo", "Detalle: " + producto.getNombre());
+
+        return "productos/detalles";
+    }
 
     @PostMapping("/categorias/guardar")
-    public String guardarCategoria(@Valid Categoria categoria, BindingResult result, RedirectAttributes flash,
-            HttpServletRequest request) {
+    public String guardarCategoria(@Valid Categoria categoria, BindingResult result, 
+        RedirectAttributes flash, HttpServletRequest request) {
         if (result.hasErrors()) {
             flash.addFlashAttribute("error", "Corrija los errores...");
-            return "redirect:" + request.getHeader("Referer"); // Redirigir a la página anterior si hay errores
+            return "redirect:" + request.getHeader("Referer");
         }
-
+    
         categoriaService.guardar(categoria);
-        flash.addFlashAttribute("info", "Categoría " + categoria.getNombre() + " guardada con éxito");
-        return "redirect:" + request.getHeader("Referer"); // Redirigir a la página anterior después de guardar la
-                                                           // categoría
+        flash.addFlashAttribute("info", "Categoría '" + categoria.getNombre() + "' guardada con éxito");
+        return "redirect:" + request.getHeader("Referer");
     }
 
 }
