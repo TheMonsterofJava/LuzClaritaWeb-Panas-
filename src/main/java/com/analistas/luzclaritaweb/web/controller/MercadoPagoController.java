@@ -22,9 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.analistas.luzclaritaweb.dto.CarritoDTO;
 import com.analistas.luzclaritaweb.model.domain.DetalleVenta;
 import com.analistas.luzclaritaweb.model.domain.Producto;
+import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Usuario;
 import com.analistas.luzclaritaweb.model.domain.Venta;
 import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
+import com.analistas.luzclaritaweb.model.repository.IRecetaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICarritoService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IVentaService;
 import com.analistas.luzclaritaweb.web.config.security.CustomUserDetails;
@@ -48,6 +50,9 @@ public class MercadoPagoController {
 
     @Autowired
     private IProductoRepository productoRepository;
+
+    @Autowired
+    private IRecetaRepository recetaRepository;
 
     @Autowired
     private ICarritoService carritoService;
@@ -88,15 +93,22 @@ public class MercadoPagoController {
 
             log.info("Validando stock de productos...");
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoRepository.findById(item.getProductoId()).orElse(null);
-                if (producto == null) {
-                    log.error("Producto no encontrado con ID: {}. Abortando.", item.getProductoId());
-                    flash.addFlashAttribute("error", "Producto no encontrado: " + item.getProductoId());
-                    return "redirect:/home";
-                }
-                if (producto.getStock() < item.getCantidad()) {
-                    log.error("Stock insuficiente para '{}'. Requerido: {}, Disponible: {}. Abortando.", producto.getDescripcion(), item.getCantidad(), producto.getStock());
-                    flash.addFlashAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
+                if (item.getProductoId() != null) {
+                    Producto producto = productoRepository.findById(item.getProductoId()).orElse(null);
+                    if (producto == null) {
+                        log.error("Producto no encontrado con ID: {}. Abortando.", item.getProductoId());
+                        flash.addFlashAttribute("error", "Producto no encontrado: " + item.getProductoId());
+                        return "redirect:/home";
+                    }
+                    if (producto.getStock() < item.getCantidad()) {
+                        log.error("Stock insuficiente para '{}'. Requerido: {}, Disponible: {}. Abortando.",
+                                producto.getDescripcion(), item.getCantidad(), producto.getStock());
+                        flash.addFlashAttribute("error", "No hay suficiente stock para " + producto.getDescripcion());
+                        return "redirect:/home";
+                    }
+                } else if (item.getRecetaId() == null) {
+                    log.error("Item en carrito sin ID de producto ni de receta. Abortando.");
+                    flash.addFlashAttribute("error", "Item en carrito inválido.");
                     return "redirect:/home";
                 }
             }
@@ -112,15 +124,26 @@ public class MercadoPagoController {
             List<DetalleVenta> detallesVenta = new ArrayList<>();
             java.math.BigDecimal total = java.math.BigDecimal.ZERO;
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoRepository.findById(item.getProductoId()).get();
                 DetalleVenta detalleVenta = new DetalleVenta();
                 detalleVenta.setVenta(ventaPendiente);
-                detalleVenta.setItemId(producto.getId());
-                detalleVenta.setTipoItem(DetalleVenta.TipoItem.PRODUCTO);
                 detalleVenta.setCantidad(item.getCantidad());
-                detalleVenta.setPrecioUnitario(producto.getPrecio());
-                // Calcular el subtotal manualmente aquí para evitar el NullPointerException
-                BigDecimal subtotal = producto.getPrecio().multiply(new BigDecimal(item.getCantidad()));
+
+                BigDecimal subtotal;
+
+                if (item.getProductoId() != null) {
+                    Producto producto = productoRepository.findById(item.getProductoId()).get();
+                    detalleVenta.setItemId(producto.getId());
+                    detalleVenta.setTipoItem(DetalleVenta.TipoItem.PRODUCTO);
+                    detalleVenta.setPrecioUnitario(producto.getPrecio());
+                    subtotal = producto.getPrecio().multiply(new BigDecimal(item.getCantidad()));
+                } else { // Es una receta
+                    Receta receta = recetaRepository.findById(item.getRecetaId()).get();
+                    detalleVenta.setItemId(receta.getId());
+                    detalleVenta.setTipoItem(DetalleVenta.TipoItem.RECETA);
+                    detalleVenta.setPrecioUnitario(receta.getPrecio());
+                    subtotal = receta.getPrecio().multiply(new BigDecimal(item.getCantidad()));
+                }
+
                 detalleVenta.setSubtotal(subtotal); // Asignarlo explícitamente
                 detallesVenta.add(detalleVenta);
                 total = total.add(subtotal);
@@ -147,11 +170,18 @@ public class MercadoPagoController {
 
 
             for (CarritoDTO item : carritoItems) {
-                Producto producto = productoRepository.findById(item.getProductoId()).get();
                 Item mpItem = new Item();
-                mpItem.setTitle(producto.getDescripcion())
-                      .setQuantity(item.getCantidad())
-                      .setUnitPrice(producto.getPrecio().floatValue());
+                if (item.getProductoId() != null) {
+                    Producto producto = productoRepository.findById(item.getProductoId()).get();
+                    mpItem.setTitle(producto.getDescripcion())
+                          .setQuantity(item.getCantidad())
+                          .setUnitPrice(producto.getPrecio().floatValue());
+                } else { // Es una receta
+                    Receta receta = recetaRepository.findById(item.getRecetaId()).get();
+                     mpItem.setTitle(receta.getNombre_receta())
+                          .setQuantity(item.getCantidad())
+                          .setUnitPrice(receta.getPrecio().floatValue());
+                }
                 preference.appendItem(mpItem);
             }
             log.info("Items añadidos a la preferencia de MercadoPago.");

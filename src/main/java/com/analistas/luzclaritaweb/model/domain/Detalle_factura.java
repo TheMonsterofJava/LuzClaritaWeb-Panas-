@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -28,11 +27,11 @@ public class Detalle_factura {
     private Long id;
     
     @Column(name = "cantidad")
-    @NotEmpty(message = "La Cantidad del Producto es requerida...")
+    @NotNull(message = "La Cantidad del Producto es requerida...")
     private int cantidad;
     
     @Column(name = "precio_unitario")
-    @NotEmpty(message = "El Precio Unitario es requerido...")
+    @NotNull(message = "El Precio Unitario es requerido...")
     @NumberFormat(pattern = "#,##0.00", style = NumberFormat.Style.CURRENCY)
     private BigDecimal precio_unitario;
     
@@ -40,13 +39,25 @@ public class Detalle_factura {
     @JoinColumn(name = "id_factura", referencedColumnName = "id")
     private Factura factura;
     
-    @NotNull(message = "El Producto es requerido...")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_producto", referencedColumnName = "id")
+    @JoinColumn(name = "id_producto", referencedColumnName = "id", nullable = true)
     private Producto producto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_receta", referencedColumnName = "id", nullable = true)
+    private Receta receta;
 
     //Metodos
     public Double calcularSubtotal() {
         return cantidad * precio_unitario.doubleValue();
+    }
+
+    public String getDescripcionItem() {
+        if (producto != null) {
+            return producto.getDescripcion();
+        } else if (receta != null) {
+            return receta.getNombre_receta();
+        }
+        return "Item no disponible";
     }
 }

@@ -33,7 +33,7 @@ public class DetalleVenta {
     @Column(name = "item_id", nullable = false)
     private Long itemId;
     
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo_item", nullable = false)
     private TipoItem tipoItem;
     
@@ -55,6 +55,6 @@ public class DetalleVenta {
     }
     
     public enum TipoItem {
-        PRODUCTO, CURSO
+        PRODUCTO, CURSO, RECETA
     }
 }

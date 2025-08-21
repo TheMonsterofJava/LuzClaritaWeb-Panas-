@@ -27,7 +27,8 @@ public interface IFacturaRepository extends JpaRepository<Factura, Long> {
     // Metodo para encontrar una factura por el ID de Colección de Mercado Pago
     Optional<Factura> findByMpExternalReference(String mpExternalReference);
 
-    List<Factura> findByCliente_Usuario_IdOrderByFechapedidoDesc(Long id);
+    @Query("SELECT f FROM Factura f JOIN FETCH f.detalles WHERE f.cliente.usuario.id = :id ORDER BY f.fechapedido DESC")
+    List<Factura> findByCliente_Usuario_IdOrderByFechapedidoDesc(@Param("id") Long id);
 
     // Futros metodos
     // Opcional

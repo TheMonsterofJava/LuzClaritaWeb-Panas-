@@ -656,4 +656,43 @@ Modificamos ICarritoService, IUsuarioService WebSecurityConfig CarritoController
 ;         src/main/java/com/analistas/luzclaritaweb/web/controller/FacturaController.java
 ;         src/main/resources/templates/cliente/
 
+; Arreglo del error de compras de recetas y Agreganos el dashboard de bruno:
+; Visualización de la Compra:
+
+; Problema: El "Total" de la compra no se mostraba correctamente en la página "Mis Compras".
+; Solución: Modificamos la consulta en IFacturaRepository para que cargara los detalles de la factura (detalles) de forma inmediata (JOIN FETCH), solucionando un problema de carga perezosa (lazy loading) que impedía el cálculo del total.
+; Flujo de Compra de Recetas:
+
+; Problema: La aplicación se rompía al intentar comprar una receta debido a varios errores:
+; Error de Validación: Un error (UnexpectedTypeException) por usar una anotación incorrecta (@NotEmpty) en campos numéricos.
+; Error de ID Nulo: La lógica de compra esperaba un productoId que no existía para las recetas.
+; Error de "Dato Truncado": El valor "RECETA" era demasiado largo para la columna tipo_item en la base de datos.
+; Error de "Columna no puede ser nula": La base de datos no permitía un valor nulo para id_producto al comprar una receta.
+; Solución:
+; Ajustamos las entidades DetalleVenta y Detalle_factura para que pudieran manejar tanto productos como recetas de forma flexible.
+; Modificamos MercadoPagoController y VentaServiceImpl para diferenciar entre productos y recetas, asegurando que el stock solo se descuente para productos y que la información correcta se guarde en la factura.
+; Cambiamos la forma en que se guarda el tipo de item a un número (EnumType.ORDINAL) para evitar problemas de longitud en la base de datos.
+; Finalmente, actualizamos el archivo luzclaritaweb.sql para que la estructura de la base de datos reflejara estos cambios, aunque al final lo resolviste de una manera mucho mejor, recreando la base de datos a partir de las entidades con ddl-auto.
+; Mejora en la Interfaz de Usuario:
+
+; Problema: La página "Mis Compras" solo mostraba un resumen de cada factura.
+; Solución: Mejoramos la página para que ahora muestre una vista detallada de cada compra en una sección desplegable, permitiendo al usuario ver exactamente qué items compró, su cantidad y el subtotal.
+
+; Archivos modificados:
+    ;    modified:   Cambios
+    ;     modified:   src/main/java/com/analistas/luzclaritaweb/model/domain/DetalleVenta.java
+    ;     modified:   src/main/java/com/analistas/luzclaritaweb/model/domain/Detalle_factura.java
+    ;     modified:   src/main/java/com/analistas/luzclaritaweb/model/repository/IFacturaRepository.java
+    ;     modified:   src/main/java/com/analistas/luzclaritaweb/model/service/impl/VentaServiceImpl.java
+    ;     modified:   src/main/java/com/analistas/luzclaritaweb/web/controller/MercadoPagoController.java
+    ;     modified:   src/main/resources/application.properties
+    ;     modified:   src/main/resources/templates/admin/dashboard-1.html
+    ;     modified:   src/main/resources/templates/admin/user-management-add-user.html
+    ;     modified:   src/main/resources/templates/admin/user-management-edit-user.html
+    ;     modified:   src/main/resources/templates/admin/user-management-list.html
+    ;     modified:   src/main/resources/templates/cliente/miscompras.html
+    ;     src/main/resources/static/css/dashboard.css
+    ;     src/main/resources/templates/admin.html
+
+
 Arbol del proyecto actulizado:

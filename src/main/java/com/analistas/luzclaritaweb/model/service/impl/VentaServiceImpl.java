@@ -16,9 +16,11 @@ import com.analistas.luzclaritaweb.model.domain.Detalle_factura;
 import com.analistas.luzclaritaweb.model.domain.Factura;
 import com.analistas.luzclaritaweb.model.domain.MovimientoCaja;
 import com.analistas.luzclaritaweb.model.domain.Producto;
+import com.analistas.luzclaritaweb.model.domain.Receta;
 import com.analistas.luzclaritaweb.model.domain.Venta;
 import com.analistas.luzclaritaweb.model.repository.IFacturaRepository;
 import com.analistas.luzclaritaweb.model.repository.IProductoRepository;
+import com.analistas.luzclaritaweb.model.repository.IRecetaRepository;
 import com.analistas.luzclaritaweb.model.repository.IVentaRepository;
 import com.analistas.luzclaritaweb.model.service.interfaces.ICajaService;
 import com.analistas.luzclaritaweb.model.service.interfaces.IMovimientoCajaService;
@@ -43,6 +45,10 @@ public class VentaServiceImpl implements IVentaService {
     @Autowired
     private ICajaService cajaService;
 
+    @Autowired
+    private IRecetaRepository 
+    recetaRepository ;
+
     // @Autowired
     // private IDetalleVentaRepository detalleVentaRepository;
 
@@ -53,7 +59,7 @@ public class VentaServiceImpl implements IVentaService {
         venta.setCliente(factura.getCliente());
         venta.setFechaVenta(factura.getFechapedido());
         venta.setMetodoPago(factura.getMetodo_pago());
-        
+
         // Asumiendo que el usuario que paga es el vendedor en este contexto.
         // Si hay una lógica de negocio diferente, esto podría necesitar un ajuste.
         if (factura.getCliente() != null) {
@@ -73,14 +79,15 @@ public class VentaServiceImpl implements IVentaService {
             detalleVenta.setVenta(venta);
             detallesVenta.add(detalleVenta);
 
-            totalVenta = totalVenta.add(detalleFactura.getPrecio_unitario().multiply(new BigDecimal(detalleFactura.getCantidad())));
+            totalVenta = totalVenta
+                    .add(detalleFactura.getPrecio_unitario().multiply(new BigDecimal(detalleFactura.getCantidad())));
         }
 
         venta.setTotal(totalVenta);
         venta.setDetalles(detallesVenta);
-        
+
         // El estado se establece a COMPLETADA por el @PrePersist en la entidad Venta
-        
+
         ventaRepository.save(venta);
     }
 
@@ -106,13 +113,15 @@ public class VentaServiceImpl implements IVentaService {
 
     @Override
     public List<Venta> buscarPorCliente(Long clienteId) {
-        // La implementación requeriría un método en el repositorio, por ejemplo: findByClienteId(clienteId)
+        // La implementación requeriría un método en el repositorio, por ejemplo:
+        // findByClienteId(clienteId)
         return new ArrayList<>();
     }
 
     @Override
     public List<Venta> buscarPorVendedor(Long vendedorId) {
-        // La implementación requeriría un método en el repositorio, por ejemplo: findByVendedorId(vendedorId)
+        // La implementación requeriría un método en el repositorio, por ejemplo:
+        // findByVendedorId(vendedorId)
         return new ArrayList<>();
     }
 
@@ -149,16 +158,20 @@ public class VentaServiceImpl implements IVentaService {
         venta.setEstado(Venta.EstadoVenta.COMPLETADA);
         venta.setFechaVenta(LocalDateTime.now());
 
-        // 2. Descontar stock
+        // 2. Descontar stock solo para productos
         for (DetalleVenta detalle : venta.getDetalles()) {
-            Producto producto = productoRepository.findById(detalle.getItemId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + detalle.getItemId()));
-            
-            if (producto.getStock() < detalle.getCantidad()) {
-                throw new StockInsuficienteException("Stock insuficiente para el producto: " + producto.getDescripcion());
+            if (detalle.getTipoItem() == DetalleVenta.TipoItem.PRODUCTO) {
+                Producto producto = productoRepository.findById(detalle.getItemId())
+                        .orElseThrow(
+                                () -> new RuntimeException("Producto no encontrado con ID: " + detalle.getItemId()));
+
+                if (producto.getStock() < detalle.getCantidad()) {
+                    throw new StockInsuficienteException(
+                            "Stock insuficiente para el producto: " + producto.getDescripcion());
+                }
+                producto.setStock(producto.getStock() - detalle.getCantidad());
+                productoRepository.save(producto);
             }
-            producto.setStock(producto.getStock() - detalle.getCantidad());
-            productoRepository.save(producto);
         }
 
         // 3. Crear Factura
@@ -170,15 +183,24 @@ public class VentaServiceImpl implements IVentaService {
         factura.setActivo(true);
         // Asociar la caja de ventas activa
         factura.setCaja(cajaService.obtenerCajaActivaParaVentas());
-        // Aquí podrías añadir el collection_id y external_reference si los guardas en la Venta
-        
+        // Aquí podrías añadir el collection_id y external_reference si los guardas en
+        // la Venta
+
         List<Detalle_factura> detallesFactura = new ArrayList<>();
         for (DetalleVenta detalleVenta : venta.getDetalles()) {
             Detalle_factura detalleFactura = new Detalle_factura();
             detalleFactura.setFactura(factura);
-            detalleFactura.setProducto(productoRepository.findById(detalleVenta.getItemId()).get());
             detalleFactura.setCantidad(detalleVenta.getCantidad());
             detalleFactura.setPrecio_unitario(detalleVenta.getPrecioUnitario());
+
+            if (detalleVenta.getTipoItem() == DetalleVenta.TipoItem.PRODUCTO) {
+                Producto producto = productoRepository.findById(detalleVenta.getItemId()).get();
+                detalleFactura.setProducto(producto);
+            } else { // Es una receta
+                Receta receta = recetaRepository.findById(detalleVenta.getItemId()).get();
+                detalleFactura.setReceta(receta);
+            }
+
             detallesFactura.add(detalleFactura);
         }
         factura.setDetalles(detallesFactura);

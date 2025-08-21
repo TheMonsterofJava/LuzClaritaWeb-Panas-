@@ -30,7 +30,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="factura : ${facturas}">
+                        <tr th:each="factura : ${facturas}" th:data-bs-toggle="'collapse'" th:data-bs-target="'#detalles-' + ${factura.id}" style="cursor: pointer;">
                             <td th:text="${factura.numero_factura}"></td>
                             <td th:text="${#temporals.format(factura.fechapedido, 'dd/MM/yyyy HH:mm')}"></td>
                             <td th:text="${factura.metodo_pago}"></td>
@@ -38,6 +38,30 @@
                             <td>
                                 <span th:if="${factura.activo}" class="badge bg-success">Completada</span>
                                 <span th:unless="${factura.activo}" class="badge bg-danger">Cancelada</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="p-0">
+                                <div th:id="'detalles-' + ${factura.id}" class="collapse">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio Unitario</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="detalle : ${factura.detalles}">
+                                                <td th:text="${detalle.getDescripcionItem()}"></td>
+                                                <td th:text="${detalle.cantidad}"></td>
+                                                <td th:text="|${#numbers.formatCurrency(detalle.precio_unitario)}|"></td>
+                                                <td th:text="|${#numbers.formatCurrency(detalle.calcularSubtotal())}|"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
