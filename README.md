@@ -4,21 +4,52 @@
 
 Este proyecto fue desarrollado como trabajo final de la carrera de programación, demostrando la aplicación de tecnologías modernas para crear una solución de comercio electrónico robusta y funcional.
 
-## ✨ Características Principales
+## ✨ Características y Funciones Principales:
 
-### Para Clientes:
-- **Catálogo de Productos:** Explora una amplia variedad de pastelería sin TACC con descripciones detalladas y precios.
-- **Carrito de Compras:** Añade productos fácilmente y gestiona tu pedido antes de finalizar la compra.
-- **Proceso de Pago Seguro:** Integración con **Mercado Pago** para un proceso de pago fluido y seguro.
-- **Registro y Autenticación:** Crea una cuenta o inicia sesión utilizando tu correo electrónico. También puedes registrarte e iniciar sesión rápidamente con tus cuentas de **Google**.
-- **Consultas y Contacto:** Envía tus dudas o consultas directamente a través de un formulario en la web.
+Funcionalidades para Clientes
+1) Navegación y Descubrimiento de Productos:
 
-### Para Administradores (Dashboard):
-- **Gestión de Inventario:** Control total sobre el stock de productos, con actualizaciones en tiempo real.
-- **Gestión de Productos:** Añade, edita o elimina productos del catálogo.
-- **Gestión de Caja:** Realiza un seguimiento de los movimientos de caja, incluyendo ventas y otros ingresos/egresos.
-- **Gestión de Compras:** Administra las compras a proveedores y mantén un registro detallado.
-- **Reportes de Ventas:** Genera reportes para analizar el rendimiento del negocio.
+a) Ver Catálogo: Exploran todos los productos de pastelería disponibles.
+b) Filtrar por Categorías: Encuentran productos específicos según la categoría (tortas, galletas, etc.).
+c) Ver Detalles del Producto: Acceden a una página con la descripción completa, precio y foto de cada producto.
+
+2) Proceso de Compra:
+
+a) Carrito de Compras: Añaden, eliminan y actualizan la cantidad de productos en su carrito.
+b) Finalizar Compra: Realizan el pago de su pedido de forma segura a través de la integración con Mercado Pago.
+
+3) Gestión de Cuentas de Usuario:
+
+a) Registro y Autenticación: Crean una cuenta con su correo o se registran e inician sesión rápidamente usando sus cuentas de Google.
+b) Ver Historial de Compras: Acceden a un listado de todas las compras que han realizado.
+c) Gestión de Perfil: Pueden ver y, potencialmente, actualizar la información de su perfil.
+
+4) Interacción y Soporte:
+
+a) Formulario de Consulta: Envían preguntas o solicitudes de información directamente desde la web.
+b) Acceso a Recetas y Cursos: Visualizan recetas y se informan sobre los cursos que ofrece la pastelería.
+
+Funcionalidades para Administradores
+1) Gestión del Catálogo:
+
+a) Gestión de Productos (CRUD): Crean, leen, actualizan y eliminan productos del catálogo, incluyendo nombre, descripción, precio, categoría y foto.
+b) Gestión de Categorías (CRUD): Administran las categorías a las que pertenecen los productos.
+
+2) Gestión de la Tienda y Operaciones:
+
+a) Gestión de Inventario: Llevan un control del stock de ingredientes y actualizan las cantidades.
+b) Gestión de Compras a Proveedores: Registran las compras de materia prima, actualizando el inventario y generando los movimientos de caja correspondientes.
+c) Gestión de Proveedores (CRUD): Administran la información de los proveedores.
+
+3) Gestión Financiera:
+
+a) Gestión de Caja: Abren y cierran la caja, y registran todos los movimientos (ingresos y egresos).
+b) Generación de Reportes: Crean reportes de ventas para analizar el rendimiento del negocio.
+
+4) Administración de Usuarios y Contenido:
+
+a) Gestión de Usuarios: Tienen la capacidad de ver y administrar los usuarios registrados en el sistema.
+b) Gestión de Cursos y Recetas (CRUD): Crean, actualizan y eliminan la información sobre los cursos y recetas que se muestran en la web.
 
 ## 🚀 Tecnologías Utilizadas
 
@@ -55,6 +86,11 @@ Este proyecto fue construido utilizando un stack tecnológico moderno y robusto,
 ### Herramientas de Desarrollo
 - **Control de Versiones:** **Git**
 - **Testing:** **JUnit**
+ 
+## 📸 Demo & Capturas (The Visual Tour)
+
+ALBUM DE IMAGENES ONLINE QUE CONTIENE LAS FUNCIONALIDADES PRINCIPALES DEL PROGRAMA: 
+https://www.photo-pick.com/online/WBDa6vrV.link
 
 ## ⚙️ Cómo Poner en Marcha el Proyecto Localmente
 
