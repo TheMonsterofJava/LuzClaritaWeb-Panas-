@@ -1,0 +1,568 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.analistas:LuzClaritaWeb >---------------------
+[INFO] Building LuzClaritaWeb 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] >>> spring-boot:3.3.5:run (default-cli) > test-compile @ LuzClaritaWeb >>>
+Downloading from central: https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.pom
+Progress (1): 1.1 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.pom (1.1 kB at 1.1 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar
+Progress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.1/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.2/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.3/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.4/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.5/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.6/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.7/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.8/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 0.9/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.0/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.1/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.2/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.3/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.4/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.5/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.6/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.7/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.8/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 1.9/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.0/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.1/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.2/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.3/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.4/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.5/2.6 MBProgress (1): 2.6/2.6 MBProgress (1): 2.6/2.6 MBProgress (1): 2.6/2.6 MBProgress (1): 2.6/2.6 MBProgress (1): 2.6 MB                        Downloaded from central: https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar (2.6 MB at 5.9 MB/s)
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ LuzClaritaWeb ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 36 resources from src/main/resources to target/classes
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ LuzClaritaWeb ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 39 source files with javac [debug parameters release 17] to target/classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ LuzClaritaWeb ---
+[INFO] skip non existing resourceDirectory /app/src/test/resources
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ LuzClaritaWeb ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO]
+[INFO] <<< spring-boot:3.3.5:run (default-cli) < test-compile @ LuzClaritaWeb <<<
+[INFO]
+[INFO]
+[INFO] --- spring-boot:3.3.5:run (default-cli) @ LuzClaritaWeb ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-01-18T18:23:41.930Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Starting LuzClaritaWebApplication using Java 21.0.8 with PID 3478 (/app/target/classes started by jules in /app)
+2026-01-18T18:23:41.935Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-01-18T18:23:42.331Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-01-18T18:23:42.331Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-01-18T18:23:44.326Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-18T18:23:44.433Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 97 ms. Found 6 JPA repository interfaces.
+2026-01-18T18:23:45.549Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-01-18T18:23:45.571Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-18T18:23:45.572Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-01-18T18:23:45.665Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-18T18:23:45.668Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3334 ms
+2026-01-18T18:23:45.866Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-18T18:23:46.126Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2026-01-18T18:23:46.128Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-18T18:23:46.144Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-01-18T18:23:46.437Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-18T18:23:46.508Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+2026-01-18T18:23:46.551Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-18T18:23:46.991Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-18T18:23:47.068Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-18T18:23:47.093Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.2.224
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-18T18:23:48.982Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: create table caja (id bigint generated by default as identity, fecha timestamp(6), monto_total float(53), id_usuario bigint, primary key (id))
+Hibernate: create table categorias (id bigint generated by default as identity, nombre varchar(20) not null, primary key (id))
+Hibernate: create table clientes (id bigint generated by default as identity, celular varchar(20) not null, contraseña varchar(71) not null, correo varchar(120) not null, direccion varchar(120) not null, nomb_ape varchar(60) not null, id_usuario bigint not null, primary key (id))
+Hibernate: create table compras (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(500) not null, fecha_hora timestamp(6), precio numeric(38,2) not null, id_caja bigint, primary key (id))
+Hibernate: create table consultas (id bigint generated by default as identity, activo boolean default 0, celular varchar(15) not null, correo varchar(120) not null, mensaje varchar(500) not null, nom_ape varchar(50) not null, reseña varchar(500), primary key (id))
+Hibernate: create table cursos (id bigint generated by default as identity, descripcion varchar(500) not null, link_video varchar(500) not null, nombre_curso varchar(60) not null, precio numeric(38,2) not null, id_receta bigint not null, primary key (id))
+Hibernate: create table detalle_compra (id integer generated by default as identity, cantidad integer not null, precio_actual numeric(38,2) not null, id_compra bigint, primary key (id))
+Hibernate: create table detalle_factura (id bigint generated by default as identity, cantidad integer not null, precio_unitario numeric(38,2) not null, id_factura bigint, id_producto bigint not null, primary key (id))
+Hibernate: create table facturas (id bigint generated by default as identity, activo boolean default 1, fecha_pedido timestamp(6) not null, metodo_pago varchar(255) not null, numero_factura integer not null, id_caja bigint, id_cliente bigint, primary key (id))
+Hibernate: create table inscripciones (id bigint generated by default as identity, fecha_inscripcion timestamp(6), id_cliente bigint, id_curso bigint, primary key (id))
+Hibernate: create table inventario (id bigint generated by default as identity, cantidad integer not null, fecha_ingreso timestamp(6) not null, fecha_vencimiento timestamp(6) not null, nombre_ingrediente varchar(50) not null, precio numeric(38,2) not null, unidad_medida varchar(100) not null, id_proveedor bigint not null, id_usuario bigint, primary key (id))
+Hibernate: create table permisos (id bigint generated by default as identity, descripcion varchar(255), nombre varchar(20) not null, primary key (id))
+Hibernate: create table productos (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(65) not null, lnk_img varchar(1000), precio numeric(38,2) not null, stock integer not null, id_categoria bigint not null, primary key (id))
+Hibernate: create table proveedores (id bigint generated by default as identity, contacto varchar(100) not null, direccion varchar(250) not null, email varchar(120) not null, nombre varchar(100) not null, telefono integer not null, id_compra bigint, primary key (id))
+Hibernate: create table recetas (id bigint generated by default as identity, descripcion varchar(500) not null, imagen_link varchar(500) not null, ingredientes varchar(250) not null, nombre_receta varchar(100) not null, pasos varchar(500) not null, tiempo varchar(50) not null, primary key (id))
+Hibernate: create table usuarios (id bigint generated by default as identity, activo boolean default 1, clave varchar(71) not null, email varchar(100) not null, fecha_creacion timestamp(6), nombre varchar(30) not null, id_permiso bigint not null, primary key (id))
+Hibernate: alter table if exists permisos drop constraint if exists UKmd9j2tw7h6dxprrypo0itpnyp
+Hibernate: alter table if exists permisos add constraint UKmd9j2tw7h6dxprrypo0itpnyp unique (nombre)
+Hibernate: alter table if exists usuarios drop constraint if exists UKkfsp0s1tflm1cwlj8idhqsad0
+Hibernate: alter table if exists usuarios add constraint UKkfsp0s1tflm1cwlj8idhqsad0 unique (email)
+Hibernate: alter table if exists caja add constraint FKl8a22u96putem18rfxghkf22e foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists clientes add constraint FKf6u564o4dprnq7uln5gjvidp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists compras add constraint FKt0q1m9m97yen174eeidlk4rvr foreign key (id_caja) references caja
+Hibernate: alter table if exists cursos add constraint FKsayxlccxcxlfupjyufn97lgxh foreign key (id_receta) references recetas
+Hibernate: alter table if exists detalle_compra add constraint FK24e1stplndaucn3dao9chwo8p foreign key (id_compra) references compras
+Hibernate: alter table if exists detalle_factura add constraint FKdottb80mhiedtx8j8jyqewx5n foreign key (id_factura) references facturas
+Hibernate: alter table if exists detalle_factura add constraint FK8n490j4f7licrmb4jbk5mgmsp foreign key (id_producto) references productos
+Hibernate: alter table if exists facturas add constraint FK9lwy7vhbg64445eqxry7lajho foreign key (id_caja) references caja
+Hibernate: alter table if exists facturas add constraint FKp2ab9l9b5y3b0pv1ag1hfiun7 foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKj5lol6pkkcg52wxriulxiw16x foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKmyps0lutv0v9xqttbepwe14jt foreign key (id_curso) references cursos
+Hibernate: alter table if exists inventario add constraint FKfaw3xt1j7iktfcj4kdl8brj3 foreign key (id_proveedor) references proveedores
+Hibernate: alter table if exists inventario add constraint FKe91hgha9wf9oy7by5a25bnwp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists productos add constraint FKdtoa37luoxhhvbicrfiu5ygbj foreign key (id_categoria) references categorias
+Hibernate: alter table if exists proveedores add constraint FKe277g1f77qoyrx94a9wkae00o foreign key (id_compra) references compras
+Hibernate: alter table if exists usuarios add constraint FK40qh24dsvsgjhvg15q6roof9k foreign key (id_permiso) references permisos
+2026-01-18T18:23:49.125Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:23:50.077Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-18T18:23:50.258Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-01-18T18:23:50.779Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-01-18T18:23:51.835Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-01-18T18:23:51.930Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-01-18T18:23:51.948Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Started LuzClaritaWebApplication in 10.563 seconds (process running for 11.386)
+2026-01-18T18:24:08.336Z  INFO 3478 --- [LuzClaritaWeb] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-18T18:24:08.336Z  INFO 3478 --- [LuzClaritaWeb] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-18T18:24:08.339Z  INFO 3478 --- [LuzClaritaWeb] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-01-18T18:24:40.344Z  INFO 3478 --- [LuzClaritaWeb] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 38 class path changes (0 additions, 38 deletions, 0 modifications)
+2026-01-18T18:24:40.368Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:24:40.375Z  WARN 3478 --- [LuzClaritaWeb] [       Thread-5] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
+2026-01-18T18:24:40.376Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-18T18:24:40.381Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-01-18T18:24:40.618Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Starting LuzClaritaWebApplication using Java 21.0.8 with PID 3478 (/app/target/classes started by jules in /app)
+2026-01-18T18:24:40.619Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-01-18T18:24:41.008Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-18T18:24:41.014Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-01-18T18:24:41.225Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-01-18T18:24:41.228Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-18T18:24:41.228Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-01-18T18:24:41.243Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-18T18:24:41.243Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 618 ms
+2026-01-18T18:24:41.331Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-01-18T18:24:41.337Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:testdb user=SA
+2026-01-18T18:24:41.338Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-01-18T18:24:41.338Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-01-18T18:24:41.424Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-18T18:24:41.427Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-18T18:24:41.439Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-18T18:24:41.440Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-18T18:24:41.441Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.2.224
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-18T18:24:41.460Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-18T18:24:41.460Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:24:41.521Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-18T18:24:41.580Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-01-18T18:24:42.162Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-01-18T18:24:42.216Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-01-18T18:24:42.244Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-01-18T18:24:42.260Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Started LuzClaritaWebApplication in 1.693 seconds (process running for 61.697)
+2026-01-18T18:24:42.271Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   OAuth2WebSecurityConfiguration.OAuth2SecurityFilterChainConfiguration matched:
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+      - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-01-18T18:24:44.424Z  INFO 3478 --- [LuzClaritaWeb] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 38 class path changes (38 additions, 0 deletions, 0 modifications)
+2026-01-18T18:24:44.432Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:24:44.433Z  WARN 3478 --- [LuzClaritaWeb] [       Thread-7] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
+2026-01-18T18:24:44.434Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-7] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-01-18T18:24:44.436Z  INFO 3478 --- [LuzClaritaWeb] [       Thread-7] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-01-18T18:24:44.586Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Starting LuzClaritaWebApplication using Java 21.0.8 with PID 3478 (/app/target/classes started by jules in /app)
+2026-01-18T18:24:44.587Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-01-18T18:24:44.989Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-18T18:24:45.013Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 23 ms. Found 6 JPA repository interfaces.
+2026-01-18T18:24:45.397Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-01-18T18:24:45.401Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-18T18:24:45.402Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-01-18T18:24:45.419Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-18T18:24:45.420Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 829 ms
+2026-01-18T18:24:45.547Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-01-18T18:24:45.557Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection conn20: url=jdbc:h2:mem:testdb user=SA
+2026-01-18T18:24:45.558Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-01-18T18:24:45.558Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-01-18T18:24:45.669Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-18T18:24:45.671Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-18T18:24:45.682Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-18T18:24:45.683Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-18T18:24:45.684Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 2.2.224
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-18T18:24:46.250Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: create table caja (id bigint generated by default as identity, fecha timestamp(6), monto_total float(53), id_usuario bigint, primary key (id))
+Hibernate: create table categorias (id bigint generated by default as identity, nombre varchar(20) not null, primary key (id))
+Hibernate: create table clientes (id bigint generated by default as identity, celular varchar(20) not null, contraseña varchar(71) not null, correo varchar(120) not null, direccion varchar(120) not null, nomb_ape varchar(60) not null, id_usuario bigint not null, primary key (id))
+Hibernate: create table compras (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(500) not null, fecha_hora timestamp(6), precio numeric(38,2) not null, id_caja bigint, primary key (id))
+Hibernate: create table consultas (id bigint generated by default as identity, activo boolean default 0, celular varchar(15) not null, correo varchar(120) not null, mensaje varchar(500) not null, nom_ape varchar(50) not null, reseña varchar(500), primary key (id))
+Hibernate: create table cursos (id bigint generated by default as identity, descripcion varchar(500) not null, link_video varchar(500) not null, nombre_curso varchar(60) not null, precio numeric(38,2) not null, id_receta bigint not null, primary key (id))
+Hibernate: create table detalle_compra (id integer generated by default as identity, cantidad integer not null, precio_actual numeric(38,2) not null, id_compra bigint, primary key (id))
+Hibernate: create table detalle_factura (id bigint generated by default as identity, cantidad integer not null, precio_unitario numeric(38,2) not null, id_factura bigint, id_producto bigint not null, primary key (id))
+Hibernate: create table facturas (id bigint generated by default as identity, activo boolean default 1, fecha_pedido timestamp(6) not null, metodo_pago varchar(255) not null, numero_factura integer not null, id_caja bigint, id_cliente bigint, primary key (id))
+Hibernate: create table inscripciones (id bigint generated by default as identity, fecha_inscripcion timestamp(6), id_cliente bigint, id_curso bigint, primary key (id))
+Hibernate: create table inventario (id bigint generated by default as identity, cantidad integer not null, fecha_ingreso timestamp(6) not null, fecha_vencimiento timestamp(6) not null, nombre_ingrediente varchar(50) not null, precio numeric(38,2) not null, unidad_medida varchar(100) not null, id_proveedor bigint not null, id_usuario bigint, primary key (id))
+Hibernate: create table permisos (id bigint generated by default as identity, descripcion varchar(255), nombre varchar(20) not null, primary key (id))
+Hibernate: create table productos (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(65) not null, lnk_img varchar(1000), precio numeric(38,2) not null, stock integer not null, id_categoria bigint not null, primary key (id))
+Hibernate: create table proveedores (id bigint generated by default as identity, contacto varchar(100) not null, direccion varchar(250) not null, email varchar(120) not null, nombre varchar(100) not null, telefono integer not null, id_compra bigint, primary key (id))
+Hibernate: create table recetas (id bigint generated by default as identity, descripcion varchar(500) not null, imagen_link varchar(500) not null, ingredientes varchar(250) not null, nombre_receta varchar(100) not null, pasos varchar(500) not null, tiempo varchar(50) not null, primary key (id))
+Hibernate: create table usuarios (id bigint generated by default as identity, activo boolean default 1, clave varchar(71) not null, email varchar(100) not null, fecha_creacion timestamp(6), nombre varchar(30) not null, id_permiso bigint not null, primary key (id))
+Hibernate: alter table if exists permisos drop constraint if exists UKmd9j2tw7h6dxprrypo0itpnyp
+Hibernate: alter table if exists permisos add constraint UKmd9j2tw7h6dxprrypo0itpnyp unique (nombre)
+Hibernate: alter table if exists usuarios drop constraint if exists UKkfsp0s1tflm1cwlj8idhqsad0
+Hibernate: alter table if exists usuarios add constraint UKkfsp0s1tflm1cwlj8idhqsad0 unique (email)
+Hibernate: alter table if exists caja add constraint FKl8a22u96putem18rfxghkf22e foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists clientes add constraint FKf6u564o4dprnq7uln5gjvidp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists compras add constraint FKt0q1m9m97yen174eeidlk4rvr foreign key (id_caja) references caja
+Hibernate: alter table if exists cursos add constraint FKsayxlccxcxlfupjyufn97lgxh foreign key (id_receta) references recetas
+Hibernate: alter table if exists detalle_compra add constraint FK24e1stplndaucn3dao9chwo8p foreign key (id_compra) references compras
+Hibernate: alter table if exists detalle_factura add constraint FKdottb80mhiedtx8j8jyqewx5n foreign key (id_factura) references facturas
+Hibernate: alter table if exists detalle_factura add constraint FK8n490j4f7licrmb4jbk5mgmsp foreign key (id_producto) references productos
+Hibernate: alter table if exists facturas add constraint FK9lwy7vhbg64445eqxry7lajho foreign key (id_caja) references caja
+Hibernate: alter table if exists facturas add constraint FKp2ab9l9b5y3b0pv1ag1hfiun7 foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKj5lol6pkkcg52wxriulxiw16x foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKmyps0lutv0v9xqttbepwe14jt foreign key (id_curso) references cursos
+Hibernate: alter table if exists inventario add constraint FKfaw3xt1j7iktfcj4kdl8brj3 foreign key (id_proveedor) references proveedores
+Hibernate: alter table if exists inventario add constraint FKe91hgha9wf9oy7by5a25bnwp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists productos add constraint FKdtoa37luoxhhvbicrfiu5ygbj foreign key (id_categoria) references categorias
+Hibernate: alter table if exists proveedores add constraint FKe277g1f77qoyrx94a9wkae00o foreign key (id_compra) references compras
+Hibernate: alter table if exists usuarios add constraint FK40qh24dsvsgjhvg15q6roof9k foreign key (id_permiso) references permisos
+2026-01-18T18:24:46.307Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:24:46.867Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-18T18:24:46.942Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-01-18T18:24:47.270Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-01-18T18:24:47.849Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-01-18T18:24:47.889Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-01-18T18:24:47.899Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Started LuzClaritaWebApplication in 3.358 seconds (process running for 67.337)
+2026-01-18T18:24:47.903Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+   OAuth2WebSecurityConfiguration.OAuth2SecurityFilterChainConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-01-18T18:25:31.359Z  INFO 3478 --- [LuzClaritaWeb] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 38 class path changes (0 additions, 38 deletions, 0 modifications)
+2026-01-18T18:25:31.373Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-12] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:25:31.377Z  WARN 3478 --- [LuzClaritaWeb] [      Thread-12] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
+2026-01-18T18:25:31.379Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-12] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-01-18T18:25:31.381Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-12] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-01-18T18:25:31.614Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Starting LuzClaritaWebApplication using Java 21.0.8 with PID 3478 (/app/target/classes started by jules in /app)
+2026-01-18T18:25:31.615Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-01-18T18:25:31.880Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-18T18:25:31.883Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 0 JPA repository interfaces.
+2026-01-18T18:25:32.058Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-01-18T18:25:32.059Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-18T18:25:32.059Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-01-18T18:25:32.071Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-18T18:25:32.071Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 452 ms
+2026-01-18T18:25:32.136Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-01-18T18:25:32.145Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection conn30: url=jdbc:h2:mem:testdb user=SA
+2026-01-18T18:25:32.145Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-01-18T18:25:32.145Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-01-18T18:25:32.228Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-18T18:25:32.232Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-18T18:25:32.243Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-18T18:25:32.244Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-18T18:25:32.245Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-4)']
+	Database driver: undefined/unknown
+	Database version: 2.2.224
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-18T18:25:32.566Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: create table caja (id bigint generated by default as identity, fecha timestamp(6), monto_total float(53), id_usuario bigint, primary key (id))
+Hibernate: create table categorias (id bigint generated by default as identity, nombre varchar(20) not null, primary key (id))
+Hibernate: create table clientes (id bigint generated by default as identity, celular varchar(20) not null, contraseña varchar(71) not null, correo varchar(120) not null, direccion varchar(120) not null, nomb_ape varchar(60) not null, id_usuario bigint not null, primary key (id))
+Hibernate: create table compras (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(500) not null, fecha_hora timestamp(6), precio numeric(38,2) not null, id_caja bigint, primary key (id))
+Hibernate: create table consultas (id bigint generated by default as identity, activo boolean default 0, celular varchar(15) not null, correo varchar(120) not null, mensaje varchar(500) not null, nom_ape varchar(50) not null, reseña varchar(500), primary key (id))
+Hibernate: create table detalle_compra (id integer generated by default as identity, cantidad integer not null, precio_actual numeric(38,2) not null, id_compra bigint, primary key (id))
+Hibernate: create table permisos (id bigint generated by default as identity, descripcion varchar(255), nombre varchar(20) not null, primary key (id))
+Hibernate: create table usuarios (id bigint generated by default as identity, activo boolean default 1, clave varchar(71) not null, email varchar(100) not null, fecha_creacion timestamp(6), nombre varchar(30) not null, id_permiso bigint not null, primary key (id))
+Hibernate: alter table if exists permisos drop constraint if exists UKmd9j2tw7h6dxprrypo0itpnyp
+Hibernate: alter table if exists permisos add constraint UKmd9j2tw7h6dxprrypo0itpnyp unique (nombre)
+Hibernate: alter table if exists usuarios drop constraint if exists UKkfsp0s1tflm1cwlj8idhqsad0
+Hibernate: alter table if exists usuarios add constraint UKkfsp0s1tflm1cwlj8idhqsad0 unique (email)
+Hibernate: alter table if exists caja add constraint FKl8a22u96putem18rfxghkf22e foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists clientes add constraint FKf6u564o4dprnq7uln5gjvidp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists compras add constraint FKt0q1m9m97yen174eeidlk4rvr foreign key (id_caja) references caja
+Hibernate: alter table if exists detalle_compra add constraint FK24e1stplndaucn3dao9chwo8p foreign key (id_compra) references compras
+Hibernate: alter table if exists usuarios add constraint FK40qh24dsvsgjhvg15q6roof9k foreign key (id_permiso) references permisos
+2026-01-18T18:25:32.594Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:25:32.678Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-18T18:25:32.738Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-01-18T18:25:33.233Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-01-18T18:25:33.285Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-01-18T18:25:33.309Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-01-18T18:25:33.319Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Started LuzClaritaWebApplication in 1.75 seconds (process running for 112.757)
+2026-01-18T18:25:33.324Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   OAuth2WebSecurityConfiguration.OAuth2SecurityFilterChainConfiguration matched:
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+      - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-01-18T18:25:34.689Z  INFO 3478 --- [LuzClaritaWeb] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 38 class path changes (38 additions, 0 deletions, 0 modifications)
+2026-01-18T18:25:34.699Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-16] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:25:34.700Z  WARN 3478 --- [LuzClaritaWeb] [      Thread-16] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
+2026-01-18T18:25:34.701Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-16] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-01-18T18:25:34.704Z  INFO 3478 --- [LuzClaritaWeb] [      Thread-16] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2026-01-18T18:25:34.873Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Starting LuzClaritaWebApplication using Java 21.0.8 with PID 3478 (/app/target/classes started by jules in /app)
+2026-01-18T18:25:34.874Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-01-18T18:25:35.206Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-18T18:25:35.222Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 6 JPA repository interfaces.
+2026-01-18T18:25:35.493Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-01-18T18:25:35.495Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-18T18:25:35.496Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-01-18T18:25:35.507Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-18T18:25:35.507Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 629 ms
+2026-01-18T18:25:35.650Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-01-18T18:25:35.664Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection conn40: url=jdbc:h2:mem:testdb user=SA
+2026-01-18T18:25:35.664Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-01-18T18:25:35.665Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-01-18T18:25:35.832Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-18T18:25:35.836Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-18T18:25:35.848Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-18T18:25:35.849Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-18T18:25:35.850Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-5)']
+	Database driver: undefined/unknown
+	Database version: 2.2.224
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-18T18:25:36.165Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: create table caja (id bigint generated by default as identity, fecha timestamp(6), monto_total float(53), id_usuario bigint, primary key (id))
+Hibernate: create table categorias (id bigint generated by default as identity, nombre varchar(20) not null, primary key (id))
+Hibernate: create table clientes (id bigint generated by default as identity, celular varchar(20) not null, contraseña varchar(71) not null, correo varchar(120) not null, direccion varchar(120) not null, nomb_ape varchar(60) not null, id_usuario bigint not null, primary key (id))
+Hibernate: create table compras (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(500) not null, fecha_hora timestamp(6), precio numeric(38,2) not null, id_caja bigint, primary key (id))
+Hibernate: create table consultas (id bigint generated by default as identity, activo boolean default 0, celular varchar(15) not null, correo varchar(120) not null, mensaje varchar(500) not null, nom_ape varchar(50) not null, reseña varchar(500), primary key (id))
+Hibernate: create table cursos (id bigint generated by default as identity, descripcion varchar(500) not null, link_video varchar(500) not null, nombre_curso varchar(60) not null, precio numeric(38,2) not null, id_receta bigint not null, primary key (id))
+Hibernate: create table detalle_compra (id integer generated by default as identity, cantidad integer not null, precio_actual numeric(38,2) not null, id_compra bigint, primary key (id))
+Hibernate: create table detalle_factura (id bigint generated by default as identity, cantidad integer not null, precio_unitario numeric(38,2) not null, id_factura bigint, id_producto bigint not null, primary key (id))
+Hibernate: create table facturas (id bigint generated by default as identity, activo boolean default 1, fecha_pedido timestamp(6) not null, metodo_pago varchar(255) not null, numero_factura integer not null, id_caja bigint, id_cliente bigint, primary key (id))
+Hibernate: create table inscripciones (id bigint generated by default as identity, fecha_inscripcion timestamp(6), id_cliente bigint, id_curso bigint, primary key (id))
+Hibernate: create table inventario (id bigint generated by default as identity, cantidad integer not null, fecha_ingreso timestamp(6) not null, fecha_vencimiento timestamp(6) not null, nombre_ingrediente varchar(50) not null, precio numeric(38,2) not null, unidad_medida varchar(100) not null, id_proveedor bigint not null, id_usuario bigint, primary key (id))
+Hibernate: create table permisos (id bigint generated by default as identity, descripcion varchar(255), nombre varchar(20) not null, primary key (id))
+Hibernate: create table productos (id bigint generated by default as identity, activo boolean default 1, descripcion varchar(65) not null, lnk_img varchar(1000), precio numeric(38,2) not null, stock integer not null, id_categoria bigint not null, primary key (id))
+Hibernate: create table proveedores (id bigint generated by default as identity, contacto varchar(100) not null, direccion varchar(250) not null, email varchar(120) not null, nombre varchar(100) not null, telefono integer not null, id_compra bigint, primary key (id))
+Hibernate: create table recetas (id bigint generated by default as identity, descripcion varchar(500) not null, imagen_link varchar(500) not null, ingredientes varchar(250) not null, nombre_receta varchar(100) not null, pasos varchar(500) not null, tiempo varchar(50) not null, primary key (id))
+Hibernate: create table usuarios (id bigint generated by default as identity, activo boolean default 1, clave varchar(71) not null, email varchar(100) not null, fecha_creacion timestamp(6), nombre varchar(30) not null, id_permiso bigint not null, primary key (id))
+Hibernate: alter table if exists permisos drop constraint if exists UKmd9j2tw7h6dxprrypo0itpnyp
+Hibernate: alter table if exists permisos add constraint UKmd9j2tw7h6dxprrypo0itpnyp unique (nombre)
+Hibernate: alter table if exists usuarios drop constraint if exists UKkfsp0s1tflm1cwlj8idhqsad0
+Hibernate: alter table if exists usuarios add constraint UKkfsp0s1tflm1cwlj8idhqsad0 unique (email)
+Hibernate: alter table if exists caja add constraint FKl8a22u96putem18rfxghkf22e foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists clientes add constraint FKf6u564o4dprnq7uln5gjvidp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists compras add constraint FKt0q1m9m97yen174eeidlk4rvr foreign key (id_caja) references caja
+Hibernate: alter table if exists cursos add constraint FKsayxlccxcxlfupjyufn97lgxh foreign key (id_receta) references recetas
+Hibernate: alter table if exists detalle_compra add constraint FK24e1stplndaucn3dao9chwo8p foreign key (id_compra) references compras
+Hibernate: alter table if exists detalle_factura add constraint FKdottb80mhiedtx8j8jyqewx5n foreign key (id_factura) references facturas
+Hibernate: alter table if exists detalle_factura add constraint FK8n490j4f7licrmb4jbk5mgmsp foreign key (id_producto) references productos
+Hibernate: alter table if exists facturas add constraint FK9lwy7vhbg64445eqxry7lajho foreign key (id_caja) references caja
+Hibernate: alter table if exists facturas add constraint FKp2ab9l9b5y3b0pv1ag1hfiun7 foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKj5lol6pkkcg52wxriulxiw16x foreign key (id_cliente) references clientes
+Hibernate: alter table if exists inscripciones add constraint FKmyps0lutv0v9xqttbepwe14jt foreign key (id_curso) references cursos
+Hibernate: alter table if exists inventario add constraint FKfaw3xt1j7iktfcj4kdl8brj3 foreign key (id_proveedor) references proveedores
+Hibernate: alter table if exists inventario add constraint FKe91hgha9wf9oy7by5a25bnwp3 foreign key (id_usuario) references usuarios
+Hibernate: alter table if exists productos add constraint FKdtoa37luoxhhvbicrfiu5ygbj foreign key (id_categoria) references categorias
+Hibernate: alter table if exists proveedores add constraint FKe277g1f77qoyrx94a9wkae00o foreign key (id_compra) references compras
+Hibernate: alter table if exists usuarios add constraint FK40qh24dsvsgjhvg15q6roof9k foreign key (id_permiso) references permisos
+2026-01-18T18:25:36.199Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-18T18:25:36.660Z  WARN 3478 --- [LuzClaritaWeb] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-18T18:25:36.741Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2026-01-18T18:25:37.034Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-01-18T18:25:37.607Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-01-18T18:25:37.638Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-01-18T18:25:37.649Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] c.a.l.LuzClaritaWebApplication           : Started LuzClaritaWebApplication in 2.813 seconds (process running for 117.087)
+2026-01-18T18:25:37.652Z  INFO 3478 --- [LuzClaritaWeb] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+   OAuth2WebSecurityConfiguration.OAuth2SecurityFilterChainConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
