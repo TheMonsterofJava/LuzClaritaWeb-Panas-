@@ -33,6 +33,7 @@ public class CarritoDTO {
         this.cantidad = carrito.getCantidad();
         if (carrito.getProducto() != null) {
             this.productoId = carrito.getProducto().getId();
+            this.productoNombre = carrito.getProducto().getNombre();
             this.productoNombre = carrito.getProducto().getDescripcion();
             this.productoPrecio = carrito.getProducto().getPrecio();
             this.productoLinkImagen = carrito.getProducto().getLinkImagen();

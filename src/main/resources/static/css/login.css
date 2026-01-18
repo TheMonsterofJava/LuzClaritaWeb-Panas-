@@ -101,8 +101,11 @@ a {
     width: 400%;
     /* Establece la altura completa de la pantalla */
     height: 100%;
-    /* Aplica la animación 'slide' para que el carrusel se desplace hacia la izquierda */
-    animation: slide 30s infinite linear;
+    /* Aplica la animación 'slide' para que el carrusel se desplace hacia la izquierda
+    animation: slide 10s infinite linear;
+    /*Una vez que llegue al final de la pantalla que las imagenes revoten y vulvan para la derecha*/
+    /*animation-direction: alternate; */
+
 }
 
 /* Define la animación 'slide' */
@@ -410,6 +413,11 @@ a {
     /* Espacio entre la caja de verificación y la etiqueta */
     white-space: nowrap;
     /* Evita el cambio de línea entre elementos */
+}
+
+/*Separar el "Mantener Sesion iniciada" de "¿Olvidaste tu contraseña?"*/
+.forgot_pw {
+    margin-left: 18px;
 }
 
 .checkbox input {

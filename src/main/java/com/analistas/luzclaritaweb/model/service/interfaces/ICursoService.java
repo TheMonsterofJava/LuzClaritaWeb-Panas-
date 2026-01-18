@@ -16,11 +16,14 @@ public interface ICursoService {
             return null;
         }
         
-        // Expresión regular para manejar diferentes formatos de URLs de YouTube
-        String regex = "(?<=watch\\?v=|/videos/|embed\\/|youtu\\.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\\?video_id=)([^#\\&\\?\\n]*)[^\\w\\-\\s]";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-        java.util.regex.Matcher matcher = pattern.matcher(url);
+        String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%2F|watch\\?v=|v\\/|e\\/|u\\/\\w+\\/|embed\\?video_id=)([^#\\&\\?]*).*";
         
-        return matcher.find() ? matcher.group() : null;
+        java.util.regex.Pattern compiledPattern = java.util.regex.Pattern.compile(pattern);
+        java.util.regex.Matcher matcher = compiledPattern.matcher(url);
+        
+        if (matcher.find()){
+            return matcher.group(1);
+        }
+        return null;
     }
 }
