@@ -25,6 +25,9 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private com.analistas.luzclaritaweb.web.security.CustomOAuth2UserService customOAuth2UserService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -33,7 +36,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/", "/home", "/img/**", "/js/**", "/css/**", "/font/**",
                                 "/consejos/**", "/consultas/guardar", "/consultas/consulta", "/inicioSesion/**",
                                 "/layout/**", "/productos/**", "/receta-clasica/**", "/registro", "/registro/**",
-                                "/receta-especial/**", "/index")
+                                "/receta-especial/**", "/index", "/oauth2/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
@@ -41,6 +44,12 @@ public class WebSecurityConfig {
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/inicioSesion/login?error=true")
                         .permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/inicioSesion/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/inicioSesion/login?error=true"))
                 .logout(logout -> logout.permitAll())
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
